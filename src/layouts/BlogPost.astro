@@ -372,7 +372,6 @@ const readingTime = calculateReadingTime(content);
 				}
 
 				overlay.classList.add('active');
-				document.body.style.overflow = 'hidden';
 
 				setTimeout(function() {
 					avatar.classList.add('animate');
@@ -392,7 +391,6 @@ const readingTime = calculateReadingTime(content);
 
 				setTimeout(function() {
 					overlay.classList.add('fade-out');
-					document.body.style.overflow = '';
 
 					if (mainContent) {
 						mainContent.style.opacity = '1';

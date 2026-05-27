@@ -118,7 +118,6 @@ const { title, description, image } = Astro.props;
             }
 
             overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
 
             setTimeout(function() {
               avatar.classList.add('animate');
@@ -138,7 +137,6 @@ const { title, description, image } = Astro.props;
 
             setTimeout(function() {
               overlay.classList.add('fade-out');
-              document.body.style.overflow = '';
 
               if (mainContent) {
                 mainContent.style.opacity = '1';

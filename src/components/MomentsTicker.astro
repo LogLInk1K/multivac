@@ -54,28 +54,6 @@ const now = new Date();
 const daysLeft = Math.ceil((endOfYear.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 const yearProgress = Math.floor(((now.getTime() - new Date(currentYear, 0, 1).getTime()) / (endOfYear.getTime() - new Date(currentYear, 0, 1).getTime())) * 100);
 
-const statuses = [
-  { emoji: '🎬', label: '正在看番', desc: '新番追起来' },
-  { emoji: '🐟', label: '摸鱼中', desc: '认真划水' },
-  { emoji: '🐛', label: '写 Bug', desc: '代码能跑就行' },
-  { emoji: '😴', label: '发呆', desc: '灵魂出窍中' },
-  { emoji: '🎮', label: '打游戏', desc: '再来一局' },
-  { emoji: '📖', label: '读书中', desc: '知识学爆' },
-  { emoji: '☕', label: '喝咖啡', desc: '续命必备' },
-  { emoji: '🌙', label: '熬夜中', desc: '修仙模式' },
-  { emoji: '🎵', label: '听歌中', desc: '单曲循环' },
-  { emoji: '💭', label: '胡思乱想', desc: '脑洞大开' },
-  { emoji: '🔧', label: '折腾博客', desc: '又改样式了' },
-  { emoji: '🍜', label: '干饭中', desc: '民以食为天' },
-  { emoji: '🌊', label: '冲浪中', desc: '互联网观光客' },
-  { emoji: '✍️', label: '写文中', desc: '键盘冒烟' },
-  { emoji: '🧘', label: '冥想中', desc: '内心平静' },
-  { emoji: '🚀', label: '上线部署', desc: '推向生产' },
-];
-
-const statusIdx = Math.floor(Math.random() * statuses.length);
-const currentStatus = statuses[statusIdx];
-
 const watchingJson = JSON.stringify(watchingItems.map(m => ({
   title: m.title,
   year: m.year,
@@ -125,20 +103,23 @@ const watchingJson = JSON.stringify(watchingItems.map(m => ({
         </div>
       </a>
 
-      <div class="hidden md:flex items-center bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark h-12 px-3 gap-2.5 cursor-default group/status">
+      <a href="/tarot" class="hidden md:flex items-center bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark h-12 px-3 gap-2.5 group/status">
         <div class="w-7 h-7 rounded-xl bg-primary-light/10 dark:bg-primary-dark/10 flex items-center justify-center flex-shrink-0 text-sm">
-          {currentStatus.emoji}
+          🔮
         </div>
         <div class="flex flex-col min-w-0">
           <div class="flex items-center gap-1.5">
-            <span class="text-[11px] text-text-light/70 dark:text-text-dark/70 font-medium truncate">{currentStatus.label}</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
+            <span class="text-[11px] text-text-light/70 dark:text-text-dark/70 font-medium truncate">趣味塔罗</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0"></span>
           </div>
-          <span class="text-[10px] text-text-light/40 dark:text-text-dark/40 truncate">{currentStatus.desc}</span>
+          <span class="text-[10px] text-text-light/40 dark:text-text-dark/40 truncate">点击抽牌</span>
         </div>
-      </div>
+        <svg class="w-3 h-3 text-text-light/30 dark:text-text-dark/30 flex-shrink-0 transition-transform duration-300 group-hover/status:translate-x-0.5 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
 
-      <div class="hidden xl:flex items-center bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark h-12 px-3 gap-2.5 cursor-default">
+      <a href="/progress" class="hidden xl:flex items-center bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark h-12 px-3 gap-2.5 group/progress">
         <div class="flex-shrink-0 relative w-7 h-7">
           <svg class="w-7 h-7 -rotate-90" viewBox="0 0 36 36">
             <circle cx="18" cy="18" r="15.5" fill="none" stroke="currentColor" stroke-width="3" class="text-hover-light dark:text-hover-dark"></circle>
@@ -152,7 +133,10 @@ const watchingJson = JSON.stringify(watchingItems.map(m => ({
           <span class="text-[10px] text-text-light/40 dark:text-text-dark/40 leading-tight">{currentYear} 进度</span>
           <span class="text-[11px] text-text-light/70 dark:text-text-dark/70 font-medium leading-tight">剩余 <span class="text-primary-light dark:text-primary-dark font-bold">{daysLeft}</span> 天</span>
         </div>
-      </div>
+        <svg class="w-3 h-3 text-text-light/30 dark:text-text-dark/30 flex-shrink-0 transition-transform duration-300 group-hover/progress:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
 
       <a id="movie-recommend-link" href="/time-machine" class="hidden xl:flex items-center bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark h-12 px-3 gap-2 group/movie">
         <div class="w-7 h-7 rounded-xl overflow-hidden flex-shrink-0 bg-hover-light dark:bg-hover-dark" id="movie-cover-wrapper">

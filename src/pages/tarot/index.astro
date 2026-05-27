@@ -1,0 +1,416 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const tarotCards = [
+  { name: '愚者', num: '0', symbol: '🃏', gradient: 'from-yellow-400 to-amber-500', lightGradient: 'from-yellow-500 to-amber-600', glow: 'rgba(250,204,21,0.4)', lightGlow: 'rgba(250,204,21,0.15)', upright: '新的开始、自由、冒险、无限可能', reversed: '鲁莽、不计后果、迷失方向', uprightAdvice: '勇敢迈出第一步，拥抱未知', reversedAdvice: '放慢脚步，三思而后行' },
+  { name: '魔术师', num: 'I', symbol: '✨', gradient: 'from-violet-400 to-purple-500', lightGradient: 'from-violet-600 to-purple-700', glow: 'rgba(139,92,246,0.4)', lightGlow: 'rgba(139,92,246,0.15)', upright: '创造力、意志力、掌控全局', reversed: '欺骗、缺乏方向、才能浪费', uprightAdvice: '相信自己的能力，行动起来', reversedAdvice: '审视动机，确保真诚地使用才能' },
+  { name: '女祭司', num: 'II', symbol: '🌙', gradient: 'from-indigo-400 to-blue-600', lightGradient: 'from-indigo-600 to-blue-700', glow: 'rgba(99,102,241,0.4)', lightGlow: 'rgba(99,102,241,0.15)', upright: '直觉、智慧、神秘、内在力量', reversed: '忽视直觉、表面化、秘密', uprightAdvice: '倾听内心的声音，信任直觉', reversedAdvice: '不要压抑内心的感受，正视隐藏的事' },
+  { name: '女皇', num: 'III', symbol: '👑', gradient: 'from-emerald-400 to-green-500', lightGradient: 'from-emerald-600 to-green-700', glow: 'rgba(16,185,129,0.4)', lightGlow: 'rgba(16,185,129,0.15)', upright: '丰饶、美丽、滋养、创造力', reversed: '依赖、过度保护、创造力受阻', uprightAdvice: '善待自己，享受生活的美好', reversedAdvice: '学会独立，放下过度的依赖' },
+  { name: '皇帝', num: 'IV', symbol: '🏛', gradient: 'from-red-400 to-rose-600', lightGradient: 'from-red-600 to-rose-700', glow: 'rgba(244,63,94,0.4)', lightGlow: 'rgba(244,63,94,0.15)', upright: '权威、秩序、领导力、稳定', reversed: '专制、僵化、控制欲过强', uprightAdvice: '建立秩序，承担责任', reversedAdvice: '放下控制欲，允许他人有空间' },
+  { name: '教皇', num: 'V', symbol: '📿', gradient: 'from-amber-400 to-orange-500', lightGradient: 'from-amber-600 to-orange-600', glow: 'rgba(245,158,11,0.4)', lightGlow: 'rgba(245,158,11,0.15)', upright: '传统、信仰、指引、智慧', reversed: '教条、束缚、盲从', uprightAdvice: '寻求内心的信仰与指引', reversedAdvice: '质疑权威，找到属于自己的信念' },
+  { name: '恋人', num: 'VI', symbol: '💕', gradient: 'from-pink-400 to-rose-500', lightGradient: 'from-pink-600 to-rose-600', glow: 'rgba(236,72,153,0.4)', lightGlow: 'rgba(236,72,153,0.15)', upright: '爱情、选择、和谐、结合', reversed: '失衡、冲突、选择困难', uprightAdvice: '遵从内心，做出真诚的选择', reversedAdvice: '正视关系中的不和谐，重新审视选择' },
+  { name: '战车', num: 'VII', symbol: '⚔️', gradient: 'from-sky-400 to-blue-500', lightGradient: 'from-sky-600 to-blue-700', glow: 'rgba(56,189,248,0.4)', lightGlow: 'rgba(56,189,248,0.15)', upright: '胜利、意志力、决心、征服', reversed: '失控、攻击性、方向迷失', uprightAdvice: '坚定信念，勇往直前', reversedAdvice: '收拢锋芒，重新找到方向' },
+  { name: '力量', num: 'VIII', symbol: '🦁', gradient: 'from-orange-400 to-amber-500', lightGradient: 'from-orange-600 to-amber-600', glow: 'rgba(251,146,60,0.4)', lightGlow: 'rgba(251,146,60,0.15)', upright: '勇气、耐心、内在力量、慈悲', reversed: '自我怀疑、软弱、缺乏勇气', uprightAdvice: '温柔而坚定，内在力量胜过外在', reversedAdvice: '找回自信，你比自己想的更强大' },
+  { name: '隐者', num: 'IX', symbol: '🏔', gradient: 'from-slate-400 to-gray-500', lightGradient: 'from-slate-600 to-gray-700', glow: 'rgba(148,163,184,0.4)', lightGlow: 'rgba(148,163,184,0.15)', upright: '内省、智慧、独处、寻求真理', reversed: '孤立、逃避、固执己见', uprightAdvice: '给自己独处的时间，深入思考', reversedAdvice: '走出封闭，与人连接也是一种智慧' },
+  { name: '命运之轮', num: 'X', symbol: '⚙️', gradient: 'from-purple-400 to-fuchsia-500', lightGradient: 'from-purple-600 to-fuchsia-600', glow: 'rgba(192,132,252,0.4)', lightGlow: 'rgba(192,132,252,0.15)', upright: '转机、顺应无常、好运循环', reversed: '身处低谷、延迟、时机未到', uprightAdvice: '顺应变化，好运正在到来', reversedAdvice: '身处低谷时不必强求突破，静待转机' },
+  { name: '正义', num: 'XI', symbol: '⚖️', gradient: 'from-cyan-400 to-teal-500', lightGradient: 'from-cyan-600 to-teal-600', glow: 'rgba(34,211,238,0.4)', lightGlow: 'rgba(34,211,238,0.15)', upright: '公正、真相、因果、平衡', reversed: '不公、逃避责任、偏见', uprightAdvice: '公正待人，诚实面对自己', reversedAdvice: '正视偏颇，承担应负的责任' },
+  { name: '倒吊人', num: 'XII', symbol: '🔄', gradient: 'from-blue-400 to-indigo-500', lightGradient: 'from-blue-600 to-indigo-600', glow: 'rgba(96,165,250,0.4)', lightGlow: 'rgba(96,165,250,0.15)', upright: '牺牲、换位思考、等待、领悟', reversed: '无谓牺牲、拖延、抗拒改变', uprightAdvice: '换个角度看问题，等待也是智慧', reversedAdvice: '停止无意义的等待，主动做出改变' },
+  { name: '死神', num: 'XIII', symbol: '🦋', gradient: 'from-gray-500 to-slate-600', lightGradient: 'from-gray-600 to-slate-700', glow: 'rgba(100,116,139,0.4)', lightGlow: 'rgba(100,116,139,0.15)', upright: '结束、转变、重生、放下过去', reversed: '抗拒改变、勉强维持、停滞不前', uprightAdvice: '主动放下旧的，才能迎接新的', reversedAdvice: '不要勉强维持已结束的状态，果断松手' },
+  { name: '节制', num: 'XIV', symbol: '🏺', gradient: 'from-teal-400 to-cyan-500', lightGradient: 'from-teal-600 to-cyan-600', glow: 'rgba(45,212,191,0.4)', lightGlow: 'rgba(45,212,191,0.15)', upright: '平衡、节制、耐心、调和', reversed: '失衡、过度、缺乏耐心', uprightAdvice: '保持中庸，凡事适度', reversedAdvice: '找回平衡，避免走极端' },
+  { name: '恶魔', num: 'XV', symbol: '🔗', gradient: 'from-red-500 to-purple-700', lightGradient: 'from-red-700 to-purple-800', glow: 'rgba(168,85,247,0.4)', lightGlow: 'rgba(168,85,247,0.15)', upright: '束缚、诱惑、欲望、物质执念', reversed: '释放、觉醒、打破束缚', uprightAdvice: '审视执念，不要被欲望控制', reversedAdvice: '挣脱束缚的时机已到，勇敢解放自己' },
+  { name: '塔', num: 'XVI', symbol: '⚡', gradient: 'from-red-400 to-orange-600', lightGradient: 'from-red-600 to-orange-700', glow: 'rgba(248,113,113,0.4)', lightGlow: 'rgba(248,113,113,0.15)', upright: '突变、崩塌、真相揭露', reversed: '余震未消、隐患尚在、缓慢重建', uprightAdvice: '废墟之上，才能重建更好的生活', reversedAdvice: '最猛烈的风暴已过，耐下心来一件件修补' },
+  { name: '星星', num: 'XVII', symbol: '⭐', gradient: 'from-yellow-300 to-amber-400', lightGradient: 'from-yellow-500 to-amber-500', glow: 'rgba(252,211,77,0.4)', lightGlow: 'rgba(252,211,77,0.15)', upright: '希望、灵感、宁静、祝福', reversed: '失去信心、迷失方向', uprightAdvice: '相信希望，星光终会指引你', reversedAdvice: '重新连接内心的光，希望从未远离' },
+  { name: '月亮', num: 'XVIII', symbol: '🌕', gradient: 'from-indigo-300 to-purple-500', lightGradient: 'from-indigo-500 to-purple-600', glow: 'rgba(165,180,252,0.4)', lightGlow: 'rgba(165,180,252,0.15)', upright: '幻象、潜意识、直觉、不安', reversed: '走出迷雾、真相显现', uprightAdvice: '面对内心的恐惧，真相就在迷雾后', reversedAdvice: '迷雾正在散去，准备好迎接真相' },
+  { name: '太阳', num: 'XIX', symbol: '☀️', gradient: 'from-yellow-400 to-orange-400', lightGradient: 'from-yellow-600 to-orange-500', glow: 'rgba(250,204,21,0.5)', lightGlow: 'rgba(250,204,21,0.2)', upright: '成功、快乐、活力、光明', reversed: '短暂挫折、过度乐观', uprightAdvice: '尽情绽放，今天属于你', reversedAdvice: '阳光暂时被遮挡，但温暖仍在' },
+  { name: '审判', num: 'XX', symbol: '📯', gradient: 'from-rose-400 to-pink-500', lightGradient: 'from-rose-600 to-pink-600', glow: 'rgba(251,113,133,0.4)', lightGlow: 'rgba(251,113,133,0.15)', upright: '觉醒、重生、审视、召唤', reversed: '自我怀疑、拒绝成长', uprightAdvice: '审视过去，迎接内心的召唤', reversedAdvice: '停止自我否定，允许自己成长' },
+  { name: '世界', num: 'XXI', symbol: '🌍', gradient: 'from-emerald-400 to-violet-500', lightGradient: 'from-emerald-600 to-violet-600', glow: 'rgba(52,211,153,0.4)', lightGlow: 'rgba(52,211,153,0.15)', upright: '圆满、完成、成就、和谐', reversed: '美中不足、延迟圆满、最后一步', uprightAdvice: '一切圆满，享受此刻的成就', reversedAdvice: '只差最后的临门一脚，耐心补齐最后一块拼图' },
+];
+
+const today = new Date();
+const dateSeed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+function seededRandom(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+}
+
+const rng = seededRandom(dateSeed);
+const cardIdx = Math.floor(rng() * tarotCards.length);
+const isUpright = rng() > 0.5;
+const card = tarotCards[cardIdx];
+
+const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+const weekDay = weekDays[today.getDay()];
+---
+
+<MainLayout title="趣味塔罗" description="抽一张塔罗牌，探索今日指引">
+  <section class="tarot-page min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-28 pb-16">
+    <div id="tarot-data" class="hidden"
+      data-cards={JSON.stringify(tarotCards.map(c => ({ name: c.name, num: c.num, symbol: c.symbol, gradient: c.gradient, lightGradient: c.lightGradient, glow: c.glow, lightGlow: c.lightGlow, upright: c.upright, reversed: c.reversed, uprightAdvice: c.uprightAdvice, reversedAdvice: c.reversedAdvice })))}
+    ></div>
+    <div class="w-full max-w-md relative z-10">
+
+      <div id="tarot-scene" class="tarot-scene">
+        <div id="fortune-card" class="tarot-card-inner">
+
+          <div class="tarot-face tarot-face-front">
+            <div class="flex flex-col items-center justify-center h-full gap-6">
+              <div class="relative">
+                <div class="tarot-back-pattern w-28 h-40 sm:w-32 sm:h-44 rounded-xl flex items-center justify-center border-2 border-amber-400/30 dark:border-amber-400/20 relative overflow-hidden">
+                  <div class="absolute inset-2 border border-amber-400/20 dark:border-amber-400/15 rounded-lg"></div>
+                  <div class="absolute inset-4 border border-amber-400/10 dark:border-amber-400/10 rounded-md"></div>
+                  <div class="relative z-10 text-center">
+                    <div class="text-amber-500/40 dark:text-amber-400/30 text-3xl mb-1">✦</div>
+                    <div class="text-amber-600/30 dark:text-amber-400/20 text-[8px] tracking-[0.3em] font-mono uppercase">Tarot</div>
+                  </div>
+                </div>
+                <div class="absolute -inset-4 rounded-2xl border border-amber-400/10 dark:border-amber-400/5 animate-ping" style="animation-duration: 3s;"></div>
+              </div>
+              <div class="text-center">
+                <p class="text-black/30 dark:text-white/40 text-xs font-mono tracking-widest mb-1.5">{dateStr} · 周{weekDay}</p>
+                <p class="text-black/50 dark:text-white/70 text-sm">点击抽一张塔罗牌</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tarot-face tarot-face-back">
+            <div class="tarot-glow" style={`--glow-color: ${card.glow}; --glow-color-light: ${card.lightGlow}`}></div>
+
+            <div class="relative z-10 p-8 sm:p-10">
+              <div class="flex items-center justify-between mb-8">
+                <span class="text-black/25 dark:text-white/30 text-xs font-mono tracking-wider">{dateStr}</span>
+                <span class="text-black/25 dark:text-white/30 text-xs">周{weekDay}</span>
+              </div>
+
+              <div class="text-center mb-8">
+                <div class={`tarot-card-symbol text-5xl mb-3 ${!isUpright ? 'rotate-180' : ''}`}>{card.symbol}</div>
+                <div class={`tarot-card-name inline-block text-4xl sm:text-5xl font-black bg-gradient-to-r ${card.lightGradient} dark:${card.gradient} bg-clip-text text-transparent mb-2 leading-tight`}>
+                  {card.name}
+                </div>
+                <div class="tarot-card-num text-black/20 dark:text-white/20 text-xs font-mono tracking-[0.4em]">{card.num}</div>
+              </div>
+
+              <div class="mb-6">
+                <div class={`tarot-position-tag inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono tracking-wider mb-4 ${isUpright ? 'bg-emerald-500/[0.08] dark:bg-emerald-400/[0.08] text-emerald-600 dark:text-emerald-400 border border-emerald-500/[0.1] dark:border-emerald-400/[0.1]' : 'bg-rose-500/[0.08] dark:bg-rose-400/[0.08] text-rose-600 dark:text-rose-400 border border-rose-500/[0.1] dark:border-rose-400/[0.1]'}`}>
+                  <span class={`w-1.5 h-1.5 rounded-full ${isUpright ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-rose-500 dark:bg-rose-400'}`}></span>
+                  <span class="tarot-position-label">{isUpright ? '正位' : '逆位'}</span>
+                </div>
+                <p class="tarot-card-meaning text-black/60 dark:text-white/70 text-base leading-relaxed">{isUpright ? card.upright : card.reversed}</p>
+              </div>
+
+              <div class="text-center px-4 py-4 rounded-xl bg-amber-500/[0.06] dark:bg-amber-400/[0.06] border border-amber-500/[0.08] dark:border-amber-400/[0.08]">
+                <span class="text-amber-600 dark:text-amber-400 text-[10px] font-mono tracking-[0.2em]">指引</span>
+                <p class="tarot-card-advice text-black/60 dark:text-white/70 text-base font-medium mt-2 leading-relaxed">{isUpright ? card.uprightAdvice : card.reversedAdvice}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tarot-actions" class="mt-8 flex items-center justify-center gap-3 opacity-0 transition-opacity duration-500">
+        <button id="tarot-redraw" class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/[0.04] dark:bg-white/5 border border-black/[0.08] dark:border-white/10 hover:border-amber-400/30 dark:hover:border-amber-400/20 hover:bg-amber-50/50 dark:hover:bg-amber-400/5 transition-all duration-300 text-sm text-black/50 dark:text-white/60 hover:text-amber-700 dark:hover:text-amber-300">
+          <svg class="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          再抽一张
+        </button>
+      </div>
+
+      <div id="tarot-particles" class="tarot-particles"></div>
+    </div>
+  </section>
+</MainLayout>
+
+<script>
+  function initTarot() {
+    const scene = document.getElementById('tarot-scene');
+    const cardEl = document.getElementById('fortune-card');
+    const actions = document.getElementById('tarot-actions');
+    const particles = document.getElementById('tarot-particles');
+    const dataEl = document.getElementById('tarot-data') as HTMLElement;
+    let flipped = false;
+
+    if (!cardEl || !scene || !dataEl) return;
+
+    const cards = JSON.parse(dataEl.dataset.cards || '[]');
+
+    scene.addEventListener('click', () => {
+      if (flipped) return;
+      flipped = true;
+      cardEl.classList.add('flipped');
+
+      setTimeout(() => {
+        if (actions) actions.style.opacity = '1';
+      }, 600);
+    });
+
+    function randomPick(arr: any[]): any {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateTarot() {
+      const card = randomPick(cards);
+      const isUpright = Math.random() > 0.5;
+      return { card, isUpright };
+    }
+
+    function updateCard(data: ReturnType<typeof generateTarot>) {
+      const isDark = document.documentElement.classList.contains('dark');
+      const { card, isUpright } = data;
+
+      const glow = document.querySelector('.tarot-glow') as HTMLElement;
+      if (glow) {
+        glow.style.setProperty('--glow-color', card.glow);
+        glow.style.setProperty('--glow-color-light', card.lightGlow);
+      }
+
+      const symbolEl = document.querySelector('.tarot-card-symbol') as HTMLElement;
+      if (symbolEl) {
+        symbolEl.textContent = card.symbol;
+        symbolEl.classList.toggle('rotate-180', !isUpright);
+      }
+
+      const nameEl = document.querySelector('.tarot-card-name') as HTMLElement;
+      if (nameEl) {
+        nameEl.textContent = card.name;
+        nameEl.className = `tarot-card-name inline-block text-4xl sm:text-5xl font-black bg-gradient-to-r ${isDark ? card.gradient : card.lightGradient} bg-clip-text text-transparent mb-2 leading-tight`;
+      }
+
+      const numEl = document.querySelector('.tarot-card-num') as HTMLElement;
+      if (numEl) numEl.textContent = card.num;
+
+      const positionTag = document.querySelector('.tarot-position-tag') as HTMLElement;
+      if (positionTag) {
+        if (isUpright) {
+          positionTag.className = 'tarot-position-tag inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono tracking-wider mb-4 bg-emerald-500/[0.08] dark:bg-emerald-400/[0.08] text-emerald-600 dark:text-emerald-400 border border-emerald-500/[0.1] dark:border-emerald-400/[0.1]';
+        } else {
+          positionTag.className = 'tarot-position-tag inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono tracking-wider mb-4 bg-rose-500/[0.08] dark:bg-rose-400/[0.08] text-rose-600 dark:text-rose-400 border border-rose-500/[0.1] dark:border-rose-400/[0.1]';
+        }
+        const dot = positionTag.querySelector('.tarot-position-dot') as HTMLElement;
+        if (dot) {
+          dot.className = `tarot-position-dot w-1.5 h-1.5 rounded-full ${isUpright ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-rose-500 dark:bg-rose-400'}`;
+        }
+        const label = positionTag.querySelector('.tarot-position-label') as HTMLElement;
+        if (label) label.textContent = isUpright ? '正位' : '逆位';
+      }
+
+      const meaningEl = document.querySelector('.tarot-card-meaning') as HTMLElement;
+      if (meaningEl) meaningEl.textContent = isUpright ? card.upright : card.reversed;
+
+      const adviceEl = document.querySelector('.tarot-card-advice') as HTMLElement;
+      if (adviceEl) adviceEl.textContent = isUpright ? card.uprightAdvice : card.reversedAdvice;
+    }
+
+    const redrawBtn = document.getElementById('tarot-redraw');
+    if (redrawBtn) {
+      redrawBtn.addEventListener('click', () => {
+        if (!cardEl) return;
+
+        cardEl.classList.remove('flipped');
+        flipped = false;
+
+        setTimeout(() => {
+          const data = generateTarot();
+          updateCard(data);
+
+          setTimeout(() => {
+            flipped = true;
+            cardEl.classList.add('flipped');
+          }, 400);
+        }, 400);
+      });
+    }
+
+    if (particles) {
+      for (let i = 0; i < 30; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'tarot-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        dot.style.animationDelay = Math.random() * 6 + 's';
+        dot.style.animationDuration = (4 + Math.random() * 4) + 's';
+        const size = 1 + Math.random() * 2;
+        dot.style.width = size + 'px';
+        dot.style.height = size + 'px';
+        particles.appendChild(dot);
+      }
+    }
+  }
+
+  document.addEventListener('astro:page-load', initTarot);
+</script>
+
+<style is:global>
+  .tarot-page {
+    position: relative;
+  }
+
+  .tarot-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 255, 0.04), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245, 158, 11, 0.03), transparent),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.03), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dark .tarot-page::before {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 80, 255, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245, 158, 11, 0.05), transparent),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.05), transparent);
+  }
+
+  .tarot-scene {
+    perspective: 1200px;
+    cursor: pointer;
+  }
+
+  .tarot-card-inner {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  @media (min-width: 640px) {
+    .tarot-card-inner {
+      min-height: 500px;
+    }
+  }
+
+  .tarot-card-inner.flipped {
+    transform: rotateY(180deg);
+    cursor: default;
+  }
+
+  .tarot-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 1.5rem;
+    overflow: hidden;
+  }
+
+  .tarot-face-front {
+    background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.5) 100%);
+    border: 1px solid rgba(0,0,0,0.06);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dark .tarot-face-front {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .tarot-face-front::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(245,158,11,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(139,92,246,0.04) 0%, transparent 50%);
+  }
+
+  .dark .tarot-face-front::before {
+    background:
+      radial-gradient(circle at 30% 30%, rgba(245,158,11,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(139,92,246,0.06) 0%, transparent 50%);
+  }
+
+  .tarot-back-pattern {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(139,92,246,0.08) 50%, rgba(245,158,11,0.08) 100%);
+  }
+
+  .dark .tarot-back-pattern {
+    background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(139,92,246,0.12) 50%, rgba(245,158,11,0.12) 100%);
+  }
+
+  .tarot-face-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.9) 100%);
+    border: 1px solid rgba(0,0,0,0.06);
+    backdrop-filter: blur(40px);
+  }
+
+  .dark .tarot-face-back {
+    background: linear-gradient(160deg, rgba(15,15,25,0.95) 0%, rgba(10,10,20,0.98) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .tarot-glow {
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 60%;
+    background: var(--glow-color-light);
+    filter: blur(80px);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .dark .tarot-glow {
+    background: var(--glow-color);
+    opacity: 0.15;
+  }
+
+  .tarot-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .tarot-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    animation: tarot-float linear infinite;
+  }
+
+  .dark .tarot-dot {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @keyframes tarot-float {
+    0%, 100% {
+      opacity: 0;
+      transform: translateY(0) scale(1);
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    50% {
+      transform: translateY(-30px) scale(1.2);
+    }
+  }
+
+  .tarot-scene:hover .tarot-face-front {
+    border-color: rgba(245,158,11,0.15);
+  }
+
+  .dark .tarot-scene:hover .tarot-face-front {
+    border-color: rgba(245,158,11,0.12);
+  }
+
+  .tarot-scene:hover .tarot-card-inner:not(.flipped) {
+    transform: translateY(-2px);
+  }
+
+  .tarot-card-symbol {
+    transition: transform 0.3s ease;
+  }
+</style>

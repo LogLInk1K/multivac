@@ -1,0 +1,380 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const now = new Date();
+const currentYear = now.getFullYear();
+const startOfYear = new Date(currentYear, 0, 1);
+const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
+const totalDays = Math.ceil((endOfYear.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+const daysPassed = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+const daysLeft = totalDays - daysPassed;
+const yearProgress = Math.floor(((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100);
+
+const startOfMonth = new Date(currentYear, now.getMonth(), 1);
+const endOfMonth = new Date(currentYear, now.getMonth() + 1, 0, 23, 59, 59);
+const monthTotalDays = endOfMonth.getDate();
+const monthDaysPassed = now.getDate();
+const monthDaysLeft = monthTotalDays - monthDaysPassed;
+const monthProgress = Math.floor(((now.getTime() - startOfMonth.getTime()) / (endOfMonth.getTime() - startOfMonth.getTime())) * 100);
+
+const startOfWeek = new Date(now);
+startOfWeek.setDate(now.getDate() - now.getDay());
+startOfWeek.setHours(0, 0, 0, 0);
+const endOfWeek = new Date(startOfWeek);
+endOfWeek.setDate(startOfWeek.getDate() + 6);
+endOfWeek.setHours(23, 59, 59, 999);
+const weekDaysPassed = now.getDay() + 1;
+const weekDaysLeft = 7 - weekDaysPassed;
+const weekProgress = Math.floor(((now.getTime() - startOfWeek.getTime()) / (endOfWeek.getTime() - startOfWeek.getTime())) * 100);
+
+const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+
+const dateStr = `${currentYear}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+
+const seasonNames = ['春', '夏', '秋', '冬'];
+const seasonMonths: number[][] = [[3, 4, 5], [6, 7, 8], [9, 10, 11], [12, 1, 2]];
+const currentMonth = now.getMonth() + 1;
+let currentSeasonIndex = seasonMonths.findIndex(months => months.includes(currentMonth));
+if (currentSeasonIndex === -1) currentSeasonIndex = 3;
+const currentSeasonName = seasonNames[currentSeasonIndex];
+const seasonStartMonth = seasonMonths[currentSeasonIndex][0];
+const seasonStartYear = seasonStartMonth > currentMonth ? currentYear - 1 : currentYear;
+const seasonStart = new Date(seasonStartYear, seasonStartMonth - 1, 1);
+const seasonEndMonth = seasonMonths[currentSeasonIndex][2];
+const seasonEndYear = seasonEndMonth < currentMonth ? currentYear + 1 : currentYear;
+const seasonEnd = new Date(seasonEndYear, seasonEndMonth - 1, new Date(seasonEndYear, seasonEndMonth, 0).getDate(), 23, 59, 59);
+const seasonTotalDays = Math.ceil((seasonEnd.getTime() - seasonStart.getTime()) / (1000 * 60 * 60 * 24));
+const seasonDaysPassed = Math.ceil((now.getTime() - seasonStart.getTime()) / (1000 * 60 * 60 * 24));
+const seasonDaysLeft = seasonTotalDays - seasonDaysPassed;
+const seasonProgress = Math.floor(((now.getTime() - seasonStart.getTime()) / (seasonEnd.getTime() - seasonStart.getTime())) * 100);
+const seasonColors = ['#22C55E', '#F59E0B', '#F97316', '#60A5FA'];
+const seasonColor = seasonColors[currentSeasonIndex];
+
+const currentHour = now.getHours();
+---
+
+<MainLayout title="时间进度" description="可视化你的时间进度">
+  <section class="progress-page min-h-[80vh] flex items-center justify-center px-4 sm:px-6 pt-28 pb-16">
+    <div class="w-full max-w-md relative z-10">
+
+      <div class="mb-12">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-1.5 h-1.5 rounded-full bg-[#5E6AD2]"></div>
+          <span class="text-[11px] font-mono tracking-wider text-black/30 dark:text-white/30 uppercase">{dateStr}</span>
+        </div>
+        <h1 class="text-[22px] font-semibold tracking-tight text-black/90 dark:text-white/90">时间进度</h1>
+        <p class="text-[13px] text-black/35 dark:text-white/35 mt-1.5 leading-relaxed">你无法管理时间，但可以看见它</p>
+      </div>
+
+      <div class="linear-card">
+        <div class="linear-card-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-[#5E6AD2]" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="text-[12px] font-medium text-black/60 dark:text-white/60">{currentYear}</span>
+          </div>
+          <div class="flex items-baseline gap-0.5">
+            <span class="progress-value text-[20px] font-semibold tabular-nums text-black/90 dark:text-white/90" data-target={yearProgress}>0</span>
+            <span class="text-[11px] font-mono text-black/25 dark:text-white/25">%</span>
+          </div>
+        </div>
+        <div class="linear-bar-track">
+          <div class="linear-bar-fill" style="--bar-color: #5E6AD2" data-width={yearProgress}></div>
+        </div>
+        <div class="linear-card-footer">
+          <span class="text-[11px] font-mono text-black/25 dark:text-white/25">{daysPassed}天已过</span>
+          <span class="text-[11px] font-mono text-[#5E6AD2]">{daysLeft}天剩余</span>
+        </div>
+      </div>
+
+      <div class="linear-card">
+        <div class="linear-card-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-[#E5484D]" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M4 8h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="text-[12px] font-medium text-black/60 dark:text-white/60">{months[now.getMonth()]}</span>
+          </div>
+          <div class="flex items-baseline gap-0.5">
+            <span class="progress-value text-[20px] font-semibold tabular-nums text-black/90 dark:text-white/90" data-target={monthProgress}>0</span>
+            <span class="text-[11px] font-mono text-black/25 dark:text-white/25">%</span>
+          </div>
+        </div>
+        <div class="linear-bar-track">
+          <div class="linear-bar-fill" style="--bar-color: #E5484D" data-width={monthProgress}></div>
+        </div>
+        <div class="linear-card-footer">
+          <span class="text-[11px] font-mono text-black/25 dark:text-white/25">{monthDaysPassed}天已过</span>
+          <span class="text-[11px] font-mono text-[#E5484D]">{monthDaysLeft}天剩余</span>
+        </div>
+      </div>
+
+      <div class="linear-card">
+        <div class="linear-card-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-[#46A758]" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 5l6 6M11 5l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="text-[12px] font-medium text-black/60 dark:text-white/60">本周</span>
+          </div>
+          <div class="flex items-baseline gap-0.5">
+            <span class="progress-value text-[20px] font-semibold tabular-nums text-black/90 dark:text-white/90" data-target={weekProgress}>0</span>
+            <span class="text-[11px] font-mono text-black/25 dark:text-white/25">%</span>
+          </div>
+        </div>
+        <div class="linear-bar-track">
+          <div class="linear-bar-fill" style="--bar-color: #46A758" data-width={weekProgress}></div>
+        </div>
+        <div class="linear-card-footer">
+          <span class="text-[11px] font-mono text-black/25 dark:text-white/25">周{weekDays[now.getDay()]}</span>
+          <span class="text-[11px] font-mono text-[#46A758]">{weekDaysLeft}天剩余</span>
+        </div>
+      </div>
+
+      <div class="linear-card">
+        <div class="linear-card-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-[#F2994A]" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-[12px] font-medium text-black/60 dark:text-white/60">今日</span>
+          </div>
+          <div class="flex items-baseline gap-0.5">
+            <span class="text-[20px] font-semibold tabular-nums text-black/90 dark:text-white/90" id="day-progress-value">0</span>
+            <span class="text-[11px] font-mono text-black/25 dark:text-white/25">%</span>
+          </div>
+        </div>
+        <div class="linear-bar-track">
+          <div class="linear-bar-fill" style="--bar-color: #F2994A" id="day-progress-bar"></div>
+        </div>
+        <div class="linear-card-footer">
+          <span class="text-[11px] font-mono text-black/25 dark:text-white/25">{String(currentHour).padStart(2, '0')}:00</span>
+          <span class="text-[11px] font-mono text-[#F2994A]" id="day-hours-left">0小时剩余</span>
+        </div>
+      </div>
+
+      <div class="linear-card">
+        <div class="linear-card-header">
+          <div class="flex items-center gap-2">
+            <svg class="w-3.5 h-3.5" style={`color: ${seasonColor}`} viewBox="0 0 16 16" fill="none">
+              <path d="M8 2C5 2 3 5 3 7.5C3 10 5 12 8 14C11 12 13 10 13 7.5C13 5 11 2 8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M8 6v4M6 8h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="text-[12px] font-medium text-black/60 dark:text-white/60">{currentSeasonName}季</span>
+          </div>
+          <div class="flex items-baseline gap-0.5">
+            <span class="progress-value text-[20px] font-semibold tabular-nums text-black/90 dark:text-white/90" data-target={seasonProgress}>0</span>
+            <span class="text-[11px] font-mono text-black/25 dark:text-white/25">%</span>
+          </div>
+        </div>
+        <div class="linear-bar-track">
+          <div class="linear-bar-fill" style={`--bar-color: ${seasonColor}`} data-width={seasonProgress}></div>
+        </div>
+        <div class="linear-card-footer">
+          <span class="text-[11px] font-mono text-black/25 dark:text-white/25">{seasonDaysPassed}天已过</span>
+          <span class="text-[11px] font-mono" style={`color: ${seasonColor}`}>{seasonDaysLeft}天剩余</span>
+        </div>
+      </div>
+
+      <div class="mt-10 pt-5 border-t border-black/[0.04] dark:border-white/[0.04]">
+        <p class="text-[11px] font-mono text-black/15 dark:text-white/15 tracking-wider text-center">时间不等人</p>
+      </div>
+
+    </div>
+  </section>
+</MainLayout>
+
+<script>
+  function initProgress() {
+    const values = document.querySelectorAll('.progress-value');
+    const bars = document.querySelectorAll('.linear-bar-fill');
+
+    function animateValues() {
+      values.forEach(el => {
+        const target = parseInt((el as HTMLElement).dataset.target || '0');
+        let current = 0;
+        const duration = 1000;
+        const startTime = performance.now();
+        function tick(now: number) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          current = Math.floor(eased * target);
+          el.textContent = current.toString();
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+
+    function animateBars() {
+      bars.forEach(bar => {
+        const width = (bar as HTMLElement).dataset.width || '0';
+        setTimeout(() => {
+          (bar as HTMLElement).style.width = width + '%';
+        }, 150);
+      });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateValues();
+          animateBars();
+          setTimeout(() => {
+            updateDayProgress(true);
+          }, 150);
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    const page = document.querySelector('.progress-page');
+    if (page) observer.observe(page);
+
+    function updateDayProgress(animate = false) {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dayProgress = Math.floor(((now.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) * 100);
+      const hoursLeft = 24 - now.getHours();
+
+      const dayValue = document.getElementById('day-progress-value');
+      const dayBar = document.getElementById('day-progress-bar');
+      const dayHoursLeft = document.getElementById('day-hours-left');
+
+      if (animate && dayValue) {
+        let current = 0;
+        const duration = 1000;
+        const startTime = performance.now();
+        function tick(now: number) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          current = Math.floor(eased * dayProgress);
+          dayValue!.textContent = current.toString();
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      } else if (dayValue) {
+        dayValue.textContent = dayProgress.toString();
+      }
+
+      if (dayBar) dayBar.style.width = dayProgress + '%';
+      if (dayHoursLeft) dayHoursLeft.textContent = hoursLeft + '小时剩余';
+    }
+
+    setInterval(() => updateDayProgress(false), 60000);
+  }
+
+  document.addEventListener('astro:page-load', initProgress);
+</script>
+
+<style is:global>
+  .progress-page {
+    position: relative;
+  }
+
+  .progress-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(94, 106, 210, 0.03), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dark .progress-page::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(94, 106, 210, 0.06), transparent);
+  }
+
+  .linear-card {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin-bottom: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .dark .linear-card {
+    border-color: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .linear-card:first-of-type {
+    border-radius: 20px 20px 6px 6px;
+  }
+
+  .linear-card:last-of-type {
+    border-radius: 6px 6px 20px 20px;
+    margin-bottom: 0;
+  }
+
+  .linear-card:not(:first-of-type):not(:last-of-type) {
+    border-radius: 6px;
+  }
+
+  .linear-card + .linear-card {
+    border-top-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .dark .linear-card + .linear-card {
+    border-top-color: rgba(255, 255, 255, 0.03);
+  }
+
+  .linear-card:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .linear-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .linear-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .linear-bar-track {
+    width: 100%;
+    height: 3px;
+    border-radius: 1.5px;
+    background: rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+  }
+
+  .dark .linear-bar-track {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .linear-bar-fill {
+    height: 100%;
+    border-radius: 1.5px;
+    width: 0;
+    background: var(--bar-color);
+    transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .linear-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+</style>

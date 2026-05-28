@@ -144,7 +144,7 @@ const watchingJson = JSON.stringify(watchingItems.map(m => ({
 
 {/* 4. 随机电影推荐卡片 */}
       {/* 核心改动：把 sm:justify-start 改为 sm:justify-between，确保两端对齐 */}
-      <a id="movie-recommend-link" href="/time-machine" class="group flex flex-col sm:flex-row items-center justify-center sm:justify-between h-14 px-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/30 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-6px_rgba(0,0,0,0.1)] transition-all duration-300 col-span-1">
+      <a id="movie-recommend-link" href="/watch-tonight" class="group flex flex-col sm:flex-row items-center justify-center sm:justify-between h-14 px-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/30 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_24px_-6px_rgba(0,0,0,0.1)] transition-all duration-300 col-span-1">
         
         {/* 为了防止手机端居中、平板端靠左的布局在切断点时闪烁，这里加一个贴紧左侧的组合容器 */}
         <div class="flex items-center w-full sm:w-auto sm:flex-1 min-w-0">
@@ -246,7 +246,7 @@ const watchingJson = JSON.stringify(watchingItems.map(m => ({
             movieCoverEl.src = movie.cover;
             movieCoverEl.alt = movie.title;
           }
-          if (movieLink) movieLink.href = `/time-machine?idx=${idx}`;
+          if (movieLink) movieLink.href = `/watch-tonight?idx=${idx}`;
         }
       } catch (e) {}
     }

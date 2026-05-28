@@ -61,15 +61,15 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
 
 <MainLayout title="今晚看这部" description="随机穿梭，发现一部值得观看的作品">
   <section class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-12 antialiased mt-6">
-    <div id="time-machine-root" data-list={JSON.stringify(watchingList)} data-initial-idx={startIdx}>
+    <div id="watch-tonight-root" data-list={JSON.stringify(watchingList)} data-initial-idx={startIdx}>
         
         {/* 主舞台卡片：优化为现代 Bento 与卡片融合质感 */}
-        <div class="time-machine-hero relative rounded-[28px] overflow-hidden border border-zinc-200/60 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-500 min-h-[540px] flex items-center">
+        <div class="watch-tonight-hero relative rounded-[28px] overflow-hidden border border-zinc-200/60 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-500 min-h-[540px] flex items-center">
           
           {/* 高级朦胧背景层 */}
           <div 
-            class="time-machine-backdrop absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 select-none pointer-events-none" 
-            id="time-machine-bg"
+            class="watch-tonight-backdrop absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 select-none pointer-events-none" 
+            id="watch-tonight-bg"
             style={{ 
               backgroundImage: initialItem ? `url(${initialItem.cover})` : 'none',
               opacity: initialItem ? 0.08 : 0
@@ -82,10 +82,10 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
           <div class="relative flex flex-col md:flex-row items-center gap-8 lg:gap-12 p-6 md:p-10 lg:p-14 w-full z-10">
             
             {/* 左侧海报：现代悬浮杂志质感 */}
-            <div class="flex-shrink-0 w-44 md:w-56 lg:w-64 relative" id="time-machine-poster-wrap">
+            <div class="flex-shrink-0 w-44 md:w-56 lg:w-64 relative" id="watch-tonight-poster-wrap">
               <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-[0_16px_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] border border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-100 dark:bg-zinc-900 transition-all duration-500">
                 <img 
-                  id="time-machine-poster" 
+                  id="watch-tonight-poster" 
                   src={initialItem?.cover || ''} 
                   alt={initialItem?.title || ''} 
                   class="w-full h-full object-cover transition-opacity duration-300" 
@@ -100,12 +100,12 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               </div>
 
-              <h1 id="time-machine-title" class="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3 leading-tight">
+              <h1 id="watch-tonight-title" class="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3 leading-tight">
                 {initialItem?.title || '加载中...'}
               </h1>
 
               {/* 信息去胶囊化，采用点状串联，只给评分独立高级色彩 */}
-              <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6 font-medium" id="time-machine-meta">
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6 font-medium" id="watch-tonight-meta">
                 {initialItem?.type && <span>{initialItem.type}</span>}
                 {(initialItem?.country || initialItem?.year) && <span class="text-zinc-300 dark:text-zinc-700">·</span>}
                 {initialItem?.country && <span>{initialItem.country}</span>}
@@ -124,13 +124,13 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
 
               {/* 评论文本区 */}
               <div class="relative mb-8 max-w-2xl">
-                <p id="time-machine-comment" class="text-zinc-600 dark:text-zinc-300 text-base md:text-lg leading-relaxed font-normal">
+                <p id="watch-tonight-comment" class="text-zinc-600 dark:text-zinc-300 text-base md:text-lg leading-relaxed font-normal">
                   “ {initialItem?.comment || ''} ”
                 </p>
               </div>
 
               {/* 外链按钮组：扁平化、细腻化 */}
-              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5" id="time-machine-links">
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5" id="watch-tonight-links">
                 {initialItem?.links?.map(l => (
                   <a href={l.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-xs font-medium transition-all duration-300 shadow-sm">
                     <img src={ratingIcons[l.source] || ''} alt="" class="w-3.5 h-3.5 opacity-80" />
@@ -145,7 +145,7 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
 
         {/* 核心控制区域 */}
         <div class="mt-8 flex items-center justify-center gap-3">
-          <button id="time-machine-reroll" class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 transition-all duration-300 text-sm font-semibold shadow-md shadow-zinc-950/10 dark:shadow-none">
+          <button id="watch-tonight-reroll" class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 transition-all duration-300 text-sm font-semibold shadow-md shadow-zinc-950/10 dark:shadow-none">
             <svg class="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
             </svg>
@@ -163,11 +163,11 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
               <span class="text-xs font-mono text-zinc-400">Alternative</span>
             </div>
             
-            <div id="time-machine-more" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
+            <div id="watch-tonight-more" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
               {initialPicks.map(ri => {
                 const m = watchingList[ri];
                 return (
-                  <a href="javascript:void(0)" data-idx={ri} class="time-machine-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
+                  <a href="javascript:void(0)" data-idx={ri} class="watch-tonight-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
                     <img src={m.cover} alt={m.title} class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
                     <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -205,17 +205,17 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
     const item = list[idx];
     if (!item) return;
 
-    const root = document.getElementById('time-machine-root');
+    const root = document.getElementById('watch-tonight-root');
     if (!root) return;
 
-    const bg = document.getElementById('time-machine-bg') as HTMLElement;
-    const poster = document.getElementById('time-machine-poster') as HTMLImageElement;
-    const title = document.getElementById('time-machine-title') as HTMLElement;
-    const comment = document.getElementById('time-machine-comment') as HTMLElement;
-    const meta = document.getElementById('time-machine-meta') as HTMLElement;
-    const links = document.getElementById('time-machine-links') as HTMLElement;
-    const more = document.getElementById('time-machine-more') as HTMLElement;
-    const hero = root.querySelector('.time-machine-hero') as HTMLElement;
+    const bg = document.getElementById('watch-tonight-bg') as HTMLElement;
+    const poster = document.getElementById('watch-tonight-poster') as HTMLImageElement;
+    const title = document.getElementById('watch-tonight-title') as HTMLElement;
+    const comment = document.getElementById('watch-tonight-comment') as HTMLElement;
+    const meta = document.getElementById('watch-tonight-meta') as HTMLElement;
+    const links = document.getElementById('watch-tonight-links') as HTMLElement;
+    const more = document.getElementById('watch-tonight-more') as HTMLElement;
+    const hero = root.querySelector('.watch-tonight-hero') as HTMLElement;
 
     if (animate && hero) {
       // 优雅的向内收缩淡出动画
@@ -275,7 +275,7 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
         more.innerHTML = pks.map((ri) => {
           const m = list[ri];
           return `
-            <a href="javascript:void(0)" data-idx="${ri}" class="time-machine-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
+            <a href="javascript:void(0)" data-idx="${ri}" class="watch-tonight-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
               <img src="${m.cover}" alt="${m.title}" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
               <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -286,7 +286,7 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
           `;
         }).join('');
 
-        more.querySelectorAll('.time-machine-pick').forEach((el) => {
+        more.querySelectorAll('.watch-tonight-pick').forEach((el) => {
           el.addEventListener('click', () => {
             const targetIdx = parseInt((el as HTMLElement).dataset.idx || '0');
             render(targetIdx);
@@ -306,7 +306,7 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
   }
 
   function init() {
-    const root = document.getElementById('time-machine-root');
+    const root = document.getElementById('watch-tonight-root');
     if (!root) return;
 
     const raw = root.getAttribute('data-list');
@@ -328,9 +328,9 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
     if (targetIdx !== null && targetIdx !== currentIdx) {
       render(targetIdx, false);
     } else {
-      const more = document.getElementById('time-machine-more');
+      const more = document.getElementById('watch-tonight-more');
       if (more) {
-        more.querySelectorAll('.time-machine-pick').forEach((el) => {
+        more.querySelectorAll('.watch-tonight-pick').forEach((el) => {
           el.addEventListener('click', () => {
             const targetIdx = parseInt((el as HTMLElement).dataset.idx || '0');
             render(targetIdx);
@@ -340,7 +340,7 @@ const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangu
       }
     }
 
-    const rerollBtn = document.getElementById('time-machine-reroll');
+    const rerollBtn = document.getElementById('watch-tonight-reroll');
     if (rerollBtn) {
       rerollBtn.addEventListener('click', () => {
         render(pick(currentIdx));

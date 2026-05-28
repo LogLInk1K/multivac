@@ -178,7 +178,7 @@ function formatDate(date: Date): string {
       ` : '';
 
       return `
-        <article class="group bg-card-light dark:bg-card-dark rounded-2xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark cursor-pointer" onclick="window.location.href='/time-machine?idx=${originalIndex}'">
+        <article class="group bg-card-light dark:bg-card-dark rounded-2xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark cursor-pointer" onclick="window.location.href='/tonight?idx=${originalIndex}'">
           <div class="relative aspect-[3/4] overflow-hidden bg-hover-light dark:bg-hover-dark rounded-t-2xl">
             <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 will-change-transform" loading="lazy" />
             ${ratingsHtml}

@@ -15,7 +15,7 @@ const allTags = posts.reduce((acc, post) => {
 }, {} as Record<string, number>);
 
 const sortedTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]);
-const randomTags = [...sortedTags].sort(() => Math.random() - 0.5).slice(0, 10);
+const allTagsJson = JSON.stringify(sortedTags);
 
 // 2. 网站统计
 const siteStartDate = new Date('2021-01-02');
@@ -160,14 +160,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
   <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
     <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">标签</h3>
-    <div class="flex flex-wrap gap-2">
-      {randomTags.map(([tag, count]) => (
-        <a href={`/tags/${tag}`} class="inline-flex items-center rounded-full text-xs font-medium overflow-hidden hover:scale-105 transition-all duration-200">
-          <span class="px-3 py-1 bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark">{tag}</span>
-          <span class="px-2 py-1 bg-divider-light text-text-light dark:bg-divider-dark dark:text-text-dark opacity-70">{count}</span>
-        </a>
-      ))}
-    </div>
+    <div class="js-tags-container flex flex-wrap gap-2" data-tags={allTagsJson}></div>
   </div>
 
 <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
@@ -460,6 +453,35 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
     // 处理 Astro ViewTransitions
     document.addEventListener('astro:after-swap', initCountUpElements);
+
+    // 标签随机渲染
+    function renderRandomTags() {
+      const containers = document.querySelectorAll('.js-tags-container');
+      containers.forEach(container => {
+        const rawData = container.getAttribute('data-tags');
+        if (!rawData) return;
+
+        try {
+          const allTags = JSON.parse(rawData);
+          const shuffled = [...allTags];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          const selected = shuffled.slice(0, 10);
+
+          container.innerHTML = selected.map(([tag, count]) =>
+            `<a href="/tags/${tag}" class="inline-flex items-center rounded-full text-xs font-medium overflow-hidden hover:scale-105 transition-all duration-200">` +
+            `<span class="px-3 py-1 bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark">${tag}</span>` +
+            `<span class="px-2 py-1 bg-divider-light text-text-light dark:bg-divider-dark dark:text-text-dark opacity-70">${count}</span>` +
+            `</a>`
+          ).join('');
+        } catch (e) {}
+      });
+    }
+
+    renderRandomTags();
+    document.addEventListener('astro:after-swap', renderRandomTags);
   })();
 </script>
 

@@ -51,104 +51,131 @@ const postSummaries: PostSummary[] = posts.map(post => ({
   category: post.data.category,
 }));
 
-// 初始显示的 5 篇文章
+// 初始显示的 3 篇文章
 const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3);
 ---
 
 <aside class="hidden md:block w-[272px] space-y-6">
   <!-- 公告卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">公告</h3>
-    <div class="space-y-4">
-      <!-- 第一段：虫洞图片 -->
-      <div>
-        <a href="https://www.foreverblog.cn/go.html" target="_blank" rel="noopener noreferrer">
-          <!-- 浅色主题虫洞图片 -->
-          <img
-            src="/img/wormhole_4_tp.gif"
-            alt="虫洞"
-            class="w-1/2 h-auto dark:hidden cursor-pointer"
-          />
-          <!-- 深色主题虫洞图片 -->
-          <img
-            src="/img/wormhole_2_tp.gif"
-            alt="虫洞"
-            class="w-1/2 h-auto hidden dark:block cursor-pointer"
-          />
-        </a>
+  <div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
+    
+    <div class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-light dark:bg-primary-dark"></span>
+        <h3 class="text-base font-bold tracking-wider text-text-light dark:text-text-dark">
+          公告
+        </h3>
       </div>
-      <!-- 第二段：文字说明 -->
-      <p class="text-sm text-text-light dark:text-text-dark">
-        跟着<span class="font-bold text-primary-light dark:text-primary-dark">虫洞</span>一起随机跳转到十年之约正式成员的博客吧
-      </p>
-      <!-- 第三段：logo图片 -->
-      <div>
-        <a href="https://www.foreverblog.cn" target="_blank" rel="noopener noreferrer">
+      <span class="text-[10px] tracking-widest text-text-light/40 dark:text-text-dark/40 uppercase font-medium">
+        十年之约
+      </span>
+    </div>
+
+    <div class="space-y-4">
+      <div class="inline-block px-2 pr-2">
+        <a href="https://www.foreverblog.cn" target="_blank" rel="noopener noreferrer" class="block opacity-80 hover:opacity-100 transition-opacity">
           <img
             src="/img/logo_en_default.png"
             alt="十年之约"
-            class="w-1/2 h-auto cursor-pointer"
+            class="h-6 w-auto object-contain brightness-95 dark:brightness-110"
           />
         </a>
       </div>
-      <!-- 第四段：活动说明 -->
-      <p class="text-sm text-text-light dark:text-text-dark">
-        本博客已加入<span class="font-bold text-primary-light dark:text-primary-dark">十年之约</span>活动
+
+      <p class="text-xs font-normal leading-relaxed text-text-light/70 dark:text-text-dark/70 px-2 pr-2">
+        本博客已加入十年之约活动。点击下方的虫洞按钮，即可随机跃迁到其他成员的独立博客。
       </p>
+
+      <div class="pt-3 border-t border-dashed border-border-light/60 dark:border-border-dark/40">
+        <a 
+          href="https://www.foreverblog.cn/go.html" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="group/btn flex items-center justify-between py-1 relative"
+        >
+          <div class="flex items-center gap-1">
+            <span class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-transform duration-300">
+              穿梭虫洞！
+            </span>
+            <span class="text-xs text-text-light/40 dark:text-text-dark/40 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-transform duration-300 pl-0.5">&rarr;</span>
+          </div>
+
+          <div class="flex-shrink-0 flex items-center">
+            <img
+              src="/img/wormhole_4_tp.gif"
+              alt="虫洞"
+              width="129"
+              height="36"
+              class="w-[95px] h-auto dark:hidden object-contain opacity-75 group-hover/btn:opacity-100 transition-opacity duration-300"
+            />
+            <img
+              src="/img/wormhole_2_tp.gif"
+              alt="虫洞"
+              width="129"
+              height="36"
+              class="w-[95px] h-auto hidden dark:block object-contain opacity-65 group-hover/btn:opacity-100 transition-opacity duration-300"
+            />
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <div class="flex items-center justify-between mb-2">
-      <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider">随机推荐</h3>
+  <!-- 随机推荐卡片 -->
+  <div class="pt-5 px-5 pb-2 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+    <div class="absolute -right-16 -top-16 w-40 h-40 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover/container:scale-150"></div>
+
+    <div class="flex items-center justify-between mb-2 border-b border-border-light dark:border-border-dark pb-3 relative select-none">
+      <div class="relative flex items-center h-8"> 
+        <div class="flex items-center gap-2 relative z-10 pl-0.5">
+          <span class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"></span>
+          <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">
+            随机推荐
+          </h3>
+        </div>
+      </div>
+    
       <button
         type="button"
-        class="js-refresh-trigger group relative p-1.5 rounded-full text-text-light dark:text-text-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none active:scale-90"
+        class="js-refresh-trigger group flex items-center gap-1.5 text-xs font-mono text-text-light/50 dark:text-text-dark/50 hover:text-primary-light dark:hover:text-primary-dark transition-transform focus:outline-none active:scale-95"
         data-posts={JSON.stringify(postSummaries)}
         aria-label="刷新推荐"
       >
-        <span class="js-refresh-icon inline-flex transition-transform duration-300 transform-gpu group-hover:rotate-180">
-          <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-75 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-          </svg>
-        </span>
-        <div class="absolute inset-0 flex items-center justify-center opacity-0 scale-75 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100">
-          <div class="bg-primary-light dark:bg-primary-dark rounded-full w-8 h-8 flex items-center justify-center">
-            <span class="js-refresh-icon inline-flex transition-transform duration-300 transform-gpu group-hover:rotate-180">
-              <svg class="w-5 h-5 text-white dark:text-black transition-transform duration-300 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-              </svg>
-            </span>
-          </div>
-        </div>
+        <span class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 tracking-widest text-[10px]">REFRESH</span>
+        <svg class="w-3.5 h-3.5 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:rotate-0 group-active:duration-0 group-active:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+        </svg>
       </button>
     </div>
-    <ul class="js-posts-list-container space-y-1 transition-opacity duration-200">
-      {initialRandomPosts.map((post) => {
+
+    <ul class="js-posts-list-container divide-y divide-border-light dark:divide-border-dark">
+      {initialRandomPosts.map((post, index) => {
         const originalFileName = post.id.toLowerCase();
         const displayImage = post.data.heroImage || defaultCover;
+        const serialNumber = String(index + 1).padStart(2, '0');
+        
         return (
-          <li>
-            <a href={`/p/${originalFileName}`} class="block group relative py-2.5 px-3 -mx-3 rounded-xl transition-all duration-300">
-              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary-light dark:bg-primary-dark rounded-full group-hover:h-12 transition-all duration-300"></div>
-              <div class="flex gap-3 items-center relative">
-                <div class="w-16 h-16 flex-shrink-0 bg-hero-light dark:bg-hero-dark rounded-xl overflow-hidden">
-                  <div
-                    class="w-full h-full bg-cover bg-center"
-                    style={`background-image: url('${displayImage}');`}
-                    aria-label={post.data.title}
-                  ></div>
-                </div>
+          <li class="group/item">
+            <a href={`/p/${originalFileName}`} class="block relative py-5 transition-all duration-300">
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden opacity-0 scale-90 blur-md group-hover/item:opacity-30 group-hover/item:scale-105 group-hover/item:blur-none pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
+                <img src={displayImage} alt="" class="w-full h-full object-cover" />
+              </div>
+
+              <div class="flex items-start gap-4 relative z-10">
+                <span class="text-xl font-mono font-light text-text-light/30 dark:text-text-dark/30 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 pt-0.5">
+                  {serialNumber}
+                </span>
+                
                 <div class="flex-1 min-w-0">
-                  <p class="text-xs text-text-light dark:text-text-dark opacity-70">
+                  <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/50 dark:text-text-dark/50 mb-1">
                     <FormattedDate date={post.data.pubDate} />
                     {post.data.category && (
-                      <>
-                        <span class="mx-1.5">{post.data.category}</span>
-                      </>
+                      <span class="text-text-light/60 dark:text-text-dark/60 uppercase"># {post.data.category}</span>
                     )}
+                  </div>
+                  <p class="text-sm font-medium tracking-tight text-text-light/80 dark:text-text-dark/80 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform">
+                    {post.data.title}
                   </p>
-                  <p class="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors line-clamp-2 mt-1">{post.data.title}</p>
                 </div>
               </div>
             </a>
@@ -158,116 +185,125 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
     </ul>
   </div>
 
+  <!-- 标签卡片 -->
   <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">标签</h3>
-    <div class="js-tags-container flex flex-wrap gap-2" data-tags={allTagsJson}></div>
+    <div class="relative mb-5">
+      <h3 class="inline-block text-lg font-black italic tracking-tight text-neutral-800 dark:text-neutral-100 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-2 after:w-full after:bg-yellow-400/30 dark:after:bg-indigo-500/40 after:-z-10">
+        TAGS
+      </h3>
+    </div>
+
+    <div class="js-tags-container line-clamp-5 [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden" data-tags={allTagsJson}></div>
   </div>
 
-<div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4 flex items-center gap-2">
-      <svg class="w-5 h-5 text-[#f26522]" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248S0 22.546 0 20.752s1.456-3.248 3.252-3.248 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817c-.062-8.71-7.118-15.758-15.839-15.82zm0-8.18v4.831c10.555.062 19.121 8.614 19.184 19.17h4.817c-.063-13.215-10.782-23.93-24.001-24.001z"></path>
-      </svg>
-      RSS 订阅
-    </h3>
-    <p class="text-sm text-text-light/70 dark:text-text-dark/70 mb-4 leading-relaxed">获取最直接的文章推送</p>
-    
-<div class="flex items-stretch h-9 group/rss">
-  <div class="flex-grow flex items-center px-3 border-y border-l border-border-light dark:border-border-dark rounded-l-xl bg-background-light dark:bg-background-dark min-w-0">
-    <span class="text-[11px] font-mono text-text-light/70 dark:text-text-dark/70 truncate select-all">
-      https://log.1k.ink/rss.xml
-    </span>
-  </div>
+  <!-- RSS订阅卡片 -->
+  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]">
+    <div class="relative">
+      <div class="absolute -right-2 -top-6 text-7xl font-black italic tracking-tighter text-text-light/[0.03] dark:text-text-dark/5 select-none pointer-events-none font-sans">
+        订阅
+      </div>
+      <h2 class="text-xl font-extrabold tracking-tight text-neutral-800 dark:text-neutral-100 leading-tight">
+        利用 RSS 订阅<br/>获取最直接的文章推送
+      </h2>
+      <p class="mt-2 text-xs text-text-light/50 dark:text-text-dark/40 font-normal">
+        点击滑块，即可复制 RSS 链接。
+      </p>
+    </div>
 
-  <button
-    type="button"
-    data-clipboard-text="https://log.1k.ink/rss.xml"
-    onclick="
-      const self = this;
-      const icon = self.querySelector('.copy-icon');
-      const text = self.querySelector('.success-msg');
-      const status = self.querySelector('.status-text');
-      
-      icon.classList.add('hidden');
-      text.classList.remove('hidden');
-      // 动态改变隐藏文本的内容
-      status.textContent = '已复制';
-      
-      navigator.clipboard.writeText(self.getAttribute('data-clipboard-text')).then(() => {
-        setTimeout(() => {
-          icon.classList.remove('hidden');
-          text.classList.add('hidden');
-          status.textContent = '复制链接';
-        }, 2000);
-      });
-    "
-    class="w-12 h-9 flex items-center justify-center bg-primary-light dark:bg-primary-dark hover:bg-primary-light/80 dark:hover:bg-[#e6ad26] transition-all duration-300 ease-in-out rounded-r-xl flex-shrink-0 group/btn"
-  >
-    <span class="sr-only status-text">复制链接</span>
+    <div class="mt-5">
+      <button
+        type="button"
+        data-clipboard-text="https://log.1k.ink/rss.xml"
+        onclick="
+          const self = this;
+          if (self.classList.contains('is-success')) return;
+          self.classList.add('is-success');
 
-    <svg class="copy-icon w-4 h-4 text-white dark:text-black transition-transform duration-200 group-hover/btn:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-    </svg>
+          navigator.clipboard.writeText(self.getAttribute('data-clipboard-text')).then(() => {
+            setTimeout(() => {
+              self.classList.remove('is-success');
+            }, 2200);
+          });
+        "
+        class="group/btn w-full h-11 relative rounded-2xl bg-neutral-100 dark:bg-neutral-950/80 border border-neutral-200/50 dark:border-neutral-800/80 p-1 cursor-pointer overflow-hidden select-none active:scale-[0.98] transition-all duration-300"
+      >
+        <div class="absolute inset-y-1 inset-x-2 flex items-center justify-between pointer-events-none select-none z-0">
+          <div class="flex gap-1.5 pl-4 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 group-[.is-success]/btn:opacity-0">
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+          </div>
+          <div class="flex gap-1.5 pr-4 transition-all duration-300 group-[.is-success]/btn:opacity-0">
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+          </div>
+        </div>
 
-    <span class="success-msg hidden text-sm">😋</span>
-  </button>
-</div>
-    
-    <p class="mt-4 text-[10px] text-text-light dark:text-text-dark opacity-70 italic">支持 Feedly、Inoreader、Reeder 等</p>
+        <div class="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-[.is-success]/btn:opacity-30 transition-opacity duration-300 pointer-events-none text-neutral-400 dark:text-neutral-600 font-mono text-xs z-0">
+          <span>RSS.xml</span>
+        </div>
+        <div class="h-full w-2/3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800/80 shadow-sm flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform group-hover/btn:translate-x-[50%] group-hover/btn:bg-[#f26522] group-hover/btn:border-transparent group-[.is-success]/btn:translate-x-[223%] group-[.is-success]/btn:w-[30%] group-[.is-success]/btn:bg-neutral-200 dark:group-[.is-success]/btn:bg-neutral-800 group-[.is-success]/btn:border-transparent group-[.is-success]/btn:shadow-none z-10">
+          <div class="relative w-full h-full flex items-center justify-center">
+            <span class="absolute text-xs font-mono font-bold text-neutral-600 dark:text-neutral-400 group-hover/btn:text-white tracking-tight transition-all duration-200 group-[.is-success]/btn:opacity-0 group-[.is-success]/btn:scale-75">
+              log.1k.ink/rss.xml
+            </span>
+            <div class="absolute opacity-0 scale-75 transition-all duration-300 group-[.is-success]/btn:opacity-100 group-[.is-success]/btn:scale-100 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </button>
+      <div class="mt-3 text-[10px] text-text-light/40 dark:text-text-dark/40 font-normal text-center">
+        支持 Feedly、Inoreader、Reeder 等
+      </div>
+    </div>
   </div>
 
   <!-- 博客统计卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">博客统计</h3>
-    <div class="grid grid-cols-2 gap-3">
-      <a href="/archives" class="relative overflow-hidden text-center p-3 rounded-2xl bg-badge-light dark:bg-hover-dark group hover:scale-105 transition-all duration-200 cursor-pointer">
-        <div class="text-2xl font-bold text-primary-light dark:text-primary-dark mb-1 js-count-up" data-target={posts.length}>0</div>
-        <div class="text-xs text-text-light dark:text-text-dark opacity-70 flex items-center justify-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-          </svg>
-          文章
+  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard">
+    <div class="absolute -right-6 -bottom-10 text-[140px] font-black italic tracking-tighter text-neutral-800/[0.03] dark:text-neutral-100/[0.02] select-none pointer-events-none transform origin-bottom-right transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/statcard:scale-110 group-hover/statcard:translate-x-2 group-hover/statcard:text-primary-light/[0.04] dark:group-hover/statcard:text-primary-dark/[0.03]">
+      字
+    </div>
+    <div class="relative z-10">
+      <div class="flex items-baseline gap-1">
+        <span class="text-5xl font-black font-mono tracking-tighter text-neutral-800 dark:text-neutral-100 js-count-up" data-target={(totalWords / 10000).toFixed(1)}>0</span>
+        <span class="text-sm font-black text-text-light/50 dark:text-text-dark/40 ml-1 tracking-widest">万字全站文本</span>
+      </div>
+      <div class="h-[2px] w-12 bg-primary-light/60 dark:bg-primary-dark/50 mt-3 rounded-full transition-all duration-500 group-hover/statcard:w-20"></div>
+    </div>
+
+    <div class="grid grid-cols-5 gap-2 items-end pt-6 pb-2 relative z-10">
+      <a href="/archives" class="col-span-3 group/item cursor-pointer block">
+        <span class="text-[10px] font-normal tracking-widest text-text-light/40 dark:text-text-dark/40 block mb-1">已发表文章</span>
+        <div class="flex items-baseline gap-1">
+          <div class="text-2xl font-black font-mono tracking-tight text-neutral-700 dark:text-neutral-300 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform js-count-up" data-target={posts.length}>0</div>
+          <span class="text-[10px] font-bold text-text-light/30 dark:text-text-dark/30">篇</span>
         </div>
+        <div class="h-[2px] w-4 bg-neutral-200 dark:bg-neutral-800 mt-2 group-hover/item:w-8 group-hover/item:bg-primary-light dark:group-hover/item:bg-primary-dark transition-all duration-300"></div>
       </a>
-      <a href="/categories" class="relative overflow-hidden text-center p-3 rounded-2xl bg-badge-light dark:bg-hover-dark group hover:scale-105 transition-all duration-200 cursor-pointer">
-        <div class="text-2xl font-bold text-primary-light dark:text-primary-dark mb-1 js-count-up" data-target={totalCategories}>0</div>
-        <div class="text-xs text-text-light dark:text-text-dark opacity-70 flex items-center justify-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-          </svg>
-          分类
-        </div>
-      </a>
-      <a href="/tags" class="relative overflow-hidden text-center p-3 rounded-2xl bg-badge-light dark:bg-hover-dark group hover:scale-105 transition-all duration-200 cursor-pointer">
-        <div class="text-2xl font-bold text-primary-light dark:text-primary-dark mb-1 js-count-up" data-target={Object.keys(allTags).length}>0</div>
-        <div class="text-xs text-text-light dark:text-text-dark opacity-70 flex items-center justify-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-          </svg>
-          标签
-        </div>
-      </a>
-      <div class="relative overflow-hidden text-center p-3 rounded-2xl bg-badge-light dark:bg-hover-dark group hover:scale-105 transition-all duration-200">
-        <div class="text-2xl font-bold text-primary-light dark:text-primary-dark mb-1">
-          <span class="js-count-up" data-target={(totalWords / 10000).toFixed(1)}>0</span>w
-        </div>
-        <div class="text-xs text-text-light dark:text-text-dark opacity-70 flex items-center justify-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-          </svg>
-          总字数
-        </div>
+
+      <div class="col-span-2 flex flex-col gap-2.5 items-end justify-end border-l border-neutral-200/40 dark:border-neutral-800/40 pr-1">
+        <a href="/categories" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
+          <span class="text-[10px] font-normal tracking-wider text-text-light/40 dark:text-text-dark/40 group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">分类</span>
+          <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={totalCategories}>0</span>
+        </a>
+        <a href="/tags" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
+          <span class="text-[10px] font-normal tracking-wider text-text-light/40 dark:text-text-dark/40 group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">标签</span>
+          <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={Object.keys(allTags).length}>0</span>
+        </a>
       </div>
     </div>
-    <div class="mt-3 flex items-center justify-between p-3 rounded-2xl bg-primary-light/10 dark:bg-primary-dark/10 group hover:scale-105 transition-all duration-200">
-      <div class="flex items-center gap-2 text-sm text-text-light dark:text-text-dark opacity-70">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        已运行
+
+    <div class="mt-4 pt-3.5 border-t border-neutral-200/40 dark:border-neutral-800/40 flex items-center justify-between text-xs relative z-10">
+      <div class="flex items-center gap-2 text-text-light/40 dark:text-text-dark/40 tracking-widest text-[11px]">
+        <span class="w-1.5 h-1.5 bg-neutral-300 dark:bg-neutral-700 rounded-none"></span>
+        持续运行
       </div>
-      <div class="text-lg font-bold text-primary-light dark:text-primary-dark group-hover:scale-110 transition-transform">
-        <span class="js-count-up" data-target={daysRunning}>0</span> 天
+      <div class="font-mono text-xs text-text-light/60 dark:text-text-dark/50">
+        <span class="text-sm text-neutral-800 dark:text-neutral-100 font-black js-count-up" data-target={daysRunning}>0</span> 天
       </div>
     </div>
   </div>
@@ -279,17 +315,12 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
       const icons = btn.querySelectorAll('.js-refresh-icon');
       icons.forEach((el) => {
         el.classList.remove('is-spinning');
-        // 触发 reflow，保证重复点击也能重新触发动画
         void el.offsetWidth;
         el.classList.add('is-spinning');
         el.addEventListener('animationend', () => el.classList.remove('is-spinning'), { once: true });
       });
     }
 
-    /**
-     * 执行刷新逻辑
-     * @param {HTMLElement} btn 按钮元素
-     */
     function refresh(btn) {
       spinRefreshIcon(btn);
       const cardContainer = btn.closest('div').parentElement;
@@ -298,13 +329,11 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
       if (!listContainer || !rawData) return;
 
-      // 1. 开始淡出
       listContainer.style.opacity = '0';
 
       setTimeout(() => {
         try {
           const allPosts = JSON.parse(rawData);
-          // 使用 Fisher-Yates 随机算法洗牌
           const shuffled = [...allPosts];
           for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -312,40 +341,33 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
           }
           const selected = shuffled.slice(0, 3);
 
-          // 2. 更新 HTML 内容
-          listContainer.innerHTML = selected.map(post => {
+          listContainer.innerHTML = selected.map((post, index) => {
             const date = new Date(post.pubDate).toLocaleDateString('zh-CN', {
               year: 'numeric',
               month: 'short',
               day: 'numeric',
             });
 
-            const heroImageHtml = post.heroImage ? `
-              <div class="w-16 h-16 flex-shrink-0 bg-hero-light dark:bg-hero-dark rounded-xl overflow-hidden">
-                <div
-                  class="w-full h-full bg-cover bg-center"
-                  style="background-image: url('${post.heroImage}');"
-                  aria-label="${post.title}"
-                ></div>
-              </div>
-            ` : '';
-
-            const categoryHtml = post.category ? `
-              <span class="mx-1.5">${post.category}</span>
-            ` : '';
+            const serialNumber = String(index + 1).padStart(2, '0');
+            const displayImage = post.heroImage || '/img/df-cover.webp';
+            const categoryHtml = post.category ? `<span class="text-text-light/60 dark:text-text-dark/60 uppercase"># ${post.category}</span>` : '';
 
             return `
-              <li>
-                <a href="/p/${post.originalFileName}" class="block group relative py-2.5 px-3 -mx-3 rounded-xl transition-all duration-300">
-                  <div class="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary-light dark:bg-primary-dark rounded-full group-hover:h-12 transition-all duration-300"></div>
-                  <div class="flex gap-3 items-center relative">
-                    ${heroImageHtml}
+              <li class="group/item">
+                <a href="/p/${post.originalFileName}" class="block relative py-5 transition-all duration-300">
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden opacity-0 scale-90 blur-md group-hover/item:opacity-30 group-hover/item:scale-105 group-hover/item:blur-none pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
+                    <img src="${displayImage}" alt="" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex items-start gap-4 relative z-10">
+                    <span class="text-xl font-mono font-light text-text-light/30 dark:text-text-dark/30 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 pt-0.5">
+                      ${serialNumber}
+                    </span>
                     <div class="flex-1 min-w-0">
-                      <p class="text-xs text-text-light dark:text-text-dark opacity-70">
+                      <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/50 dark:text-text-dark/50 mb-1">
                         ${date}
                         ${categoryHtml}
-                      </p>
-                      <p class="text-sm font-medium text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors line-clamp-2 mt-1">${post.title}</p>
+                      </div>
+                      <p class="text-base font-normal tracking-tight text-text-light dark:text-text-dark group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform duration-300">${post.title}</p>
                     </div>
                   </div>
                 </a>
@@ -353,7 +375,6 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
             `;
           }).join('');
 
-          // 3. 开始淡入
           listContainer.style.opacity = '1';
         } catch (e) {
           console.error('[RandomPosts] Refresh error:', e);
@@ -362,31 +383,18 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
       }, 200);
     }
 
-    /**
-     * 处理点击事件冒泡
-     */
     const onGlobalClick = (e) => {
       const btn = e.target.closest('.js-refresh-trigger');
-      if (btn) {
-        refresh(btn);
-      }
+      if (btn) refresh(btn);
     };
 
-    // 初始化监听
     document.addEventListener('click', onGlobalClick);
-
-    // 处理 Astro ViewTransitions 导致的页面替换
     document.addEventListener('astro:after-swap', () => {
-      // 移除旧监听防止累加，重新添加以确保新 DOM 生效
       document.removeEventListener('click', onGlobalClick);
       document.addEventListener('click', onGlobalClick);
     });
 
-    /**
-     * 数字增长动画
-     */
-    const ANIMATION_DURATION = 1500; // 动画时长（毫秒）
-
+    const ANIMATION_DURATION = 1500;
     function animateNumber(element, target) {
       const isDecimal = target.toString().includes('.');
       const numericTarget = parseFloat(target);
@@ -396,10 +404,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
       function update(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
-
-        // 使用 easeOutQuart 缓动函数
         const easeProgress = 1 - Math.pow(1 - progress, 4);
-
         const currentValue = startValue + (numericTarget - startValue) * easeProgress;
 
         if (isDecimal) {
@@ -408,53 +413,37 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
           element.textContent = Math.floor(currentValue);
         }
 
-        if (progress < 1) {
-          requestAnimationFrame(update);
-        } else {
-          element.textContent = target;
-        }
+        if (progress < 1) requestAnimationFrame(update);
+        else element.textContent = target;
       }
-
       requestAnimationFrame(update);
     }
 
-    // 使用 Intersection Observer 监听元素进入视口
     const countUpObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const element = entry.target;
           const target = element.getAttribute('data-target');
-
           if (target) {
             animateNumber(element, target);
             countUpObserver.unobserve(element);
           }
         }
       });
-    }, {
-      threshold: 0.1, // 当元素 10% 可见时触发
-      rootMargin: '0px 0px -50px 0px'
-    });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    // 初始化时监听所有数字元素
     function initCountUpElements() {
       const countElements = document.querySelectorAll('.js-count-up');
-      countElements.forEach((element) => {
-        countUpObserver.observe(element);
-      });
+      countElements.forEach((element) => countUpObserver.observe(element));
     }
 
-    // 页面加载时初始化
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initCountUpElements);
     } else {
       initCountUpElements();
     }
-
-    // 处理 Astro ViewTransitions
     document.addEventListener('astro:after-swap', initCountUpElements);
 
-    // 标签随机渲染
     function renderRandomTags() {
       const containers = document.querySelectorAll('.js-tags-container');
       containers.forEach(container => {
@@ -463,19 +452,26 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
         try {
           const allTags = JSON.parse(rawData);
+          
+          // 随机打乱标签顺序
           const shuffled = [...allTags];
           for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
-          const selected = shuffled.slice(0, 10);
-
-          container.innerHTML = selected.map(([tag, count]) =>
-            `<a href="/tags/${tag}" class="inline-flex items-center rounded-full text-xs font-medium overflow-hidden hover:scale-105 transition-all duration-200">` +
-            `<span class="px-3 py-1 bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark">${tag}</span>` +
-            `<span class="px-2 py-1 bg-divider-light text-text-light dark:bg-divider-dark dark:text-text-dark opacity-70">${count}</span>` +
-            `</a>`
-          ).join('');
+          
+          container.innerHTML = shuffled.map(([tag, count], index) => {
+            const isLast = index === shuffled.length - 1;
+            return `
+              <span class="inline-block white-space-nowrap mr-2 mb-2">
+                <a href="/tags/${tag}" class="group inline-flex items-baseline text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:white transition-transform duration-200">
+                  <span class="group-hover:underline decoration-1 underline-offset-4">${tag}</span>
+                  <sup class="text-[9px] font-mono opacity-40 ml-0.5 group-hover:opacity-100 group-hover:text-amber-500 transition-transform">${count}</sup>
+                </a>
+                ${!isLast ? `<span class="text-neutral-300 dark:text-neutral-700 font-light select-none ml-2">/</span>` : ''}
+              </span>
+            `;
+          }).join('');
         } catch (e) {}
       });
     }
@@ -490,7 +486,6 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   .js-refresh-icon.is-spinning {
     animation: refresh-spin-once 600ms cubic-bezier(0.2, 0.9, 0.2, 1);
   }

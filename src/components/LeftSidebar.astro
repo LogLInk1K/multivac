@@ -579,96 +579,116 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
   </div>
 
   <!-- 音乐卡片 -->
-  <div class="music-card-wrapper p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4 flex items-center justify-between">
-      <span>音乐</span>
-      <!-- 播放指示器 - 音频波形 -->
-      <div id="playing-indicator" class="flex items-end gap-0.5 opacity-0 transition-opacity duration-300 pointer-events-none">
-        <div class="w-1 h-3 bg-primary-light dark:bg-primary-dark rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
-        <div class="w-1 h-4 bg-primary-light dark:bg-primary-dark rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
-        <div class="w-1 h-3 bg-primary-light dark:bg-primary-dark rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
-      </div>
-    </h3>
+  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
 
-    <div class="music-card-content">
-      <!-- 歌单封面和信息 -->
-      <div class="flex gap-4 mb-4">
-        <!-- 封面图 -->
-        <div class="relative w-24 h-24 flex-shrink-0">
-          <!-- 黑胶唱片容器 -->
-          <div class="vinyl-record flex items-center justify-center">
-            <!-- 封面图片 -->
+    <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none group-hover/music:bg-primary-light/20 dark:group-hover/music:bg-primary-dark/20 transition-all duration-500"></div>
+
+    <div class="absolute right-6 top-6 z-20">
+      <div id="playing-indicator" class="flex items-end gap-[3px] opacity-0 h-3.5 transition-opacity duration-300 pointer-events-none">
+        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0s"></div>
+        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.15s"></div>
+        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.3s"></div>
+        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.45s"></div>
+      </div>
+    </div>
+
+    <div class="music-card-content relative z-10 flex flex-col gap-5 pt-2">
+      <div class="flex items-center gap-5">
+        
+        <div class="relative w-20 h-20 flex-shrink-0">
+          <div class="vinyl-record flex items-center justify-center shadow-lg group-hover/music:scale-105 transition-transform duration-500">
             <img
               src="/img/df-cover.webp"
               alt="歌单封面"
-              class="object-cover rounded-full shadow-lg relative z-10 transition-opacity duration-500"
-              style="width: 56px; height: 56px;"
+              class="object-cover rounded-full relative z-10 transition-opacity duration-500 border border-black/20"
+              style="width: 48px; height: 48px;"
               id="playlist-cover"
             />
           </div>
         </div>
 
-        <!-- 歌单信息 -->
-        <div class="flex-1 min-w-0 flex flex-col justify-between">
-          <div>
-            <a href="https://music.163.com/playlist?id=2732533345" target="_blank" rel="noopener noreferrer" class="block">
-              <h4 id="playlist-name" class="text-sm font-bold text-text-light dark:text-text-dark mb-1 line-clamp-2 hover:text-primary-light dark:hover:text-primary-dark transition-colors cursor-pointer">我的歌单</h4>
-            </a>
-            <p class="text-xs text-text-light dark:text-text-dark opacity-70" id="playlist-count">加载中...</p>
-            <p class="text-xs text-primary-light dark:text-primary-dark mt-1 truncate" id="current-song">未播放</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <!-- 播放控制按钮 -->
-            <button onclick="playPrev()" class="p-1.5 rounded-lg hover:bg-hover-light dark:hover:bg-hover-dark transition-colors" title="上一首">
-              <svg class="w-4 h-4 text-text-light dark:text-text-dark" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/>
-              </svg>
-            </button>
-            <button onclick="togglePlay()" class="p-1.5 rounded-lg hover:bg-hover-light dark:hover:bg-hover-dark transition-colors" title="播放/暂停">
-              <svg id="control-play-icon" class="w-4 h-4 text-text-light dark:text-text-dark" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-              </svg>
-              <svg id="control-pause-icon" class="w-4 h-4 text-text-light dark:text-text-dark hidden" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-              </svg>
-            </button>
-            <button onclick="playNext()" class="p-1.5 rounded-lg hover:bg-hover-light dark:hover:bg-hover-dark transition-colors" title="下一首">
-              <svg class="w-4 h-4 text-text-light dark:text-text-dark" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M11.555 5.168A1 1 0 0010 6v2.798L4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4z"/>
-              </svg>
-            </button>
+        <div class="flex-1 min-w-0 flex flex-col gap-1 pl-0.5">
+          <a href="https://music.163.com/playlist?id=2732533345" target="_blank" rel="noopener noreferrer" class="block group/title leading-none">
+            <h4 id="playlist-name" class="text-base font-black text-neutral-800 dark:text-neutral-100 tracking-tight truncate group-hover/title:text-primary-light dark:group-hover/title:text-primary-dark transition-colors cursor-pointer">
+              我的歌单
+            </h4>
+          </a>
+          
+          <p class="text-[11px]  font-bold text-text-light/40 dark:text-text-dark/40 tracking-wider leading-none mt-0.5" id="playlist-count">
+            加载中...
+          </p>
+          
+          <div class="flex items-center gap-2 mt-1 leading-none">
+            <span class="flex h-1.5 w-1.5 relative flex-shrink-0">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-light dark:bg-primary-dark opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary-light dark:bg-primary-dark"></span>
+            </span>
+            <p class="text-xs font-bold text-primary-light dark:text-primary-dark truncate tracking-wide" id="current-song">
+              未播放
+            </p>
           </div>
         </div>
+
       </div>
 
-      <!-- 播放进度条 -->
-      <div>
-        <div class="h-1 bg-hover-light dark:bg-hover-dark rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full bg-gradient-to-r from-primary-light to-primary-dark dark:from-primary-dark dark:to-purple-500 rounded-full transition-all duration-100" style="width: 0%"></div>
+      <div class="flex flex-col gap-4 mt-1">
+        
+        <div class="space-y-1.5 group/progress cursor-pointer">
+          <div class="h-1 w-full bg-zinc-200/60 dark:bg-zinc-800/80 rounded-full overflow-hidden transition-all duration-300 group-hover/progress:h-1.5">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-primary-light to-purple-500 dark:from-primary-dark dark:to-violet-500 rounded-full transition-all duration-100 relative" style="width: 0%">
+              <div class="absolute right-0 top-0 bottom-0 w-1 bg-white/50 blur-[1px]"></div>
+            </div>
+          </div>
+          <div class="flex justify-between text-[10px]  font-bold tracking-wider text-text-light/40 dark:text-text-dark/40">
+            <span id="current-time">0:00</span>
+            <span id="total-time">0:00</span>
+          </div>
         </div>
-        <div class="flex justify-between mt-1">
-          <span id="current-time" class="text-xs text-text-light dark:text-text-dark opacity-70">0:00</span>
-          <span id="total-time" class="text-xs text-text-light dark:text-text-dark opacity-70">0:00</span>
+
+        <div class="flex items-center justify-center gap-8 text-neutral-400 dark:text-neutral-500">
+          <button onclick="playPrev()" class="p-1 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer active:scale-90 flex items-center justify-center" title="上一首">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/>
+            </svg>
+          </button>
+          
+          <button onclick="togglePlay()" class="p-1 text-neutral-700 dark:text-neutral-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors cursor-pointer active:scale-95 flex items-center justify-center group/playbtn" title="播放/暂停">
+            <svg id="control-play-icon" class="w-6 h-6 transition-transform group-hover/playbtn:scale-105" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+            </svg>
+            <svg id="control-pause-icon" class="w-6 h-6 hidden transition-transform group-hover/playbtn:scale-105" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+          </button>
+          
+          <button onclick="playNext()" class="p-1 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer active:scale-90 flex items-center justify-center" title="下一首">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M11.555 5.168A1 1 0 0010 6v2.798L4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4z"/>
+            </svg>
+          </button>
         </div>
+
       </div>
     </div>
 
-    <!-- 隐藏的 APlayer 容器（用于实际播放） -->
     <div id="hidden-aplayer" style="display: none;"></div>
   </div>
 
   <style is:global>
-    /* APlayer 隐藏样式 */
     #hidden-aplayer {
       position: absolute !important;
       visibility: hidden !important;
       pointer-events: none !important;
     }
 
-    /* 音频波形动画优化 */
-    #playing-indicator > div {
-      animation-duration: 0.8s;
-      animation-iteration-count: infinite;
+    @keyframes wave-stretch {
+      0%, 100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+    .bar-anim {
+      transform-origin: bottom;
+      animation: wave-stretch 1s ease-in-out infinite;
+      animation-delay: var(--delay);
     }
 
     .vinyl-record {
@@ -676,44 +696,41 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
       height: 100%;
       border-radius: 50%;
       position: relative;
-      background: #050505;
+      background: #0d0d11;
       overflow: hidden;
-
-
-      --vinyl-shadow: 0 3px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.9);
-      --vinyl-rim: inset 0 0 1.5px 1px rgba(255, 255, 255, 0.2);
-      --vinyl-gloss-opacity: 0.2; 
-      
+      --vinyl-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.9);
+      --vinyl-rim: inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+      --vinyl-gloss-opacity: 0.15;
       box-shadow: var(--vinyl-shadow), var(--vinyl-rim);
     }
 
     .dark .vinyl-record {
-      --vinyl-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.8);
-      --vinyl-rim: inset 0 0 1px 1px rgba(255, 255, 255, 0.1);
-      --vinyl-gloss-opacity: 0.12;
+      --vinyl-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.7);
+      --vinyl-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      --vinyl-gloss-opacity: 0.1;
     }
 
     .vinyl-record::before {
       content: '';
       position: absolute;
-      inset: -1px;
+      inset: 0;
       border-radius: 50%;
       background: 
         conic-gradient(
           from 170deg at 50% 50%,
           transparent 0deg,
-          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 40deg, 
-          transparent 80deg,
+          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 35deg, 
+          transparent 70deg,
           transparent 180deg,
-          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 220deg,
-          transparent 260deg,
+          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 215deg,
+          transparent 250deg,
           transparent 360deg
         ),
         repeating-radial-gradient(
           circle at center,
-          #050505 0px,
-          #121212 0.8px,
-          #050505 1.6px
+          #0d0d11 0px,
+          #181820 1px,
+          #0d0d11 2px
         );
       pointer-events: none;
       z-index: 1;
@@ -722,26 +739,21 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
     .vinyl-record::after {
       content: '';
       position: absolute;
-      inset: 15px; 
+      inset: 12px; 
       border-radius: 50%;
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.85);
       z-index: 2;
     }
 
-    /* 封面旋转动画 */
     @keyframes cover-spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .vinyl-record.playing {
-      animation: cover-spin 8s linear infinite;
+      animation: cover-spin 12s linear infinite;
     }
 
     .vinyl-record.paused {
@@ -750,14 +762,51 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
   </style>
 
   <!-- 分类卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">分类</h3>
-    <ul class="space-y-2">
+  <div class="pt-5 px-5 pb-4 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+    
+
+  <div class="flex items-center justify-between px-1 pt-0.5 pb-4 select-none">
+      
+      <h3 class="text-base font-bold text-text-light dark:text-text-dark tracking-[0.2em]">
+        分类
+      </h3>
+      
+      <div class="grid grid-cols-2 gap-0.5 transform translate-y-[-1px]">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-yellow-500/80 shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800"></span>
+      </div>
+    </div>
+    
+    <ul class="space-y-0.5">
       {sortedCategories.map(([category, count]) => (
         <li>
-          <a href={`/categories/${category}`} class="flex items-center justify-between px-3 py-2 rounded-3xl text-sm font-medium text-text-light hover:text-text-light hover:bg-hover-light dark:text-text-dark dark:hover:text-text-dark dark:hover:bg-hover-dark">
-            {category}
-            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark">{count}</span>
+          <a 
+            href={`/categories/${category}`} 
+            class="group flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 border border-transparent hover:border-zinc-200/30 dark:hover:border-zinc-800/50 hover:shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)] transition-all duration-300 ease-out"
+          >
+
+            <span class="flex items-center gap-2">
+              <span class="text-zinc-300 dark:text-zinc-600 group-hover:text-zinc-400 group-hover:-translate-x-0.5 group-hover:opacity-40 transition-all duration-300 ease-out font-medium">
+                #
+              </span>
+              <span class="font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors duration-300">
+                {category}
+              </span>
+            </span>
+            
+            <div class="flex items-center gap-3">
+              <span class="text-xs  font-medium text-zinc-400 dark:text-zinc-500 group-hover:text-indigo-500 dark:group-hover:text-yellow-500/80 transition-colors duration-300">
+                {count.toString().padStart(2, '0')}
+              </span>
+              
+              <div class="w-0 opacity-0 group-hover:w-3.5 group-hover:opacity-100 transition-all duration-300 ease-out overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-indigo-500 dark:text-yellow-500/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </div>
+            </div>
           </a>
         </li>
       ))}
@@ -766,61 +815,96 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 
   <!-- 一言卡片 -->
   <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
-    <h3 class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider mb-4">一言</h3>
-    <div class="min-h-[100px] flex items-center justify-center p-2">
-      <p class="hitokoto-text text-sm text-text-light dark:text-text-dark text-center leading-relaxed italic opacity-80 w-full">加载中...</p>
+    
+    <div class="flex gap-4 items-start min-h-[100px]">
+      
+      <div class="text-4xl font-serif text-text-light/20 dark:text-text-dark/25 leading-none select-none mt-1">“</div>
+      
+      <div class="flex-1 flex flex-col justify-between min-h-[100px]">
+        
+        <p class="hitokoto-text text-sm md:text-base text-text-light/90 dark:text-text-dark/90 font-medium leading-relaxed tracking-wide w-full">
+          加载中...
+        </p>
+        
+        <div class="flex items-center justify-between border-t border-black/[0.06] dark:border-white/[0.06] pt-3 mt-4">
+          <span class="text-[10px] font-bold tracking-widest text-text-light/40 dark:text-text-dark/40 uppercase ">HITO</span>
+          <p class="hitokoto-from text-xs text-text-light/60 dark:text-text-dark/60 font-light tracking-wide min-h-[1em]"></p>
+        </div>
+        
+      </div>
     </div>
-    <p class="hitokoto-from text-xs text-text-light dark:text-text-dark opacity-70 text-center mt-3 min-h-[1em]"></p>
+
   </div>
 
   <!-- 最近在看卡片 -->
   <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+    
+    <!-- 顶部标题栏 - 加号方块解构 -->
     <div class="flex items-center justify-between mb-4">
       <p class="text-base font-semibold text-text-light dark:text-text-dark uppercase tracking-wider">最近在看</p>
-      <a href="/watching" class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-80 hover:opacity-100 transition-opacity hover:text-primary-light dark:hover:text-primary-dark">
-        <span>更多</span>
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
+      <a href="/watching" class="group/more flex items-center text-[11px] font-bold text-text-light/40 dark:text-text-dark/45 uppercase tracking-widest transition-colors duration-300 hover:text-text-light dark:hover:text-text-dark">
+        <!-- 隐藏的“+”号：悬停时从 0 放大、显现，并推出文字 -->
+        <span class="inline-block transform scale-0 opacity-0 max-w-0 transition-all duration-300 ease-out group-hover/more:scale-100 group-hover/more:opacity-100 group-hover/more:max-w-[14px] group-hover/more:text-primary-light dark:group-hover/more:text-primary-dark  text-xs">+</span>
+        <span class="transition-transform duration-300 group-hover/more:translate-x-0.5">More</span>
       </a>
     </div>
+
+    <!-- 列表区域 -->
     <div class="space-y-4">
       {watchingList.slice(0, 3).map((item) => (
-        <div class="flex gap-3 group items-center">
-          <a href="/watching" class="w-16 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-hover-light dark:bg-hover-dark cursor-pointer block">
+        <div class="flex gap-3 group/item items-center">
+          
+          <!-- 左侧封面 -->
+          <a href="/watching" class="w-16 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-hover-light dark:bg-hover-dark cursor-pointer block relative shadow-sm">
             <img
               src={item.cover}
               alt={item.title}
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              class="w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
             />
           </a>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between mb-1">
-              <h4 class="text-sm font-semibold text-text-light dark:text-text-dark line-clamp-1 group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">
+
+          <!-- 右侧信息区 -->
+          <div class="flex-1 min-w-0 transform-gpu" style={{ backfaceVisibility: 'hidden' }}>
+            
+            <!-- 标题 + 评分 -->
+            <div class="flex items-center justify-between mb-0.5">
+              <h4 class="text-sm font-bold text-text-light dark:text-text-dark line-clamp-1 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-colors duration-300">
                 <a href="/watching">{item.title}</a>
               </h4>
               {item.ratings && item.ratings.length > 0 && (
-                <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                <div class="flex items-center gap-0.5 flex-shrink-0 ml-2">
                   <img src={ratingIcons[item.ratings[0].source]} alt="评分" class="w-3.5 h-3.5" />
-                  <span class="text-xs font-medium text-yellow-700 dark:text-yellow-400">{item.ratings[0].score.toFixed(1)}</span>
+                  <span class="text-xs font-black text-yellow-600 dark:text-yellow-400 ">{item.ratings[0].score.toFixed(1)}</span>
                 </div>
               )}
             </div>
-            <div class="flex items-center gap-2 mb-1.5">
-              <span class="text-xs text-text-light/70 dark:text-text-dark/70">{item.type}</span>
+
+            <!-- 元数据标签 -->
+            <div class="flex items-center text-[10px] font-bold text-text-light/40 dark:text-text-dark/45 uppercase tracking-widest mb-1 select-none">
+              <span>{item.type}</span>
+              <span class="mx-1 opacity-60">/</span>
               {item.country && (
-                <span class="text-xs text-text-light/70 dark:text-text-dark/70">{item.country}</span>
+                <>
+                  <span>{item.country}</span>
+                  <span class="mx-1 opacity-60">/</span>
+                </>
               )}
-              <span class="text-xs text-text-light/70 dark:text-text-dark/70">{item.year}</span>
+              <span class="">{item.year}</span>
             </div>
-            <p class="text-xs text-text-light dark:text-text-dark opacity-80 line-clamp-2 group-hover:opacity-100 group-hover:text-primary-light dark:group-hover:text-primary-dark transition-all cursor-pointer" onclick="window.location.href='/watching'">
+
+            <p 
+              class="text-xs text-text-light/60 dark:text-text-dark/60 line-clamp-2 text-left break-all leading-normal tracking-wide transition-colors duration-300 cursor-pointer group-hover/item:text-text-light/90 dark:group-hover/item:text-text-dark/90" 
+              onclick="window.location.href='/watching'"
+            >
               {item.comment}
             </p>
+            
           </div>
         </div>
       ))}
     </div>
+
   </div>
 </aside>
 

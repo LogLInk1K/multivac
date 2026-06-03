@@ -15,50 +15,53 @@ const originalFileName = post.id.toLowerCase();
 const displayImage = heroImage || defaultCover;
 const readingTime = calculateReadingTime(post.body || '');
 ---
-
 <article class="group relative bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
-  <div class="relative grid grid-rows-[auto_1fr]">
-    {/* 封面图片区域 */}
-    <a href={`/p/${originalFileName}`} class="relative overflow-hidden bg-hero-light dark:bg-hero-dark block" style="min-height: 220px;">
+  <div class="relative flex flex-col justify-between">
+    
+    {/* 封面图片区域 - 严格保持原样 */}
+    <a href={`/p/${originalFileName}`} class="relative overflow-hidden bg-hero-light dark:bg-hero-dark block h-52 w-full" aria-label={title}>
       <div
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
         style={`background-image: url('${displayImage}');`}
-        aria-label={title}
       ></div>
     </a>
 
     {/* 内容区域 */}
     <div class="relative p-6 flex flex-col items-start">
-      {/* 元信息行 */}
-      <div class="flex flex-row items-center gap-3 text-xs text-text-light dark:text-text-dark opacity-70 mb-4">
-        <time class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          <FormattedDate date={pubDate} />
-        </time>
+      
+{/* ==================== 终极克制·现代杂志感元信息行 ==================== */}
+      <div class="flex flex-row items-center gap-2.5 text-[11px] font-medium tracking-wider text-text-light/40 dark:text-text-dark/40 mb-2.5 select-none uppercase">
+        
         {category && (
-          <span class="flex items-center gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
+          /* 分类：纯文字加粗，微弱提升视觉权重，起到画龙点睛的作用 */
+          <span class="font-bold text-text-light/80 dark:text-text-dark/80 tracking-widest">
             {category}
           </span>
         )}
-        <span class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
+        
+        {category && (
+          /* 仅在有分类时显示：极细的现代正方形点，代替廉价的传统圆点或斜杠 */
+          <span class="text-[8px] opacity-40 font-sans">▪</span>
+        )}
+
+        {/* 发布时间：纯粹的干净数字 */}
+        <time class="tracking-wide">
+          <FormattedDate date={pubDate} />
+        </time>
+
+        {/* 间距分隔 */}
+        <span class="text-[8px] opacity-40 font-sans">▪</span>
+
+        {/* 阅读时间：回归最经典的国际化排版规范 */}
+        <span class="tracking-wide">
           {readingTime} 分钟
         </span>
+        
       </div>
+      {/* ===================================================================== */}
 
-      {/* 标题 - 现代排版 */}
-      <h3 class="text-2xl font-bold mb-3 line-clamp-1">
+      {/* 标题 - 严格保持原样 */}
+      <h3 class="text-2xl font-bold mb-2.5 line-clamp-1">
         <a
           href={`/p/${originalFileName}`}
           class="text-text-light dark:text-text-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300"
@@ -67,8 +70,8 @@ const readingTime = calculateReadingTime(post.body || '');
         </a>
       </h3>
 
-      {/* 描述文字 */}
-      <p class="text-sm text-text-light dark:text-text-dark line-clamp-1 opacity-75">
+      {/* 描述文字 - 严格保持原样 */}
+      <p class="text-sm text-text-light/75 dark:text-text-dark/75 line-clamp-1">
         {description}
       </p>
     </div>

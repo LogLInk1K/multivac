@@ -771,13 +771,19 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
         分类
       </h3>
       
-      <div class="grid grid-cols-2 gap-0.5 transform translate-y-[-1px]">
-        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-yellow-500/80 shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
-        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
-        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
-        <span class="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800"></span>
-      </div>
-    </div>
+      <a 
+        href="/categories" 
+        title="全部分类"
+        class="grid grid-cols-2 gap-0.5 transform translate-y-[-1px] p-1.5 -m-1.5 rounded-lg hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-all duration-500 ease-out group/icon cursor-pointer hover:rotate-90"
+      >
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-yellow-500/80 shadow-[0_0_8px_rgba(99,102,241,0.6)] transition-all duration-500 group-hover/card:scale-110 group-hover/card:shadow-[0_0_12px_rgba(99,102,241,0.9)]"></span>
+        
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover/icon:bg-zinc-400 dark:group-hover/icon:bg-zinc-500 transition-colors duration-300"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover/icon:bg-zinc-400 dark:group-hover/icon:bg-zinc-500 transition-colors duration-300"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800 group-hover/icon:bg-zinc-300 dark:group-hover/icon:bg-zinc-600 transition-colors duration-300"></span>
+      </a>
+
+  </div>
     
     <ul class="space-y-0.5">
       {sortedCategories.map(([category, count]) => (
@@ -893,12 +899,12 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
               <span class="">{item.year}</span>
             </div>
 
-            <p 
-              class="text-xs text-text-light/60 dark:text-text-dark/60 line-clamp-2 text-left break-all leading-normal tracking-wide transition-colors duration-300 cursor-pointer group-hover/item:text-text-light/90 dark:group-hover/item:text-text-dark/90" 
-              onclick="window.location.href='/watching'"
+            <a 
+              href="/watching"
+              class="text-xs text-text-light/60 dark:text-text-dark/60 text-left break-all leading-normal tracking-wide transition-colors duration-300 group-hover/item:text-text-light/90 dark:group-hover/item:text-text-dark/90 !p-0 !m-0 [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden" 
             >
               {item.comment}
-            </p>
+            </a>
             
           </div>
         </div>

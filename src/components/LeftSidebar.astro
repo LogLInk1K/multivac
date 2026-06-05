@@ -584,11 +584,14 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
     <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none group-hover/music:bg-primary-light/20 dark:group-hover/music:bg-primary-dark/20 transition-all duration-500"></div>
 
     <div class="absolute right-6 top-6 z-20">
-      <div id="playing-indicator" class="flex items-end gap-[3px] opacity-0 h-3.5 transition-opacity duration-300 pointer-events-none">
-        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0s"></div>
-        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.15s"></div>
-        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.3s"></div>
-        <div class="w-[3px] h-full bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: 0.45s"></div>
+      <div id="playing-indicator" class="flex items-center gap-[3px] opacity-0 h-3.5 transition-opacity duration-300 pointer-events-none">
+        <div class="w-[2.5px] h-[80%] bg-primary-light dark:bg-primary-dark rounded-full bar-anim" style="--delay: -0.8s"></div>
+        
+        <div class="w-[2.5px] h-[90%] bg-primary-light/85 dark:bg-primary-dark/85 rounded-full bar-anim" style="--delay: -0.6s"></div>
+        
+        <div class="w-[2.5px] h-full bg-primary-light/65 dark:bg-primary-dark/65 rounded-full bar-anim" style="--delay: -0.4s"></div>
+        
+        <div class="w-[2.5px] h-full bg-primary-light/45 dark:bg-primary-dark/45 rounded-full bar-anim" style="--delay: -0.2s;--max-scale: 0.7;"></div>
       </div>
     </div>
 
@@ -610,7 +613,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
         <div class="flex-1 min-w-0 flex flex-col gap-1 pl-0.5">
           <a href="https://music.163.com/playlist?id=2732533345" target="_blank" rel="noopener noreferrer" class="block group/title leading-none">
             <h4 id="playlist-name" class="text-base font-black text-neutral-800 dark:text-neutral-100 tracking-tight truncate group-hover/title:text-primary-light dark:group-hover/title:text-primary-dark transition-colors cursor-pointer">
-              我的歌单
+              网易云歌单
             </h4>
           </a>
           
@@ -618,12 +621,16 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
             加载中...
           </p>
           
-          <div class="flex items-center gap-2 mt-1 leading-none">
+        <div class="flex items-center gap-2 mt-1 leading-none">
             <span class="flex h-1.5 w-1.5 relative flex-shrink-0">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-light dark:bg-primary-dark opacity-75"></span>
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary-light dark:bg-primary-dark"></span>
             </span>
-            <p class="text-xs font-bold text-primary-light dark:text-primary-dark truncate tracking-wide" id="current-song">
+            
+            <p 
+              class="text-xs font-bold text-primary-light/85 dark:text-primary-dark/90 truncate tracking-wide" 
+              id="current-song"
+            >
               未播放
             </p>
           </div>
@@ -634,10 +641,18 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
       <div class="flex flex-col gap-4 mt-1">
         
         <div class="space-y-1.5 group/progress cursor-pointer">
-          <div class="h-1 w-full bg-zinc-200/60 dark:bg-zinc-800/80 rounded-full overflow-hidden transition-all duration-300 group-hover/progress:h-1.5">
-            <div id="progress-bar" class="h-full bg-gradient-to-r from-primary-light to-purple-500 dark:from-primary-dark dark:to-violet-500 rounded-full transition-all duration-100 relative" style="width: 0%">
-              <div class="absolute right-0 top-0 bottom-0 w-1 bg-white/50 blur-[1px]"></div>
+          <div class="h-1 w-full bg-zinc-200/60 dark:bg-zinc-800/80 rounded-full transition-all duration-300 relative">
+            
+            <div 
+              id="progress-bar" 
+              class="h-full bg-primary-light dark:bg-primary-dark rounded-full transition-all duration-100 relative" 
+              style="width: 0%"
+            >
+              <div class="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-white/40 dark:from-black/20 dark:to-white/20 rounded-full"></div>
+              
+              <div class="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-white dark:bg-zinc-100 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.3)] scale-0 group-hover/progress:scale-100 transition-transform duration-200 ease-out z-10"></div>
             </div>
+
           </div>
           <div class="flex justify-between text-[10px]  font-bold tracking-wider text-text-light/40 dark:text-text-dark/40">
             <span id="current-time">0:00</span>
@@ -682,13 +697,19 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
     }
 
     @keyframes wave-stretch {
-      0%, 100% { transform: scaleY(0.3); }
-      50% { transform: scaleY(1); }
+      0%, 100% { 
+        transform: scaleY(var(--min-scale, 0.5)); 
+      }
+      50% { 
+        transform: scaleY(var(--max-scale, 0.85)); 
+      }
     }
+
     .bar-anim {
-      transform-origin: bottom;
-      animation: wave-stretch 1s ease-in-out infinite;
+      transform-origin: center;
+      animation: wave-stretch 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       animation-delay: var(--delay);
+      will-change: transform;
     }
 
     .vinyl-record {
@@ -1025,10 +1046,44 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
       });
     }
 
+    function initProgressBarClick() {
+      // 找到 id="progress-bar" 的直接父级（灰色轨道容器）
+      const progressBar = document.getElementById('progress-bar');
+      const progressContainer = progressBar?.parentElement;
+
+      if (progressContainer && !progressContainer.dataset.clickBound) {
+        progressContainer.addEventListener('click', function(e) {
+          const currentAp = window.musicPlayerState?.ap;
+          // 确保播放器已经载入，且当前有可播放的歌曲音频时长
+          if (!currentAp || !currentAp.audio.duration) return;
+
+          // 获取点击位置相对于整个轨道左端的物理距离
+          const rect = progressContainer.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const containerWidth = rect.width;
+
+          // 计算点击位置占总长度的百分比系数 (0 到 1 之间)
+          let percentage = clickX / containerWidth;
+          percentage = Math.max(0, Math.min(1, percentage)); // 边界安全限制
+
+          // 计算出应该跳转到的绝对秒数
+          const targetTime = percentage * currentAp.audio.duration;
+
+          // 调用 APlayer 原生方法跳转音轨进度
+          currentAp.seek(targetTime);
+        });
+
+        // 标记已绑定，防止 Astro:after-swap 重复绑定
+        progressContainer.dataset.clickBound = "true";
+      }
+    }
+
     // 初始化播放器
     async function initPlayer() {
       // 如果已经初始化过，直接返回
       if (window.musicPlayerState.isInitialized && ap) {
+        // 即使初始化过，换页后也需要重新为新的 DOM 绑定点击
+        initProgressBarClick();
         return;
       }
 
@@ -1118,6 +1173,9 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
         ap.on('play', () => window.musicPlayerUpdateUI?.());
         ap.on('pause', () => window.musicPlayerUpdateUI?.());
         ap.on('timeupdate', () => window.musicPlayerUpdateProgress?.());
+
+        // 绑定轨道点击
+        initProgressBarClick();
 
         // 启动定期更新
         startPeriodicUpdate();
@@ -1280,6 +1338,8 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
       startPeriodicUpdate();
       window.musicPlayerUpdateUI?.();
       window.musicPlayerUpdateProgress?.();
+      // 已经初始化过的情况下，无缝换页也需要为新 DOM 绑定点击事件
+      initProgressBarClick();
     }
 
     // 处理 ViewTransitions - 页面切换后恢复 UI
@@ -1289,30 +1349,29 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
       // 立即更新一次 UI
       window.musicPlayerUpdateUI?.();
       window.musicPlayerUpdateProgress?.();
+      
+      // 换页后为新生成的进度条容器重新追加点击监听
+      initProgressBarClick();
 
       // 恢复静态信息（歌单数量、名称、封面）
       const songsData = window.musicPlayerState?.songsData;
       if (songsData && songsData.length > 0) {
-        // 更新歌曲数量
         const countEl = document.getElementById('playlist-count');
         if (countEl) {
           countEl.textContent = `${songsData.length} 首歌曲`;
         }
 
-        // 更新歌单名称
         if (songsData[0] && songsData[0].playlist_name) {
           const nameEl = document.getElementById('playlist-name');
           if (nameEl) nameEl.textContent = songsData[0].playlist_name;
         }
 
-        // 更新歌单封面
         if (songsData[0] && songsData[0].pic) {
           const coverEl = document.getElementById('playlist-cover');
           if (coverEl) coverEl.src = songsData[0].pic;
         }
       }
 
-      // 重新获取并更新当前歌曲封面（如果有的话）
       const ap = window.musicPlayerState?.ap;
       if (ap && ap.list.audios.length > 0) {
         const currentSong = ap.list.audios[ap.list.index];

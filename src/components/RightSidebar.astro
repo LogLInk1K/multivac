@@ -57,7 +57,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
 <aside class="hidden md:block w-[272px] space-y-6">
   <!-- 公告卡片 -->
-<div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
+  <div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
   
   <div class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative">
     <div class="flex items-center gap-2">
@@ -119,33 +119,30 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
   </div>
 </div>
   <!-- 随机推荐卡片 -->
-  <div class="pt-5 px-5 pb-2 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="pt-5 px-5 pb-2 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark relative overflow-hidden group/container">
     <div class="absolute -right-16 -top-16 w-40 h-40 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover/container:scale-150"></div>
 
-    <div class="flex items-center justify-between mb-2 border-b border-border-light dark:border-border-dark pb-3 relative select-none">
-      <div class="relative flex items-center h-8"> 
-        <div class="flex items-center gap-2 relative z-10 pl-0.5">
-          <span class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"></span>
-          <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">
-            随机推荐
-          </h3>
-        </div>
+    <div class="flex items-center justify-between mb-2 relative select-none">
+      <div class="flex items-center gap-2 relative z-10 pl-0.5">
+        <span class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"></span>
+        <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">
+          随机推荐
+        </h3>
       </div>
     
       <button
         type="button"
-        class="js-refresh-trigger group flex items-center gap-1.5 text-xs font-mono text-text-light/50 dark:text-text-dark/50 hover:text-primary-light dark:hover:text-primary-dark transition-transform focus:outline-none active:scale-95"
+        style="outline: none;" class="js-refresh-trigger group p-1.5 rounded-lg text-text-light/40 dark:text-text-dark/40 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all duration-300 focus:outline-none active:scale-90 select-none"
         data-posts={JSON.stringify(postSummaries)}
         aria-label="刷新推荐"
       >
-        <span class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 tracking-widest text-[10px]">REFRESH</span>
-        <svg class="w-3.5 h-3.5 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:rotate-0 group-active:duration-0 group-active:transition-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <svg class="js-refresh-icon w-4 h-4 transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:rotate-0 group-active:duration-0 group-active:transition-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
         </svg>
       </button>
     </div>
 
-    <ul class="js-posts-list-container divide-y divide-border-light dark:divide-border-dark">
+    <ul class="js-posts-list-container">
       {initialRandomPosts.map((post, index) => {
         const originalFileName = post.id.toLowerCase();
         const displayImage = post.data.heroImage || defaultCover;
@@ -154,23 +151,25 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
         return (
           <li class="group/item">
             <a href={`/p/${originalFileName}`} class="block relative py-5 transition-all duration-300">
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden opacity-0 scale-90 blur-md group-hover/item:opacity-30 group-hover/item:scale-105 group-hover/item:blur-none pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
-                <img src={displayImage} alt="" class="w-full h-full object-cover" />
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden pointer-events-none opacity-[0.04] dark:opacity-[0.08] scale-100 group-hover/item:opacity-[0.22] dark:group-hover/item:opacity-[0.25] group-hover/item:scale-105 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
+                <img src={displayImage} alt="" class="w-full h-full object-cover grayscale-[30%] group-hover/item:grayscale-0 transition-all duration-500" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 duration-500"></div>
               </div>
 
-              <div class="flex items-start gap-4 relative z-10">
-                <span class="text-xl font-mono font-light text-text-light/30 dark:text-text-dark/30 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 pt-0.5">
+              <div class="flex items-start gap-4 relative z-10 w-full">
+                <span class="text-xl font-mono font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
                   {serialNumber}
                 </span>
                 
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/50 dark:text-text-dark/50 mb-1">
+                <div class="flex-1 min-w-0 w-full">
+                  <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
                     <FormattedDate date={post.data.pubDate} />
                     {post.data.category && (
-                      <span class="text-text-light/60 dark:text-text-dark/60 uppercase"># {post.data.category}</span>
+                      <span class="uppercase"># {post.data.category}</span>
                     )}
                   </div>
-                  <p class="text-sm font-medium tracking-tight text-text-light/80 dark:text-text-dark/80 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform">
+                  
+                  <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">
                     {post.data.title}
                   </p>
                 </div>
@@ -325,7 +324,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
       const rawData = btn.getAttribute('data-posts');
 
       if (!listContainer || !rawData) return;
-
+      listContainer.style.transition = 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)';
       listContainer.style.opacity = '0';
 
       setTimeout(() => {
@@ -352,21 +351,29 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
             return `
               <li class="group/item">
                 <a href="/p/${post.originalFileName}" class="block relative py-5 transition-all duration-300">
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden opacity-0 scale-90 blur-md group-hover/item:opacity-30 group-hover/item:scale-105 group-hover/item:blur-none pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
-                    <img src="${displayImage}" alt="" class="w-full h-full object-cover" />
+                  
+                  <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden pointer-events-none opacity-[0.04] dark:opacity-[0.08] scale-100 group-hover/item:opacity-[0.22] dark:group-hover/item:opacity-[0.25] group-hover/item:scale-105 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
+                    <img src="${displayImage}" alt="" class="w-full h-full object-cover grayscale-[30%] group-hover/item:grayscale-0 transition-all duration-500" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 duration-500"></div>
                   </div>
-                  <div class="flex items-start gap-4 relative z-10">
-                    <span class="text-xl font-mono font-light text-text-light/30 dark:text-text-dark/30 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 pt-0.5">
+
+                  <div class="flex items-start gap-4 relative z-10 w-full">
+                    <span class="text-xl font-mono font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
                       ${serialNumber}
                     </span>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/50 dark:text-text-dark/50 mb-1">
+                    
+                    <div class="flex-1 min-w-0 w-full">
+                      <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
                         ${date}
                         ${categoryHtml}
                       </div>
-                      <p class="text-base font-normal tracking-tight text-text-light dark:text-text-dark group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform duration-300">${post.title}</p>
+                      
+                      <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">
+                        ${post.title}
+                      </p>
                     </div>
                   </div>
+
                 </a>
               </li>
             `;

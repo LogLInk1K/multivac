@@ -10,15 +10,16 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, heroImage, category } = post.data;
+const { title, description, pubDate, heroImage, category, tags } = post.data;
 const originalFileName = post.id.toLowerCase();
 const displayImage = heroImage || defaultCover;
 const readingTime = calculateReadingTime(post.body || '');
+
 ---
 <article class="group relative bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
   <div class="relative flex flex-col justify-between">
     
-    {/* 封面图片区域 - 严格保持原样 */}
+
     <a href={`/p/${originalFileName}`} class="relative overflow-hidden bg-hero-light dark:bg-hero-dark block h-52 w-full" aria-label={title}>
       <div
         class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -26,41 +27,45 @@ const readingTime = calculateReadingTime(post.body || '');
       ></div>
     </a>
 
-    {/* 内容区域 */}
     <div class="relative p-6 flex flex-col items-start">
       
-{/* ==================== 终极克制·现代杂志感元信息行 ==================== */}
-      <div class="flex flex-row items-center gap-2.5 text-[11px] font-medium tracking-wider text-text-light/40 dark:text-text-dark/40 mb-2.5 select-none uppercase">
-        
-        {category && (
-          /* 分类：纯文字加粗，微弱提升视觉权重，起到画龙点睛的作用 */
-          <span class="font-bold text-text-light/80 dark:text-text-dark/80 tracking-widest">
-            {category}
-          </span>
-        )}
-        
-        {category && (
-          /* 仅在有分类时显示：极细的现代正方形点，代替廉价的传统圆点或斜杠 */
-          <span class="text-[8px] opacity-40 font-sans">▪</span>
-        )}
+      {/* 2.1 元信息行（两端对撞） */}
+      <div class="flex flex-row items-center justify-between w-full text-[11px] font-medium tracking-wide text-text-light/40 dark:text-text-dark/40 mb-2.5 select-none">
+        {/* 左侧技术轴 */}
+        <div class="flex items-center gap-2">
+          {/* 分类 */}
+          <div class="flex items-center gap-1.5 uppercase">
+            <span class="text-zinc-300 dark:text-zinc-600 font-bold">#</span>
+            <span class="tracking-widest">{category}</span>
+          </div>
 
-        {/* 发布时间：纯粹的干净数字 */}
-        <time class="tracking-wide">
+          {/* 标签群 */}
+          {tags && tags.length > 0 && (
+            <>
+              <span class="text-[9px] opacity-30 font-light">/</span>
+              <div class="flex items-center gap-1.5 opacity-85">
+                {tags.slice(0, 3).map((tag: string, index: number) => (
+                  <div class={`flex items-center gap-1.5 whitespace-nowrap ${index === 2 ? 'hidden md:flex' : 'flex'}`}>
+                    {index > 0 && <span class="text-[9px] opacity-30 font-light">/</span>}
+                    <span>{tag}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          
+          {/* 阅读时长 */}
+          <span class="text-[9px] opacity-30 font-light">/</span>
+          <span class="tracking-wide">{readingTime} 分钟</span>
+        </div>
+
+        {/* 右侧绝对日期 */}
+        <div class="flex items-center tracking-wide opacity-85 pr-2">
           <FormattedDate date={pubDate} />
-        </time>
-
-        {/* 间距分隔 */}
-        <span class="text-[8px] opacity-40 font-sans">▪</span>
-
-        {/* 阅读时间：回归最经典的国际化排版规范 */}
-        <span class="tracking-wide">
-          {readingTime} 分钟
-        </span>
-        
+        </div>
       </div>
-      {/* ===================================================================== */}
 
-      {/* 标题 - 严格保持原样 */}
+
       <h3 class="text-2xl font-bold mb-2.5 line-clamp-1">
         <a
           href={`/p/${originalFileName}`}
@@ -70,10 +75,11 @@ const readingTime = calculateReadingTime(post.body || '');
         </a>
       </h3>
 
-      {/* 描述文字 - 严格保持原样 */}
-      <p class="text-sm text-text-light/75 dark:text-text-dark/75 line-clamp-1">
+
+      <p class="text-sm text-text-light/60 dark:text-text-dark/55 line-clamp-1">
         {description}
       </p>
+
     </div>
   </div>
 </article>

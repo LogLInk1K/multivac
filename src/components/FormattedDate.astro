@@ -1,15 +1,16 @@
 ---
 interface Props {
-	date: Date;
+  date: Date;
 }
 
 const { date } = Astro.props;
+const dateObj = new Date(date);
+
+const year = dateObj.getFullYear();
+const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+const day = String(dateObj.getDate()).padStart(2, '0');
 ---
 
-<time datetime={date.toISOString()}>
-	{date.toLocaleDateString('zh-CN', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-	})}
+<time datetime={dateObj.toISOString()} class="tracking-wide">
+  {year}-{month}-{day}
 </time>

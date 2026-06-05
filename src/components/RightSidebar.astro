@@ -155,16 +155,16 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
               </div>
 
               <div class="flex items-start gap-4 relative z-10 w-full">
-                <span class="text-xl font-mono font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
+                <span class="text-xl font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
                   {serialNumber}
                 </span>
                 
                 <div class="flex-1 min-w-0 w-full">
-                  <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
-                    <FormattedDate date={post.data.pubDate} />
+                  <div class="flex items-center gap-2 text-[10px] tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
                     {post.data.category && (
                       <span class="uppercase"># {post.data.category}</span>
                     )}
+                    <FormattedDate date={post.data.pubDate} />
                   </div>
                   
                   <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">
@@ -199,7 +199,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
       <h2 class="text-xl font-extrabold tracking-tight text-neutral-800 dark:text-neutral-100 leading-tight">
         利用 RSS 订阅<br/>获取最直接的文章推送
       </h2>
-      <p class="mt-2 text-xs text-text-light/50 dark:text-text-dark/40 font-normal">
+      <p class="mt-4 text-xs text-text-light/50 dark:text-text-dark/40 font-normal">
         点击滑块，即可复制 RSS 链接。
       </p>
     </div>
@@ -234,12 +234,12 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
           </div>
         </div>
 
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-[.is-success]/btn:opacity-30 transition-opacity duration-300 pointer-events-none text-neutral-400 dark:text-neutral-600 font-mono text-xs z-0">
+        <div class="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-[.is-success]/btn:opacity-30 transition-opacity duration-300 pointer-events-none text-neutral-400 dark:text-neutral-600 text-xs z-0">
           <span>RSS.xml</span>
         </div>
         <div class="h-full w-2/3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800/80 shadow-sm flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform group-hover/btn:translate-x-[50%] group-hover/btn:bg-[#f26522] group-hover/btn:border-transparent group-[.is-success]/btn:translate-x-[223%] group-[.is-success]/btn:w-[30%] group-[.is-success]/btn:bg-neutral-200 dark:group-[.is-success]/btn:bg-neutral-800 group-[.is-success]/btn:border-transparent group-[.is-success]/btn:shadow-none z-10">
           <div class="relative w-full h-full flex items-center justify-center">
-            <span class="absolute text-xs font-mono font-bold text-neutral-600 dark:text-neutral-400 group-hover/btn:text-white tracking-tight transition-all duration-200 group-[.is-success]/btn:opacity-0 group-[.is-success]/btn:scale-75">
+            <span class="absolute text-xs font-bold text-neutral-600 dark:text-neutral-400 group-hover/btn:text-white tracking-tight transition-all duration-200 group-[.is-success]/btn:opacity-0 group-[.is-success]/btn:scale-75">
               log.1k.ink/rss.xml
             </span>
             <div class="absolute opacity-0 scale-75 transition-all duration-300 group-[.is-success]/btn:opacity-100 group-[.is-success]/btn:scale-100 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
@@ -344,7 +344,7 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
 
             const serialNumber = String(index + 1).padStart(2, '0');
             const displayImage = post.heroImage || '/img/df-cover.webp';
-            const categoryHtml = post.category ? `<span class="text-text-light/60 dark:text-text-dark/60 uppercase"># ${post.category}</span>` : '';
+            const categoryHtml = post.category ? `<span class="text-text-light/35 dark:text-text-dark/25"># ${post.category}</span>` : '';
 
             return `
               <li class="group/item">
@@ -356,14 +356,14 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
                   </div>
 
                   <div class="flex items-start gap-4 relative z-10 w-full">
-                    <span class="text-xl font-mono font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
+                    <span class="text-xl font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
                       ${serialNumber}
                     </span>
                     
                     <div class="flex-1 min-w-0 w-full">
-                      <div class="flex items-center gap-2 text-[10px] font-mono tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
-                        ${date}
+                      <div class="flex items-center gap-2 text-[10px] tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
                         ${categoryHtml}
+                        ${date}
                       </div>
                       
                       <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">

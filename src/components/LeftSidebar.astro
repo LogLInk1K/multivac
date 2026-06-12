@@ -84,12 +84,23 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
     <!-- 中间：头像 -->
     <div class="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center pt-12 pb-16">
       <div class="relative avatar-container">
-        <div class="avatar-mouse-wrapper transform-gpu">
+        <div class="avatar-mouse-wrapper transform-gpu relative">
+          
           <img
             src="/img/avatar.webp"
             alt="博主头像"
             class="w-[115px] rounded-full object-cover border-4 border-white dark:border-white shadow-lg avatar-image transform-gpu cursor-pointer"
           />
+
+          <div class="static-emojis-pool absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[9999]">
+            <img src="/img/emoji/cool.webp"  class="static-emoji" data-file="cool"  alt="fluent-3d-emoji" />
+            <img src="/img/emoji/cat.webp"   class="static-emoji" data-file="cat"   alt="fluent-3d-emoji" />
+            <img src="/img/emoji/yummy.webp" class="static-emoji" data-file="yummy" alt="fluent-3d-emoji" />
+            <img src="/img/emoji/cry.webp"   class="static-emoji" data-file="cry"   alt="fluent-3d-emoji" />
+            <img src="/img/emoji/nerd.webp"  class="static-emoji" data-file="nerd"  alt="fluent-3d-emoji" />
+            <img src="/img/emoji/laugh.webp" class="static-emoji" data-file="laugh" alt="fluent-3d-emoji" />
+          </div>
+
         </div>
       </div>
     </div>
@@ -124,366 +135,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
           </div>
         </a>
       </div>
-    </div>
-
-    <script>
-      let matrixInterval: number | undefined, avatarInterval: number | undefined, matrixTimeout: number | undefined;
-      let animationFrameId: number | undefined;
-
-      function initMatrixEffects() {
-        const matrixCard = document.querySelector('.matrix-card');
-        const matrixTexts = matrixCard?.querySelectorAll('.matrix-text') || [];
-        const matrixChars = '0123456789ABCDEFG';
-        let isAnimating = false;
-        let changeCount = 0; 
-
-        if (matrixInterval) clearInterval(matrixInterval);
-        if (avatarInterval) clearInterval(avatarInterval);
-        if (matrixTimeout) clearTimeout(matrixTimeout);
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-
-        // emoji绑定问候语
-        const emojiPool = [
-          { file: 'cool',  text: '传奇主唱井芹仁菜' },       // 😎
-          { file: 'cat',   text: '磁场转动九十九万匹！' },   // 😼
-          { file: 'yummy', text: '全款拿下疯狂星期四' },   // 😋
-          { file: 'cry',   text: '咕咕嘎嘎！咕嘎？' },       // 😭
-          { file: 'nerd',  text: '感觉不如……原神' },       // 🤓
-          { file: 'laugh', text: '知识学爆' }               // 🤣
-        ];
-
-        let activeEmojis = [...emojiPool];
-
-        const avatarContainer = document.querySelector('.avatar-container') as HTMLElement;
-        const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
-        let isAvatarAnimating = false;
-
-        // 鼠标跟随效果
-        const mouseWrapper = document.querySelector('.avatar-mouse-wrapper') as HTMLElement;
-        let mouseX = 0, mouseY = 0;
-        let currentX = 0, currentY = 0;
-        const lerpFactor = 0.04; 
-        const maxMoveDistance = 6; 
-        let isHovering = false;
-
-        if (mouseWrapper) {
-          mouseWrapper.addEventListener('mouseenter', () => { isHovering = true; });
-          mouseWrapper.addEventListener('mousemove', (e: Event) => {
-            if (!isHovering) return;
-            const mouseEvent = e as MouseEvent;
-            const rect = mouseWrapper.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const normalizedX = (mouseEvent.clientX - centerX) / (rect.width / 2);
-            const normalizedY = (mouseEvent.clientY - centerY) / (rect.height / 2);
-            mouseX = Math.max(-1, Math.min(1, normalizedX)) * maxMoveDistance;
-            mouseY = Math.max(-1, Math.min(1, normalizedY)) * maxMoveDistance;
-          });
-          mouseWrapper.addEventListener('mouseleave', () => {
-            isHovering = false;
-            mouseX = 0; mouseY = 0;
-          });
-        }
-
-        function animateMouseFollow() {
-          if (!mouseWrapper) return;
-          currentX += (mouseX - currentX) * lerpFactor;
-          currentY += (mouseY - currentY) * lerpFactor;
-          mouseWrapper.style.transform = `translate(${currentX}px, ${currentY}px)`;
-          animationFrameId = requestAnimationFrame(animateMouseFollow);
-        }
-
-        if (mouseWrapper) { animateMouseFollow(); }
-        // 鼠标跟随效果结束
-
-        const matrixTextPairs = [
-          { name: '波罗歌', desc: '万维网中潮汛来' },
-          { name: '波罗阁', desc: '今日方知我是我' }
-        ];
-        let currentTextPairIndex = 0;
-
-        function triggerMatrixEffect() {
-          if (isAnimating || matrixTexts.length === 0) return;
-          isAnimating = true;
-          changeCount++;
-          
-          currentTextPairIndex = (currentTextPairIndex + 1) % matrixTextPairs.length;
-          const newTextPair = matrixTextPairs[currentTextPairIndex];
-          
-          matrixTexts.forEach((element, index) => {
-            const targetText = index === 0 ? newTextPair.name : newTextPair.desc;
-            const chars = targetText.split('');
-            const isEvenIndex = index % 2 === 0;
-            const isEvenChange = changeCount % 2 === 0;
-            const shouldReverse = isEvenChange ? isEvenIndex : !isEvenIndex;
-            let revealIndex = shouldReverse ? chars.length : 0;
-            
-            element.textContent = chars.map(() => matrixChars[Math.floor(Math.random() * matrixChars.length)]).join('');
-            
-            const scrambleInterval = setInterval(() => {
-              element.textContent = element.textContent.split('').map((_, i) => {
-                if (shouldReverse) {
-                  return i >= revealIndex ? targetText[i] : matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                } else {
-                  return i < revealIndex ? targetText[i] : matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                }
-              }).join('');
-              
-              if (shouldReverse) {
-                revealIndex--;
-                if (revealIndex < 0) {
-                  clearInterval(scrambleInterval);
-                  element.textContent = targetText;
-                  (element as HTMLElement).dataset.text = targetText;
-                  if (index === matrixTexts.length - 1) isAnimating = false;
-                }
-              } else {
-                revealIndex++;
-                if (revealIndex > chars.length) {
-                  clearInterval(scrambleInterval);
-                  element.textContent = targetText;
-                  (element as HTMLElement).dataset.text = targetText;
-                  if (index === matrixTexts.length - 1) isAnimating = false;
-                }
-              }
-            }, 50);
-          });
-        }
-        
-        if (matrixCard) matrixCard.addEventListener('mouseenter', triggerMatrixEffect);
-        const textContainer = matrixCard?.querySelector('.text-container');
-        if (textContainer) textContainer.addEventListener('mouseenter', triggerMatrixEffect);
-
-        matrixInterval = setInterval(triggerMatrixEffect, 10000) as unknown as number;
-        
-        function triggerAvatarChange() {
-          if (!avatarContainer || !avatarImage || isAvatarAnimating) return;
-          isAvatarAnimating = true;
-
-          // 乱序洗牌
-          activeEmojis.sort(() => Math.random() - 0.5);
-
-          const greetingText = document.querySelector('.greeting-text') as HTMLElement;
-          const greetingContainer = greetingText?.parentElement as HTMLElement;
-          
-          avatarImage.style.transform = 'perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9)';
-          avatarImage.style.opacity = '0';
-          avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-          avatarImage.style.filter = 'blur(4px) brightness(1.1)';
-
-          if (greetingText && greetingContainer) {
-            greetingText.style.transform = 'scale(0.9) translateZ(0)';
-            greetingText.style.opacity = '0';
-            greetingText.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            greetingText.style.filter = 'blur(2px) brightness(1.1)';
-
-            greetingContainer.style.transform = 'scale(0.9) translateZ(0)';
-            greetingContainer.style.opacity = '0';
-            greetingContainer.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            greetingContainer.style.filter = 'blur(2px) brightness(1.1)';
-          }
-
-          setTimeout(() => {
-            avatarImage.style.display = 'none';
-          }, 450);
-
-          let emojiIndex = 0;
-          const showNextEmoji = () => {
-            if (emojiIndex >= 3) {
-              avatarImage.style.display = 'block';
-              avatarImage.style.transform = 'perspective(1000px) rotateY(-25deg) rotateZ(-5deg) scale(0.9)';
-              avatarImage.style.opacity = '0';
-              avatarImage.style.filter = 'blur(4px) brightness(1.1)';
-              
-              if (greetingText && greetingContainer) {
-                greetingText.textContent = '醉后不知天在水';
-                greetingText.style.transform = 'scale(0.9) translateZ(0)';
-                greetingText.style.opacity = '0';
-                greetingText.style.filter = 'blur(2px) brightness(1.1)';
-
-                greetingContainer.style.transform = 'scale(0.9) translateZ(0)';
-                greetingContainer.style.opacity = '0';
-                greetingContainer.style.filter = 'blur(2px) brightness(1.1)';
-              }
-              
-              setTimeout(() => {
-                avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(5deg) scale(1.2)';
-                avatarImage.style.opacity = '1';
-                avatarImage.style.filter = 'blur(0px) brightness(1)';
-                avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                
-                if (greetingText && greetingContainer) {
-                  greetingText.style.transform = 'scale(1.2) translateZ(0)';
-                  greetingText.style.opacity = '1';
-                  greetingText.style.filter = 'blur(0px) brightness(1)';
-                  greetingText.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                  greetingContainer.style.transform = 'scale(1.2) translateZ(0)';
-                  greetingContainer.style.opacity = '1';
-                  greetingContainer.style.filter = 'blur(0px) brightness(1)';
-                  greetingContainer.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                }
-                
-                setTimeout(() => {
-                  avatarImage.style.transform = 'perspective(1000px) rotateY(5deg) rotateZ(-3deg) scale(0.95)';
-                  avatarImage.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                  
-                  if (greetingText && greetingContainer) {
-                    greetingText.style.transform = 'scale(0.95) translateZ(0)';
-                    greetingText.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                    greetingContainer.style.transform = 'scale(0.95) translateZ(0)';
-                    greetingContainer.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                  }
-                  
-                  setTimeout(() => {
-                    avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(1deg) scale(1)';
-                    avatarImage.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                    
-                    if (greetingText && greetingContainer) {
-                      greetingText.style.transform = 'scale(1) translateZ(0)';
-                      greetingText.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                      greetingContainer.style.transform = 'scale(1) translateZ(0)';
-                      greetingContainer.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                    }
-                    
-                    setTimeout(() => {
-                      avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1)';
-                      avatarImage.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                      
-                      if (greetingText && greetingContainer) {
-                        greetingText.style.transform = 'scale(1)';
-                        greetingText.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                        greetingContainer.style.transform = 'scale(1)';
-                        greetingContainer.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                      }
-                      
-                      isAvatarAnimating = false;
-                    }, 200);
-                  }, 200);
-                }, 300);
-              }, 100);
-              return;
-            }
-
-            const emoji = document.createElement('img') as HTMLImageElement;
-            const currentItem = activeEmojis[emojiIndex]; 
-            
-            emoji.src = `/img/emoji/${currentItem.file}.webp`;
-            emoji.alt = 'fluent-3d-emoji';
-            
-            emoji.style.position = 'absolute';
-            emoji.style.top = '50%';
-            emoji.style.left = '50%';
-            emoji.style.width = '135px';
-            emoji.style.height = '135px';
-            emoji.style.minWidth = '135px';
-            emoji.style.minHeight = '135px';
-            emoji.style.objectFit = 'contain';
-            emoji.style.zIndex = '9999'; 
-            emoji.style.userSelect = 'none';
-            emoji.style.cursor = 'pointer';
-            emoji.className = 'transform-gpu';
-
-            emoji.style.opacity = '1';
-            emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(-25deg) scale(0.7)';
-            emoji.style.filter = 'blur(4px) brightness(1.1)';
-            emoji.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            mouseWrapper?.appendChild(emoji);
-
-            if (greetingText && greetingContainer) {
-              greetingText.textContent = currentItem.text;
-              greetingText.style.transform = 'scale(0.7) translateZ(0)';
-              greetingText.style.opacity = '0';
-              greetingText.style.filter = 'blur(2px) brightness(1.1)';
-              greetingText.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-
-              greetingContainer.style.transform = 'scale(0.7) translateZ(0)';
-              greetingContainer.style.opacity = '0';
-              greetingContainer.style.filter = 'blur(2px) brightness(1.1)';
-              greetingContainer.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            }
-
-            setTimeout(() => {
-              emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(5deg) scale(1.2)';
-              emoji.style.filter = 'blur(0px) brightness(1)';
-              
-              if (greetingText && greetingContainer) {
-                greetingText.style.transform = 'scale(1.2) translateZ(0)';
-                greetingText.style.opacity = '1';
-                greetingText.style.filter = 'blur(0px) brightness(1)';
-
-                greetingContainer.style.transform = 'scale(1.2) translateZ(0)';
-                greetingContainer.style.opacity = '1';
-                greetingContainer.style.filter = 'blur(0px) brightness(1)';
-              }
-              
-              setTimeout(() => {
-                emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(5deg) rotateZ(-3deg) scale(0.95)';
-                if (greetingText && greetingContainer) {
-                  greetingText.style.transform = 'scale(0.95) translateZ(0)';
-                  greetingContainer.style.transform = 'scale(0.95) translateZ(0)';
-                }
-                
-                setTimeout(() => {
-                  emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(1deg) scale(1)';
-                  if (greetingText && greetingContainer) {
-                    greetingText.style.transform = 'scale(1) translateZ(0)';
-                    greetingContainer.style.transform = 'scale(1) translateZ(0)';
-                  }
-                  setTimeout(() => {
-                    emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1)';
-                  }, 200);
-                }, 200);
-              }, 300);
-            }, 50);
-
-            setTimeout(() => {
-              emoji.style.transform = 'translate(-50%, -50%) perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9)';
-              emoji.style.opacity = '0';
-              emoji.style.filter = 'blur(4px) brightness(1.1)';
-
-              if (greetingText && greetingContainer) {
-                greetingText.style.transform = 'scale(0.9) translateZ(0)';
-                greetingText.style.opacity = '0';
-                greetingText.style.filter = 'blur(2px) brightness(1.1)';
-
-                greetingContainer.style.transform = 'scale(0.9) translateZ(0)';
-                greetingContainer.style.opacity = '0';
-                greetingContainer.style.filter = 'blur(2px) brightness(1.1)';
-              }
-              
-              setTimeout(() => {
-                emoji.remove();
-                emojiIndex++;
-                setTimeout(() => { showNextEmoji(); }, 400);
-              }, 550);
-            }, 3000); 
-          };
-
-          setTimeout(() => { showNextEmoji(); }, 600);
-        }
-
-        matrixTimeout = setTimeout(() => {
-          triggerAvatarChange();
-          avatarInterval = setInterval(triggerAvatarChange, 15000) as unknown as number;
-        }, 3000) as unknown as number;
-      }
-
-      function cleanup() {
-        if (matrixInterval) clearInterval(matrixInterval);
-        if (avatarInterval) clearInterval(avatarInterval);
-        if (matrixTimeout) clearTimeout(matrixTimeout);
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      }
-
-      initMatrixEffects();
-      document.addEventListener('astro:page-load', initMatrixEffects);
-      document.addEventListener('astro:before-preparation', cleanup);
-    </script>
-    
+    </div>  
   </div>
 
   <!-- 音乐卡片 -->
@@ -596,99 +248,6 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 
     <div id="hidden-aplayer" style="display: none;"></div>
   </div>
-
-  <style is:global>
-    #hidden-aplayer {
-      position: absolute !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-
-    @keyframes wave-stretch {
-      0%, 100% { 
-        transform: scaleY(var(--min-scale, 0.5)); 
-      }
-      50% { 
-        transform: scaleY(var(--max-scale, 0.85)); 
-      }
-    }
-
-    .bar-anim {
-      transform-origin: center;
-      animation: wave-stretch 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      animation-delay: var(--delay);
-      will-change: transform;
-    }
-
-    .vinyl-record {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      position: relative;
-      background: #0d0d11;
-      overflow: hidden;
-      --vinyl-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.9);
-      --vinyl-rim: inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
-      --vinyl-gloss-opacity: 0.15;
-      box-shadow: var(--vinyl-shadow), var(--vinyl-rim);
-    }
-
-    .dark .vinyl-record {
-      --vinyl-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.7);
-      --vinyl-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-      --vinyl-gloss-opacity: 0.1;
-    }
-
-    .vinyl-record::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: 
-        conic-gradient(
-          from 170deg at 50% 50%,
-          transparent 0deg,
-          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 35deg, 
-          transparent 70deg,
-          transparent 180deg,
-          rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 215deg,
-          transparent 250deg,
-          transparent 360deg
-        ),
-        repeating-radial-gradient(
-          circle at center,
-          #0d0d11 0px,
-          #181820 1px,
-          #0d0d11 2px
-        );
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .vinyl-record::after {
-      content: '';
-      position: absolute;
-      inset: 12px; 
-      border-radius: 50%;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.85);
-      z-index: 2;
-    }
-
-    @keyframes cover-spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .vinyl-record.playing {
-      animation: cover-spin 12s linear infinite;
-    }
-
-    .vinyl-record.paused {
-      animation-play-state: paused;
-    }
-  </style>
 
   <!-- 分类卡片 -->
   <div class="pt-5 px-5 pb-4 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
@@ -842,6 +401,456 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 
   </div>
 </aside>
+
+<style is:global>
+  #hidden-aplayer {
+    position: absolute !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  @keyframes wave-stretch {
+    0%, 100% { 
+      transform: scaleY(var(--min-scale, 0.5)); 
+    }
+    50% { 
+      transform: scaleY(var(--max-scale, 0.85)); 
+    }
+  }
+
+  .bar-anim {
+    transform-origin: center;
+    animation: wave-stretch 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation-delay: var(--delay);
+    will-change: transform;
+  }
+
+  .vinyl-record {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    background: #0d0d11;
+    overflow: hidden;
+    --vinyl-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.9);
+    --vinyl-rim: inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+    --vinyl-gloss-opacity: 0.15;
+    box-shadow: var(--vinyl-shadow), var(--vinyl-rim);
+  }
+
+  .dark .vinyl-record {
+    --vinyl-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.7);
+    --vinyl-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --vinyl-gloss-opacity: 0.1;
+  }
+
+  .vinyl-record::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: 
+      conic-gradient(
+        from 170deg at 50% 50%,
+        transparent 0deg,
+        rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 35deg, 
+        transparent 70deg,
+        transparent 180deg,
+        rgba(255, 255, 255, var(--vinyl-gloss-opacity)) 215deg,
+        transparent 250deg,
+        transparent 360deg
+      ),
+      repeating-radial-gradient(
+        circle at center,
+        #0d0d11 0px,
+        #181820 1px,
+        #0d0d11 2px
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .vinyl-record::after {
+    content: '';
+    position: absolute;
+    inset: 12px; 
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.85);
+    z-index: 2;
+  }
+
+  @keyframes cover-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .vinyl-record.playing {
+    animation: cover-spin 12s linear infinite;
+  }
+
+  .vinyl-record.paused {
+    animation-play-state: paused;
+  }
+  
+  /* 容器相对定位 */
+  .avatar-container {
+    position: relative;
+  }
+
+  /* 默认状态：所有 Emoji 隐藏、缩小、带有模糊和旋转 */
+  .static-emoji {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 135px;
+    height: 135px;
+    min-width: 135px;
+    min-height: 135px;
+    object-fit: contain;
+    z-index: 9999;
+    user-select: none;
+    pointer-events: none; /* 默认不挡鼠标 */
+    display: none;        /* 非激活时完全不参与布局 */
+    opacity: 0;
+    transform: translate(-50%, -50%) perspective(1000px) rotateY(-25deg) scale(0.7);
+    filter: blur(4px) brightness(1.1);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* 激活状态（对应原本的节拍1-4） */
+  .static-emoji[data-state="active"] {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1);
+    filter: blur(0px) brightness(1);
+  }
+
+  /* 刚登场弹起的一瞬间（可以加个微调效果，这里直接交给 active 的 transition 即可） */
+  .static-emoji[data-state="enter"] {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(5deg) scale(1.2);
+    filter: blur(0px) brightness(1);
+  }
+
+  /* 退场状态（对应节拍5） */
+  .static-emoji[data-state="exit"] {
+    display: block;
+    opacity: 0;
+    transform: translate(-50%, -50%) perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9);
+    filter: blur(4px) brightness(1.1);
+  }
+</style>
+
+<!-- Emoji 头像切换 -->
+<script>
+  let avatarTimeout: number | undefined;
+  let animTimers: number[] = []; // 用于收集当前周期所有定时器，方便统一安全清理
+  let isAvatarAnimating = false;
+
+  function initEmojiEffects() {
+    cleanupEmoji(); // 启动时先彻底清空残留
+
+    const emojiTexts: Record<string, string> = {
+      'cool': '传奇主唱井芹仁菜',
+      'cat': '磁场转动九十九万匹！',
+      'yummy': '全款拿下疯狂星期四',
+      'cry': '咕咕嘎嘎！咕嘎？',
+      'nerd': '感觉不如……原神',
+      'laugh': '知识学爆'
+    };
+
+    const emojiKeys = Object.keys(emojiTexts);
+    const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
+    const greetingText = document.querySelector('.greeting-text') as HTMLElement;
+    const greetingContainer = greetingText?.parentElement as HTMLElement;
+
+    // 辅助工具：向调度桶里注入延时任务
+    const schedule = (fn: () => void, delay: number) => {
+      const timer = window.setTimeout(fn, delay);
+      animTimers.push(timer);
+    };
+
+    function triggerAvatarChange() {
+      if (!avatarImage || isAvatarAnimating) return;
+      isAvatarAnimating = true;
+
+      // 每次随机捞 3 个不同的 Emoji 出来跑马灯
+      const shuffled = [...emojiKeys].sort(() => Math.random() - 0.5).slice(0, 3);
+
+      // 1. 原头像/文字 退场
+      avatarImage.style.transform = 'perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9)';
+      avatarImage.style.opacity = '0';
+      avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      avatarImage.style.filter = 'blur(4px) brightness(1.1)';
+
+      if (greetingText && greetingContainer) {
+        [greetingText, greetingContainer].forEach(el => {
+          el.style.transform = 'scale(0.9) translateZ(0)';
+          el.style.opacity = '0';
+          el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          el.style.filter = 'blur(2px) brightness(1.1)';
+        });
+      }
+
+      schedule(() => { avatarImage.style.display = 'none'; }, 450);
+
+      // 2. 依次编排 3 个静态 Emoji 的高保真舞台秀
+      let timelineCursor = 500; // 时间轴游标，毫秒
+
+      shuffled.forEach((fileKey, index) => {
+        const emojiEl = document.querySelector(`.static-emoji[data-file="${fileKey}"]`) as HTMLElement;
+        if (!emojiEl) return;
+
+        // 【核心防御】：进场前，确保它的状态是干净的隐藏态
+        schedule(() => {
+          emojiEl.removeAttribute('data-state');
+          emojiEl.style.display = 'block'; 
+        }, timelineCursor);
+
+        timelineCursor += 50;
+
+        // 节拍 1：弹起登场
+        schedule(() => {
+          emojiEl.setAttribute('data-state', 'enter');
+          if (greetingText && greetingContainer) {
+            greetingText.textContent = emojiTexts[fileKey];
+            [greetingText, greetingContainer].forEach(el => {
+              el.style.transform = 'scale(1.2) translateZ(0)';
+              el.style.opacity = '1';
+              el.style.filter = 'blur(0px) brightness(1)';
+              el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+          }
+        }, timelineCursor);
+
+        timelineCursor += 300;
+
+        // 节拍 2 & 3：回弹至完美归位
+        schedule(() => {
+          emojiEl.setAttribute('data-state', 'active');
+          if (greetingText && greetingContainer) {
+            greetingText.style.transform = 'scale(1) translateZ(0)';
+            greetingContainer.style.transform = 'scale(1) translateZ(0)';
+          }
+        }, timelineCursor);
+
+        // 节拍 4：展示停留 (3秒)
+        timelineCursor += 3000;
+
+        // 节拍 5：退场倾斜淡出
+        schedule(() => {
+          emojiEl.setAttribute('data-state', 'exit');
+          if (greetingText && greetingContainer) {
+            [greetingText, greetingContainer].forEach(el => {
+              el.style.transform = 'scale(0.9) translateZ(0)';
+              el.style.opacity = '0';
+              el.style.filter = 'blur(2px) brightness(1.1)';
+            });
+          }
+        }, timelineCursor);
+
+        timelineCursor += 550;
+
+        // 最终步：谢幕关灯，恢复初始隐形态，让出舞台
+        schedule(() => {
+          emojiEl.removeAttribute('data-state');
+          emojiEl.style.display = 'none';
+        }, timelineCursor);
+
+        timelineCursor += 400; // 下一个 Emoji 登场前的空隙延迟
+      });
+
+      // 3. 原头像王者回归
+      schedule(() => {
+        avatarImage.style.display = 'block';
+        avatarImage.style.transform = 'perspective(1000px) rotateY(-25deg) rotateZ(-5deg) scale(0.9)';
+        avatarImage.style.opacity = '0';
+        avatarImage.style.filter = 'blur(4px) brightness(1.1)';
+        
+        if (greetingText && greetingContainer) {
+          greetingText.textContent = '醉后不知天在水';
+          [greetingText, greetingContainer].forEach(el => {
+            el.style.transform = 'scale(0.9) translateZ(0)';
+            el.style.opacity = '0';
+            el.style.filter = 'blur(2px) brightness(1.1)';
+          });
+        }
+      }, timelineCursor);
+
+      timelineCursor += 100;
+
+      schedule(() => {
+        avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1)';
+        avatarImage.style.opacity = '1';
+        avatarImage.style.filter = 'blur(0px) brightness(1)';
+        avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        if (greetingText && greetingContainer) {
+          [greetingText, greetingContainer].forEach(el => {
+            el.style.transform = 'scale(1)';
+            el.style.opacity = '1';
+            el.style.filter = 'blur(0px) brightness(1)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          });
+        }
+      }, timelineCursor);
+
+      timelineCursor += 600;
+
+      // 宣告本轮大功告成，拉响下一个 15s 之后的警报
+      schedule(() => {
+        isAvatarAnimating = false;
+        avatarTimeout = window.setTimeout(triggerAvatarChange, 15000);
+      }, timelineCursor);
+    }
+
+    // 进站 3 秒后执行首次秀
+    avatarTimeout = window.setTimeout(triggerAvatarChange, 3000);
+  }
+
+  function cleanupEmoji() {
+    if (avatarTimeout) clearTimeout(avatarTimeout);
+    animTimers.forEach(t => clearTimeout(t));
+    animTimers = [];
+    isAvatarAnimating = false;
+
+    // 强制复位所有静态图片，确保没有遗留
+    document.querySelectorAll('.static-emoji').forEach(el => {
+      el.removeAttribute('data-state');
+      (el as HTMLElement).style.display = 'none';
+    });
+  }
+
+  // 挂载 Astro 标准生命周期
+  initEmojiEffects();
+  document.addEventListener('astro:page-load', initEmojiEffects);
+  document.addEventListener('astro:before-preparation', cleanupEmoji);
+</script>
+
+<!-- Matrix与鼠标跟随 -->
+<script>
+  let matrixInterval: number | undefined;
+  let animationFrameId: number | undefined;
+
+  function initSecondaryEffects() {
+    const matrixCard = document.querySelector('.matrix-card');
+    const matrixTexts = matrixCard?.querySelectorAll('.matrix-text') || [];
+    const matrixChars = '0123456789ABCDEFG';
+    let isAnimating = false;
+    let changeCount = 0; 
+
+    if (matrixInterval) clearInterval(matrixInterval);
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+    // --- 鼠标跟随效果独立运行 ---
+    const mouseWrapper = document.querySelector('.avatar-mouse-wrapper') as HTMLElement;
+    let mouseX = 0, mouseY = 0;
+    let currentX = 0, currentY = 0;
+    const lerpFactor = 0.04; 
+    const maxMoveDistance = 6; 
+    let isHovering = false;
+
+    if (mouseWrapper) {
+      mouseWrapper.addEventListener('mouseenter', () => { isHovering = true; });
+      mouseWrapper.addEventListener('mousemove', (e: Event) => {
+        if (!isHovering) return;
+        const mouseEvent = e as MouseEvent;
+        const rect = mouseWrapper.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const normalizedX = (mouseEvent.clientX - centerX) / (rect.width / 2);
+        const normalizedY = (mouseEvent.clientY - centerY) / (rect.height / 2);
+        mouseX = Math.max(-1, Math.min(1, normalizedX)) * maxMoveDistance;
+        mouseY = Math.max(-1, Math.min(1, normalizedY)) * maxMoveDistance;
+      });
+      mouseWrapper.addEventListener('mouseleave', () => {
+        isHovering = false;
+        mouseX = 0; mouseY = 0;
+      });
+
+      function animateMouseFollow() {
+        currentX += (mouseX - currentX) * lerpFactor;
+        currentY += (mouseY - currentY) * lerpFactor;
+        mouseWrapper.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        animationFrameId = requestAnimationFrame(animateMouseFollow);
+      }
+      animateMouseFollow();
+    }
+
+    // --- 文字矩阵特效独立运行 ---
+    const matrixTextPairs = [
+      { name: '波罗歌', desc: '万维网中潮汛来' },
+      { name: '波罗阁', desc: '今日方知我是我' }
+    ];
+    let currentTextPairIndex = 0;
+
+    function triggerMatrixEffect() {
+      if (isAnimating || matrixTexts.length === 0) return;
+      isAnimating = true;
+      changeCount++;
+      
+      currentTextPairIndex = (currentTextPairIndex + 1) % matrixTextPairs.length;
+      const newTextPair = matrixTextPairs[currentTextPairIndex];
+      
+      matrixTexts.forEach((element, index) => {
+        const targetText = index === 0 ? newTextPair.name : newTextPair.desc;
+        const chars = targetText.split('');
+        const isEvenIndex = index % 2 === 0;
+        const isEvenChange = changeCount % 2 === 0;
+        const shouldReverse = isEvenChange ? isEvenIndex : !isEvenIndex;
+        let revealIndex = shouldReverse ? chars.length : 0;
+        
+        element.textContent = chars.map(() => matrixChars[Math.floor(Math.random() * matrixChars.length)]).join('');
+        
+        const scrambleInterval = setInterval(() => {
+          element.textContent = element.textContent.split('').map((_, i) => {
+            if (shouldReverse) {
+              return i >= revealIndex ? targetText[i] : matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            } else {
+              return i < revealIndex ? targetText[i] : matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            }
+          }).join('');
+          
+          if (shouldReverse) {
+            revealIndex--;
+            if (revealIndex < 0) {
+              clearInterval(scrambleInterval);
+              element.textContent = targetText;
+              (element as HTMLElement).dataset.text = targetText;
+              if (index === matrixTexts.length - 1) isAnimating = false;
+            }
+          } else {
+            revealIndex++;
+            if (revealIndex > chars.length) {
+              clearInterval(scrambleInterval);
+              element.textContent = targetText;
+              (element as HTMLElement).dataset.text = targetText;
+              if (index === matrixTexts.length - 1) isAnimating = false;
+            }
+          }
+        }, 50);
+      });
+    }
+    
+    if (matrixCard) matrixCard.addEventListener('mouseenter', triggerMatrixEffect);
+    const textContainer = matrixCard?.querySelector('.text-container');
+    if (textContainer) textContainer.addEventListener('mouseenter', triggerMatrixEffect);
+
+    matrixInterval = setInterval(triggerMatrixEffect, 10000) as unknown as number;
+  }
+
+  function cleanupSecondary() {
+    if (matrixInterval) clearInterval(matrixInterval);
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+  }
+
+  initSecondaryEffects();
+  document.addEventListener('astro:page-load', initSecondaryEffects);
+  document.addEventListener('astro:before-preparation', cleanupSecondary);
+</script>  
 
 <script is:inline>
   const HITOKOTO_CACHE_KEY = 'hitokoto_cache';

@@ -523,6 +523,8 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
   .static-emoji[data-state="active"] {
     display: block;
     opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
     transform: translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1);
     filter: blur(0px) brightness(1);
   }
@@ -531,6 +533,8 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
   .static-emoji[data-state="enter"] {
     display: block;
     opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
     transform: translate(-50%, -50%) perspective(1000px) rotateY(0deg) rotateZ(5deg) scale(1.2);
     filter: blur(0px) brightness(1);
   }
@@ -595,7 +599,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
         });
       }
 
-      schedule(() => { avatarImage.style.display = 'none'; }, 450);
+      schedule(() => { avatarImage.style.visibility = 'hidden'; }, 450);
 
       // 2. 依次编排 3 个静态 Emoji 的高保真舞台秀
       let timelineCursor = 500; // 时间轴游标，毫秒
@@ -665,7 +669,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 
       // 3. 原头像王者回归
       schedule(() => {
-        avatarImage.style.display = 'block';
+        avatarImage.style.visibility = 'visible';
         avatarImage.style.transform = 'perspective(1000px) rotateY(-25deg) rotateZ(-5deg) scale(0.9)';
         avatarImage.style.opacity = '0';
         avatarImage.style.filter = 'blur(4px) brightness(1.1)';

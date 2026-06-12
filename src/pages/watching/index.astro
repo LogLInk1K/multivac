@@ -69,9 +69,49 @@ function formatDate(date: Date): string {
 }
 ---
 
-<script is:inline define:vars={{ watchingList }}>
-  const ratingIcons = { douban: '/img/douban.ico', bangumi: '/img/bangumi.ico' };
-  const ratingAlts = { douban: '豆瓣评分', bangumi: 'Bangumi评分' };
+<script type="application/json" id="watching-data" is:inline>{JSON.stringify(watchingList)}</script>
+
+<script>
+  interface Rating {
+    source: 'douban' | 'bangumi';
+    score: number;
+  }
+
+  interface Link {
+    source: 'douban' | 'bangumi';
+    url: string;
+  }
+
+  interface WatchingItem {
+    title: string;
+    year: number;
+    cover: string;
+    comment: string;
+    type: string;
+    country?: string;
+    ratings?: Rating[];
+    links?: Link[];
+  }
+
+  declare global {
+    interface Window {
+      goToPage: ((page: number) => void) | undefined;
+    }
+  }
+
+  function getWatchingData(): WatchingItem[] {
+    const dataEl = document.getElementById('watching-data');
+    if (!dataEl?.textContent) return [];
+    try {
+      return JSON.parse(dataEl.textContent);
+    } catch {
+      return [];
+    }
+  }
+
+  const watchingList = getWatchingData();
+  const ratingIcons: Record<string, string> = { douban: '/img/douban.ico', bangumi: '/img/bangumi.ico' };
+  const ratingAlts: Record<string, string> = { douban: '豆瓣评分', bangumi: 'Bangumi评分' };
   
   let currentPage = 1;
   let itemsPerPage = 18;
@@ -96,7 +136,7 @@ function formatDate(date: Date): string {
     return watchingList.slice(startIndex, startIndex + itemsPerPage);
   }
 
-  function goToPage(page) {
+  function goToPage(page: number) {
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
       render();
@@ -104,7 +144,7 @@ function formatDate(date: Date): string {
     }
   }
 
-  function getVisiblePages() {
+  function getVisiblePages(): (number | string)[] {
     const total = totalPages;
     const current = currentPage;
     const ELLIPSIS = '···';
@@ -156,7 +196,7 @@ function formatDate(date: Date): string {
     
     gridContainer.innerHTML = currentItems.map((item, i) => {
       const originalIndex = startIndex + i;
-      const getLinkBySource = (item, source) => item.links?.find(link => link.source === source)?.url;
+      const getLinkBySource = (item: WatchingItem, source: string): string | undefined => item.links?.find(link => link.source === source)?.url;
       
       const ratingsHtml = item.ratings && item.ratings.length > 0 ? `
         <div class="absolute top-4 right-4 flex gap-1">
@@ -254,17 +294,13 @@ function formatDate(date: Date): string {
 
   window.goToPage = goToPage;
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', () => {
-      updateItemsPerPage();
-    });
-    
-    document.addEventListener('astro:page-load', () => {
-      updateItemsPerPage();
-    });
-    
+  window.addEventListener('resize', () => {
     updateItemsPerPage();
-  }
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    updateItemsPerPage();
+  });
 </script>
 
 <MainLayout title={pageTitle} description={pageDescription}>

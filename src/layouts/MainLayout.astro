@@ -75,10 +75,10 @@ const { title, description, image } = Astro.props;
             <Footer />
         </div>
 
-        <script is:inline>
-          function getGreeting() {
-            var hour = new Date().getHours();
-            
+        <script>
+          function getGreeting(): string {
+            const hour = new Date().getHours();
+
             if (hour >= 5 && hour < 12) {
               return '早上好，夜之城!';
             } else if (hour >= 12 && hour < 14) {
@@ -93,21 +93,19 @@ const { title, description, image } = Astro.props;
           }
 
           function runWelcomeAnimation() {
-            var hasVisited = sessionStorage.getItem('hasVisited');
+            const hasVisited = sessionStorage.getItem('hasVisited');
 
-            if (hasVisited) {
-              return;
-            }
+            if (hasVisited) return;
 
             sessionStorage.setItem('hasVisited', 'true');
 
-            var mainContent = document.getElementById('main-content');
-            var overlay = document.getElementById('welcome-overlay');
-            var avatar = document.getElementById('welcome-avatar');
-            var logo = document.getElementById('welcome-logo');
-            var tagline = document.getElementById('welcome-tagline');
-            var greeting = document.getElementById('welcome-greeting');
-            var greetingInner = document.getElementById('welcome-greeting-inner');
+            const mainContent = document.getElementById('main-content');
+            const overlay = document.getElementById('welcome-overlay');
+            const avatar = document.getElementById('welcome-avatar');
+            const logo = document.getElementById('welcome-logo');
+            const tagline = document.getElementById('welcome-tagline');
+            const greeting = document.getElementById('welcome-greeting');
+            const greetingInner = document.getElementById('welcome-greeting-inner');
 
             if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) return;
 
@@ -119,41 +117,37 @@ const { title, description, image } = Astro.props;
 
             overlay.classList.add('active');
 
-            setTimeout(function() {
+            setTimeout(() => {
               avatar.classList.add('animate');
             }, 100);
 
-            setTimeout(function() {
+            setTimeout(() => {
               logo.classList.add('animate');
             }, 300);
 
-            setTimeout(function() {
+            setTimeout(() => {
               tagline.classList.add('animate');
             }, 500);
 
-            setTimeout(function() {
+            setTimeout(() => {
               greeting.classList.add('animate');
             }, 700);
 
-            setTimeout(function() {
+            setTimeout(() => {
               overlay.classList.add('fade-out');
 
               if (mainContent) {
                 mainContent.style.opacity = '1';
               }
 
-              setTimeout(function() {
+              setTimeout(() => {
                 overlay.classList.remove('active');
                 overlay.style.display = 'none';
               }, 500);
             }, 2500);
           }
 
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', runWelcomeAnimation);
-          } else {
-            runWelcomeAnimation();
-          }
+          document.addEventListener('astro:page-load', runWelcomeAnimation);
         </script>
     </body>
 </html>

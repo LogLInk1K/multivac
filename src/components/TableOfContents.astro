@@ -4,69 +4,55 @@
   </div>
 </div>
 
-<script is:inline>
+<script>
+  interface HeadingItem {
+    id: string;
+    text: string;
+    level: string;
+  }
+
   function initTableOfContents() {
     const articleContent = document.querySelector('.prose');
-    if (!articleContent) {
-      return;
-    }
+    if (!articleContent) return;
 
     const tocContainer = document.getElementById('toc-list');
-    if (!tocContainer) {
-      return;
-    }
+    if (!tocContainer) return;
 
-    // 提取所有标题（h1 和 h2）
     const headingElements = articleContent.querySelectorAll('h1, h2');
+    if (headingElements.length === 0) return;
 
-    if (headingElements.length === 0) {
-      return;
-    }
-
-    // 隐藏所有目录项文本，只显示当前正在阅读的章节
     const updateVisibleHeadings = () => {
       const tocLinks = document.querySelectorAll('#toc-list a');
-      let currentActiveId = null;
+      let currentActiveId: string | null = null;
 
-      // 获取所有 h1 和 h2 标题
       const headings = document.querySelectorAll('.prose h1, .prose h2');
-
       if (headings.length === 0) return;
 
-      // 获取视口中间位置的绝对坐标
       const scrollY = window.pageYOffset;
       const viewportMiddleAbsolute = scrollY + window.innerHeight / 2;
 
-      // 从前往后遍历所有 h1 和 h2 标题，找到视口中间位置之后第一个标题
-      // 那么当前阅读的章节就是这个标题的上一个章节
       for (let i = 0; i < headings.length; i++) {
         const heading = headings[i];
         const headingTop = heading.getBoundingClientRect().top + scrollY;
 
-        // 如果找到第一个在视口中间之后的标题
         if (headingTop > viewportMiddleAbsolute) {
-          // 当前章节是前一个标题
           if (i > 0) {
             currentActiveId = headings[i - 1].id;
           } else {
-            // 如果是第一个标题，且在视口中间之后，使用第一个标题
             currentActiveId = heading.id;
           }
           break;
         }
 
-        // 如果这是最后一个标题，且在视口中间之前或重合，使用这个标题
         if (i === headings.length - 1) {
           currentActiveId = heading.id;
         }
       }
 
-      // 如果当前active的是h2，找到它的父级h1
-      let parentH1Id = null;
+      let parentH1Id: string | null = null;
       if (currentActiveId) {
         const currentHeading = Array.from(headings).find(h => h.id === currentActiveId);
         if (currentHeading && currentHeading.tagName === 'H2') {
-          // 找到这个h2之前的最后一个h1
           for (let i = 0; i < headings.length; i++) {
             if (headings[i].id === currentActiveId) {
               for (let j = i - 1; j >= 0; j--) {
@@ -81,57 +67,48 @@
         }
       }
 
-      // 检查是否正在 hover
       const isHovering = document.querySelector('#toc-list:hover') !== null;
 
-      // 更新文本显示状态
       tocLinks.forEach((link) => {
-        const headingId = link.dataset.headingId;
+        const headingId = (link as HTMLElement).dataset.headingId;
         if (!headingId) return;
 
-        // 获取对应的小横条
         const bar = link.previousElementSibling;
         if (!bar || !bar.classList.contains('rounded-full')) return;
 
         if (isHovering) {
-          link.style.visibility = 'visible';
-          link.style.opacity = '1';
-          link.style.transform = 'translateX(0)';
+          (link as HTMLElement).style.visibility = 'visible';
+          (link as HTMLElement).style.opacity = '1';
+          (link as HTMLElement).style.transform = 'translateX(0)';
           link.classList.remove('text-text-light', 'dark:text-text-dark', 'text-text-light/80', 'dark:text-text-dark/80');
           link.classList.add('text-text-light/70', 'dark:text-text-dark/70');
-
-          // 小横条保持低调色
           bar.classList.remove('bg-text-light/50', 'dark:bg-text-dark/50', 'bg-primary-light', 'dark:bg-primary-dark');
           bar.classList.add('bg-text-light/30', 'dark:bg-text-dark/30');
         } else if (headingId === currentActiveId || headingId === parentH1Id) {
-          link.style.visibility = 'visible';
-          link.style.opacity = '1';
-          link.style.transform = 'translateX(0)';
+          (link as HTMLElement).style.visibility = 'visible';
+          (link as HTMLElement).style.opacity = '1';
+          (link as HTMLElement).style.transform = 'translateX(0)';
           link.classList.remove('text-text-light', 'dark:text-text-dark', 'text-text-light/70', 'dark:text-text-dark/70');
           link.classList.add('text-text-light/80', 'dark:text-text-dark/80', 'font-bold');
-
-          // 小横条保持低调色，但稍微亮一点
           bar.classList.remove('bg-text-light/30', 'dark:bg-text-dark/30');
           bar.classList.add('bg-text-light/50', 'dark:bg-text-dark/50');
         } else {
-          link.style.opacity = '0';
-          link.style.transform = 'translateX(-8px)';
+          (link as HTMLElement).style.opacity = '0';
+          (link as HTMLElement).style.transform = 'translateX(-8px)';
           setTimeout(() => {
-            if (link.style.opacity === '0') {
-              link.style.visibility = 'hidden';
+            if ((link as HTMLElement).style.opacity === '0') {
+              (link as HTMLElement).style.visibility = 'hidden';
             }
           }, 300);
           link.classList.remove('text-text-light/70', 'dark:text-text-dark/70', 'text-text-light/80', 'dark:text-text-dark/80', 'font-bold');
           link.classList.add('text-text-light/70', 'dark:text-text-dark/70');
-
-          // 小横条恢复最低调色
           bar.classList.remove('bg-text-light/50', 'dark:bg-text-dark/50', 'bg-primary-light', 'dark:bg-primary-dark');
           bar.classList.add('bg-text-light/30', 'dark:bg-text-dark/30');
         }
       });
     };
 
-    const headings = [];
+    const headings: HeadingItem[] = [];
 
     headingElements.forEach((heading) => {
       const text = heading.textContent || '';
@@ -142,15 +119,10 @@
         heading.id = id;
       }
 
-      headings.push({
-        id,
-        text,
-        level,
-      });
+      headings.push({ id, text, level });
     });
 
-    // 渲染目录
-    const createListItem = (item) => {
+    const createListItem = (item: HeadingItem) => {
       const li = document.createElement('li');
       li.style.height = '20px';
       li.style.overflow = 'hidden';
@@ -185,16 +157,13 @@
     tocContainer.innerHTML = '';
     tocContainer.appendChild(ul);
 
-    // 显示目录
     const tocWrapper = document.getElementById('table-of-contents-wrapper');
     if (tocWrapper) {
       tocWrapper.classList.remove('opacity-0');
     }
 
-    // 初始化时更新可见标题
     updateVisibleHeadings();
 
-    // 添加 hover 事件监听
     const tocList = document.getElementById('toc-list');
     if (tocList) {
       tocList.addEventListener('mouseenter', () => {
@@ -205,14 +174,12 @@
       });
     }
 
-    // 添加滚动监听，动态更新可见标题
-    let scrollTimeout;
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     window.addEventListener('scroll', () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(updateVisibleHeadings, 100);
     }, { passive: true });
 
-    // 添加平滑滚动
     document.querySelectorAll('#toc-list a').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {
         e.preventDefault();
@@ -221,7 +188,7 @@
 
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-          const offset = 100; // 导航栏高度
+          const offset = 100;
           const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
 
           window.scrollTo({
@@ -233,17 +200,7 @@
     });
   }
 
-  // 页面加载时初始化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(initTableOfContents, 100);
-    });
-  } else {
-    setTimeout(initTableOfContents, 100);
-  }
-
-  // 监听 Astro 页面转换
-  document.addEventListener('astro:after-swap', () => {
+  document.addEventListener('astro:page-load', () => {
     setTimeout(initTableOfContents, 100);
   });
 </script>

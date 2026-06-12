@@ -35,8 +35,18 @@ if (isEncrypted && post.data.password && post.body) {
 	{isEncrypted ? (
 		<>
 			<PasswordProtect passwordHint={post.data.passwordHint} />
-			<script is:inline define:vars={{ encryptedContent }}>
-				window.__ENCRYPTED_CONTENT__ = encryptedContent;
+			<input type="hidden" id="encrypted-content-data" value={encryptedContent} />
+			<script>
+				declare global {
+					interface Window {
+						__ENCRYPTED_CONTENT__: string;
+					}
+				}
+
+				const dataEl = document.getElementById('encrypted-content-data') as HTMLInputElement | null;
+				if (dataEl) {
+					window.__ENCRYPTED_CONTENT__ = dataEl.value;
+				}
 			</script>
 		</>
 	) : (

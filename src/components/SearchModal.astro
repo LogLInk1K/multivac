@@ -44,13 +44,29 @@
   </div>
 </div>
 
-<script is:inline>
-  let modal;
-  let backdrop;
-  let content;
-  let input;
-  let resultsContainer;
-  let allPosts = null;
+<script>
+  interface SearchPost {
+    title: string;
+    description: string;
+    tags?: string[];
+    category?: string;
+    body?: string;
+    originalFileName: string;
+    matchText?: string;
+  }
+
+  declare global {
+    interface Window {
+      openSearchModal: (() => void) | undefined;
+    }
+  }
+
+  let modal: HTMLElement | null;
+  let backdrop: HTMLElement | null;
+  let content: HTMLElement | null;
+  let input: HTMLInputElement | null;
+  let resultsContainer: HTMLElement | null;
+  let allPosts: SearchPost[] | null = null;
   let isLoadingData = false;
 
   async function loadSearchData() {
@@ -73,7 +89,7 @@
     modal = document.getElementById('search-modal');
     backdrop = document.getElementById('search-backdrop');
     content = document.getElementById('search-content');
-    input = document.getElementById('search-input');
+    input = document.getElementById('search-input') as HTMLInputElement | null;
     resultsContainer = document.getElementById('search-results');
   }
 
@@ -87,8 +103,6 @@
       input?.focus();
     }, 10);
     document.body.style.overflow = 'hidden';
-
-    // 预加载搜索数据
     loadSearchData();
   }
 
@@ -105,39 +119,34 @@
     document.body.style.overflow = '';
   }
 
-  function searchPosts(query) {
+  function cleanBodyText(body: string): string {
+    return body
+      .toLowerCase()
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function searchPosts(query: string): SearchPost[] | null {
     const lowerQuery = query.toLowerCase().trim();
 
-    if (!lowerQuery) {
-      return null;
-    }
+    if (!lowerQuery) return null;
+    if (!allPosts || allPosts.length === 0) return [];
 
-    if (!allPosts || allPosts.length === 0) {
-      return [];
-    }
-
-    const searchResults = allPosts.filter((post) => {
+    return allPosts.filter((post) => {
       const title = post.title.toLowerCase();
       const description = post.description.toLowerCase();
       const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
       const category = post.category?.toLowerCase() || '';
-      
-      let bodyText = '';
-      if (post.body) {
-        bodyText = post.body
-          .toLowerCase()
-          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/g, '')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/&#39;/g, "'")
-          .replace(/\s+/g, ' ')
-          .trim();
-      }
+      const bodyText = post.body ? cleanBodyText(post.body) : '';
 
       return (
         title.includes(lowerQuery) ||
@@ -151,23 +160,7 @@
       const description = post.description.toLowerCase();
       const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
       const category = post.category?.toLowerCase() || '';
-      
-      let bodyText = '';
-      if (post.body) {
-        bodyText = post.body
-          .toLowerCase()
-          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/g, '')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/&#39;/g, "'")
-          .replace(/\s+/g, ' ')
-          .trim();
-      }
+      const bodyText = post.body ? cleanBodyText(post.body) : '';
 
       const titleMatch = title.includes(lowerQuery);
       const descriptionMatch = description.includes(lowerQuery);
@@ -185,14 +178,12 @@
         const keywordText = bodyText.substring(index, index + lowerQuery.length);
         matchText = '...' + beforeText + `<span class="text-primary-light dark:text-primary-dark font-bold">${keywordText}</span>` + afterText + '...';
       }
-      
+
       return {
         ...post,
         matchText: matchText || post.description || '暂无描述'
       };
     });
-
-    return searchResults;
   }
 
   function resetResults() {
@@ -205,11 +196,9 @@
     `;
   }
 
-  function renderResults(results) {
+  function renderResults(results: SearchPost[] | null) {
     initElements();
     if (!resultsContainer) return;
-
-    console.log('Rendering results:', results.length, 'posts');
 
     if (results === null || results.length === 0) {
       resultsContainer.innerHTML = `
@@ -223,7 +212,7 @@
     resultsContainer.innerHTML = results.map((post) => {
       const titleHtml = post.title;
       const matchHtml = post.matchText;
-      
+
       return `
       <a
         href="/p/${post.originalFileName}"
@@ -240,15 +229,14 @@
     }).join('');
   }
 
-  let searchTimeout;
-  let inputListener;
-  let backdropListener;
-  let keydownListener;
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  let inputListener: ((e: Event) => Promise<void>) | null = null;
+  let backdropListener: (() => void) | null = null;
+  let keydownListener: ((e: KeyboardEvent) => void) | null = null;
 
   function setupEventListeners() {
     initElements();
-    
-    // 移除旧的监听器（如果存在）
+
     if (inputListener && input) {
       input.removeEventListener('input', inputListener);
     }
@@ -258,18 +246,17 @@
     if (keydownListener) {
       document.removeEventListener('keydown', keydownListener);
     }
-    
-    // 创建新的监听器
-    inputListener = async (e) => {
+
+    inputListener = async (e: Event) => {
+      const target = e.target as HTMLInputElement;
       clearTimeout(searchTimeout);
-      const query = e.target.value;
+      const query = target.value;
 
       if (!query.trim()) {
         resetResults();
         return;
       }
 
-      // 等待数据加载完成
       if (isLoadingData) {
         if (resultsContainer) {
           resultsContainer.innerHTML = `
@@ -278,8 +265,7 @@
             </div>
           `;
         }
-        // 等待数据加载
-        await new Promise(resolve => {
+        await new Promise<void>(resolve => {
           const checkData = setInterval(() => {
             if (!isLoadingData) {
               clearInterval(checkData);
@@ -318,7 +304,7 @@
       closeModal();
     };
 
-    keydownListener = (e) => {
+    keydownListener = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         initElements();
         if (!modal?.classList.contains('hidden')) {
@@ -336,7 +322,6 @@
       }
     };
 
-    // 添加新的监听器
     if (input) input.addEventListener('input', inputListener);
     if (backdrop) backdrop.addEventListener('click', backdropListener);
     document.addEventListener('keydown', keydownListener);
@@ -357,15 +342,10 @@
   window.openSearchModal = openModal;
 
   function init() {
-    // 确保模态框在页面切换时是关闭状态
     closeModal();
     setupEventListeners();
   }
 
-  // 适配 ClientRouter 生命周期
-  document.addEventListener('DOMContentLoaded', init);
   document.addEventListener('astro:page-load', init);
-  
-  // 在页面切换前清理事件监听器
   document.addEventListener('astro:before-preparation', cleanupEventListeners);
 </script>

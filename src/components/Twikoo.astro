@@ -18,149 +18,143 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
 ---
 <div id={elId} class="twikoo" data-twikoo-env-id={envId}></div>
 
-<script is:inline data-astro-rerun>
-	var TWIKOO_SRC = 'https://registry.npmmirror.com/twikoo/1.7.1/files/dist/twikoo.nocss.js';
+<script>
+  declare global {
+    interface Window {
+      twikoo?: { init: (options: { envId: string; el: string; lang: string; path: string }) => void };
+      __twikooLoader?: { promise: Promise<void> | null };
+      __twikooAstro?: { listeners: boolean };
+    }
+  }
 
-	function getTwikooMounts() {
-		return Array.from(document.querySelectorAll('.twikoo[data-twikoo-env-id]'));
-	}
+  const TWIKOO_SRC = 'https://registry.npmmirror.com/twikoo/1.7.1/files/dist/twikoo.nocss.js';
 
-	function waitForTwikooGlobal(timeoutMs = 3000) {
-		const start = performance.now();
-		return new Promise((resolve, reject) => {
-			const tick = () => {
-				if (window.twikoo && typeof window.twikoo.init === 'function') return resolve();
-				if (performance.now() - start > timeoutMs) return reject(new Error('twikoo global timeout'));
-				requestAnimationFrame(tick);
-			};
-			tick();
-		});
-	}
+  function getTwikooMounts(): Element[] {
+    return Array.from(document.querySelectorAll('.twikoo[data-twikoo-env-id]'));
+  }
 
-	function waitForTwikooCssLink(timeoutMs = 3000) {
-		const link = document.head.querySelector('link[rel="stylesheet"][href*="twikoo-base.css"]');
-		if (!link) return Promise.resolve();
-		if (link.sheet) return Promise.resolve();
+  function waitForTwikooGlobal(timeoutMs = 3000): Promise<void> {
+    const start = performance.now();
+    return new Promise((resolve, reject) => {
+      const tick = () => {
+        if (window.twikoo && typeof window.twikoo.init === 'function') return resolve();
+        if (performance.now() - start > timeoutMs) return reject(new Error('twikoo global timeout'));
+        requestAnimationFrame(tick);
+      };
+      tick();
+    });
+  }
 
-		return new Promise((resolve) => {
-			const timer = setTimeout(resolve, timeoutMs);
-			const done = () => {
-				clearTimeout(timer);
-				resolve();
-			};
-			link.addEventListener('load', done, { once: true });
-			link.addEventListener('error', done, { once: true });
-		});
-	}
+  function waitForTwikooCssLink(timeoutMs = 3000): Promise<void> {
+    const link = document.head.querySelector<HTMLLinkElement>('link[rel="stylesheet"][href*="twikoo-base.css"]');
+    if (!link) return Promise.resolve();
+    if (link.sheet) return Promise.resolve();
 
-	function ensureTwikooLoaded() {
-		if (window.twikoo && typeof window.twikoo.init === 'function') return Promise.resolve();
-		window.__twikooLoader = window.__twikooLoader || { promise: null };
-		if (window.__twikooLoader.promise) return window.__twikooLoader.promise;
+    return new Promise((resolve) => {
+      const timer = setTimeout(resolve, timeoutMs);
+      const done = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      link.addEventListener('load', done, { once: true });
+      link.addEventListener('error', done, { once: true });
+    });
+  }
 
-		window.__twikooLoader.promise = new Promise((resolve, reject) => {
-			const existing = document.getElementById('twikoo-script');
-			if (existing) {
-				existing.setAttribute('data-astro-transition-persist', '');
-				if (window.twikoo && typeof window.twikoo.init === 'function') return resolve();
+  async function ensureTwikooLoaded(): Promise<void> {
+    if (window.twikoo && typeof window.twikoo.init === 'function') return;
+    window.__twikooLoader = window.__twikooLoader || { promise: null };
+    if (window.__twikooLoader!.promise) {
+      await window.__twikooLoader!.promise;
+      return;
+    }
 
-				existing.addEventListener(
-					'load',
-					() => {
-						resolve();
-					},
-					{ once: true },
-				);
-				existing.addEventListener('error', reject, { once: true });
-				return;
-			}
+    window.__twikooLoader!.promise = new Promise<void>((resolve, reject) => {
+      const existing = document.getElementById('twikoo-script');
+      if (existing) {
+        existing.setAttribute('data-astro-transition-persist', '');
+        if (window.twikoo && typeof window.twikoo.init === 'function') return resolve();
 
-			const script = document.createElement('script');
-			script.id = 'twikoo-script';
-			script.src = TWIKOO_SRC;
-			script.async = true;
-			script.setAttribute('data-astro-transition-persist', '');
-			script.onload = () => resolve();
-			script.onerror = (e) => {
-				window.__twikooLoader.promise = null;
-				reject(e);
-			};
-			document.head.appendChild(script);
-		});
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('twikoo script load error')), { once: true });
+        return;
+      }
 
-		return window.__twikooLoader.promise.then(() => waitForTwikooGlobal());
-	}
+      const script = document.createElement('script');
+      script.id = 'twikoo-script';
+      script.src = TWIKOO_SRC;
+      script.async = true;
+      script.setAttribute('data-astro-transition-persist', '');
+      script.onload = () => resolve();
+      script.onerror = (e) => {
+        window.__twikooLoader!.promise = null;
+        reject(e);
+      };
+      document.head.appendChild(script);
+    });
 
-	function initTwikooForMount(mountEl) {
-		if (!window.twikoo || typeof window.twikoo.init !== 'function') return;
+    await window.__twikooLoader!.promise;
+    await waitForTwikooGlobal();
+  }
 
-		if (!mountEl || !(mountEl instanceof Element)) return;
-		const envId = mountEl.getAttribute('data-twikoo-env-id');
-		if (!envId) return;
-		if (!mountEl.id) return;
+  function initTwikooForMount(mountEl: Element) {
+    if (!window.twikoo || typeof window.twikoo.init !== 'function') return;
+    if (!(mountEl instanceof Element)) return;
 
-		mountEl.innerHTML = '';
+    const envId = mountEl.getAttribute('data-twikoo-env-id');
+    if (!envId) return;
+    if (!mountEl.id) return;
 
-		window.twikoo.init({
-			envId,
-			el: `#${mountEl.id}`,
-			lang: 'zh-CN',
-			path: window.location.pathname,
-		});
-	}
+    mountEl.innerHTML = '';
 
-	function boot() {
-		const mounts = getTwikooMounts();
-		if (!mounts.length) return;
+    window.twikoo.init({
+      envId,
+      el: `#${mountEl.id}`,
+      lang: 'zh-CN',
+      path: window.location.pathname,
+    });
+  }
 
-		// 检查是否已经初始化过，避免重复初始化
-		const initializedMounts = new Set();
-		document.querySelectorAll('.twikoo[data-twikoo-env-id]').forEach(el => {
-			if (el.children.length > 0) { // 已经初始化过（有内容）
-				initializedMounts.add(el.id);
-			}
-		});
+  function boot() {
+    const mounts = getTwikooMounts();
+    if (!mounts.length) return;
 
-		const init = () => {
-			waitForTwikooCssLink()
-				.then(() => ensureTwikooLoaded())
-				.then(() => {
-					requestAnimationFrame(() =>
-						requestAnimationFrame(() => {
-							for (const m of mounts) {
-								// 只初始化未初始化的实例
-								if (!initializedMounts.has(m.id)) {
-									initTwikooForMount(m);
-								}
-							}
-						}),
-					);
-				})
-				.catch(() => {
-					// ignore
-				});
-		};
+    const initializedMounts = new Set<string>();
+    document.querySelectorAll('.twikoo[data-twikoo-env-id]').forEach(el => {
+      if (el.children.length > 0) {
+        initializedMounts.add(el.id);
+      }
+    });
 
-		// 使用 requestIdleCallback 延迟初始化（如果浏览器支持）
-		if ('requestIdleCallback' in window) {
-			window.requestIdleCallback(() => init(), { timeout: 2000 });
-		} else {
-			// 降级方案：使用延迟的 setTimeout
-			setTimeout(init, 100);
-		}
-	}
+    const init = () => {
+      waitForTwikooCssLink()
+        .then(() => ensureTwikooLoaded())
+        .then(() => {
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              for (const m of mounts) {
+                if (!initializedMounts.has(m.id)) {
+                  initTwikooForMount(m);
+                }
+              }
+            }),
+          );
+        })
+        .catch(() => {
+          // ignore
+        });
+    };
 
-	// 防止重复监听
-	if (!window.__twikooAstro) {
-		window.__twikooAstro = { listeners: false };
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => init(), { timeout: 2000 });
+    } else {
+      setTimeout(init, 100);
+    }
+  }
 
-		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', boot, { once: true });
-		} else {
-			boot();
-		}
-		document.addEventListener('astro:page-load', boot);
-		document.addEventListener('astro:after-swap', boot);
-		window.__twikooAstro.listeners = true;
-	}
+  if (!window.__twikooAstro) {
+    window.__twikooAstro = { listeners: true };
+    document.addEventListener('astro:page-load', boot);
+    document.addEventListener('astro:after-swap', boot);
+  }
 </script>

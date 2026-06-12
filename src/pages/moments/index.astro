@@ -48,7 +48,39 @@ try {
 
 ---
 
-<script is:inline define:vars={{ moments }}>
+<script type="application/json" id="moments-data" is:inline>{JSON.stringify(moments.map(m => ({
+  id: m.id,
+  content: m.content,
+  date: new Date(m.date).toISOString(),
+  images: m.images || [],
+})))}</script>
+
+<script>
+  interface MomentItem {
+    id: number;
+    content: string;
+    date: string;
+    images: string[];
+  }
+
+  declare global {
+    interface Window {
+      momentsGoToPage: ((page: number) => void) | undefined;
+      bindFancybox: (() => void) | undefined;
+    }
+  }
+
+  function getMomentsData(): MomentItem[] {
+    const dataEl = document.getElementById('moments-data');
+    if (!dataEl?.textContent) return [];
+    try {
+      return JSON.parse(dataEl.textContent);
+    } catch {
+      return [];
+    }
+  }
+
+  const moments = getMomentsData();
   let currentPage = 1;
   let itemsPerPage = 12;
   let totalPages = Math.ceil(moments.length / itemsPerPage);
@@ -65,7 +97,7 @@ try {
     return moments.slice(startIndex, startIndex + itemsPerPage);
   }
 
-  function goToPage(page) {
+  function goToPage(page: number) {
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
       render();
@@ -73,7 +105,7 @@ try {
     }
   }
 
-  function getVisiblePages() {
+  function getVisiblePages(): (number | string)[] {
     const total = totalPages;
     const current = currentPage;
     const ELLIPSIS = '···';
@@ -216,20 +248,16 @@ try {
       countDisplay.textContent = `第 ${currentPage} / ${totalPages} 页，共 ${moments.length} 条动态`;
     }
 
-    if (typeof window.bindFancybox === 'function') {
+    if (window.bindFancybox) {
       window.bindFancybox();
     }
   }
 
   window.momentsGoToPage = goToPage;
 
-  if (typeof window !== 'undefined') {
-    document.addEventListener('astro:page-load', () => {
-      updateItemsPerPage();
-    });
-
+  document.addEventListener('astro:page-load', () => {
     updateItemsPerPage();
-  }
+  });
 </script>
 
 <MainLayout title={pageTitle} description={pageDescription}>

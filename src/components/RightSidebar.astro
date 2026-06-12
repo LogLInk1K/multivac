@@ -303,195 +303,186 @@ const initialRandomPosts = [...posts].sort(() => Math.random() - 0.5).slice(0, 3
   </div>
 </aside>
 
-<script is:inline>
-  (function() {
-    function spinRefreshIcon(btn) {
-      const icons = btn.querySelectorAll('.js-refresh-icon');
-      icons.forEach((el) => {
-        el.classList.remove('is-spinning');
-        void el.offsetWidth;
-        el.classList.add('is-spinning');
-        el.addEventListener('animationend', () => el.classList.remove('is-spinning'), { once: true });
-      });
-    }
+<script>
+  interface PostData {
+    pubDate: string;
+    originalFileName: string;
+    title: string;
+    heroImage?: string;
+    category?: string;
+  }
 
-    function refresh(btn) {
-      spinRefreshIcon(btn);
-      const cardContainer = btn.closest('div').parentElement;
-      const listContainer = cardContainer.querySelector('.js-posts-list-container');
-      const rawData = btn.getAttribute('data-posts');
-
-      if (!listContainer || !rawData) return;
-      listContainer.style.transition = 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)';
-      listContainer.style.opacity = '0';
-
-      setTimeout(() => {
-        try {
-          const allPosts = JSON.parse(rawData);
-          const shuffled = [...allPosts];
-          for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-          }
-          const selected = shuffled.slice(0, 3);
-
-          listContainer.innerHTML = selected.map((post, index) => {
-            const date = new Date(post.pubDate).toLocaleDateString('zh-CN', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            });
-
-            const serialNumber = String(index + 1).padStart(2, '0');
-            const displayImage = post.heroImage || '/img/df-cover.webp';
-            const categoryHtml = post.category ? `<span class="text-text-light/35 dark:text-text-dark/25"># ${post.category}</span>` : '';
-
-            return `
-              <li class="group/item">
-                <a href="/p/${post.originalFileName}" class="block relative py-5 transition-all duration-300">
-                  
-                  <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden pointer-events-none opacity-[0.04] dark:opacity-[0.08] scale-100 group-hover/item:opacity-[0.22] dark:group-hover/item:opacity-[0.25] group-hover/item:scale-105 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
-                    <img src="${displayImage}" alt="" class="w-full h-full object-cover grayscale-[30%] group-hover/item:grayscale-0 transition-all duration-500" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 duration-500"></div>
-                  </div>
-
-                  <div class="flex items-start gap-4 relative z-10 w-full">
-                    <span class="font-mono text-xl font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
-                      ${serialNumber}
-                    </span>
-                    
-                    <div class="flex-1 min-w-0 w-full">
-                      <div class="flex items-center gap-2 text-[10px] tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
-                        ${categoryHtml}
-                        ${date}
-                      </div>
-                      
-                      <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">
-                        ${post.title}
-                      </p>
-                    </div>
-                  </div>
-
-                </a>
-              </li>
-            `;
-          }).join('');
-
-          listContainer.style.opacity = '1';
-        } catch (e) {
-          console.error('[RandomPosts] Refresh error:', e);
-          listContainer.style.opacity = '1';
-        }
-      }, 200);
-    }
-
-    const onGlobalClick = (e) => {
-      const btn = e.target.closest('.js-refresh-trigger');
-      if (btn) refresh(btn);
-    };
-
-    document.addEventListener('click', onGlobalClick);
-    document.addEventListener('astro:after-swap', () => {
-      document.removeEventListener('click', onGlobalClick);
-      document.addEventListener('click', onGlobalClick);
+  function spinRefreshIcon(btn: HTMLElement) {
+    const icons = btn.querySelectorAll<HTMLElement>('.js-refresh-icon');
+    icons.forEach((el) => {
+      el.classList.remove('is-spinning');
+      void el.offsetWidth;
+      el.classList.add('is-spinning');
+      el.addEventListener('animationend', () => el.classList.remove('is-spinning'), { once: true });
     });
+  }
 
-    const ANIMATION_DURATION = 1500;
-    function animateNumber(element, target) {
-      const isDecimal = target.toString().includes('.');
-      const numericTarget = parseFloat(target);
-      const startTime = performance.now();
-      const startValue = 0;
+  function refresh(btn: HTMLElement) {
+    spinRefreshIcon(btn);
+    const cardContainer = btn.closest('div')?.parentElement;
+    const listContainer = cardContainer?.querySelector('.js-posts-list-container') as HTMLElement | null;
+    const rawData = btn.getAttribute('data-posts');
 
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
-        const easeProgress = 1 - Math.pow(1 - progress, 4);
-        const currentValue = startValue + (numericTarget - startValue) * easeProgress;
+    if (!listContainer || !rawData) return;
+    listContainer.style.transition = 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)';
+    listContainer.style.opacity = '0';
 
-        if (isDecimal) {
-          element.textContent = currentValue.toFixed(1);
-        } else {
-          element.textContent = Math.floor(currentValue);
+    setTimeout(() => {
+      try {
+        const allPosts: PostData[] = JSON.parse(rawData);
+        const shuffled = [...allPosts];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
+        const selected = shuffled.slice(0, 3);
 
-        if (progress < 1) requestAnimationFrame(update);
-        else element.textContent = target;
+        listContainer.innerHTML = selected.map((post, index) => {
+          const date = new Date(post.pubDate).toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          });
+
+          const serialNumber = String(index + 1).padStart(2, '0');
+          const displayImage = post.heroImage || '/img/df-cover.webp';
+          const categoryHtml = post.category ? `<span class="text-text-light/35 dark:text-text-dark/25"># ${post.category}</span>` : '';
+
+          return `
+            <li class="group/item">
+              <a href="/p/${post.originalFileName}" class="block relative py-5 transition-all duration-300">
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden pointer-events-none opacity-[0.04] dark:opacity-[0.08] scale-100 group-hover/item:opacity-[0.22] dark:group-hover/item:opacity-[0.25] group-hover/item:scale-105 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
+                  <img src="${displayImage}" alt="" class="w-full h-full object-cover grayscale-[30%] group-hover/item:grayscale-0 transition-all duration-500" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 duration-500"></div>
+                </div>
+                <div class="flex items-start gap-4 relative z-10 w-full">
+                  <span class="font-mono text-xl font-light text-text-light/15 dark:text-text-dark/15 group-hover/item:text-neutral-400 dark:group-hover/item:text-neutral-500 transition-colors duration-300 pt-0.5 shrink-0">
+                    ${serialNumber}
+                  </span>
+                  <div class="flex-1 min-w-0 w-full">
+                    <div class="flex items-center gap-2 text-[10px] tracking-wider text-text-light/35 dark:text-text-dark/25 mb-1">
+                      ${categoryHtml}
+                      ${date}
+                    </div>
+                    <p class="text-sm font-medium tracking-tight text-neutral-500 dark:text-neutral-400 group-hover/item:text-neutral-700 dark:group-hover/item:text-neutral-100 duration-300 line-clamp-1 group-hover/item:translate-x-1 transition-transform leading-snug">
+                      ${post.title}
+                    </p>
+                  </div>
+                </div>
+              </a>
+            </li>
+          `;
+        }).join('');
+
+        listContainer.style.opacity = '1';
+      } catch (e) {
+        console.error('[RandomPosts] Refresh error:', e);
+        listContainer.style.opacity = '1';
       }
-      requestAnimationFrame(update);
+    }, 200);
+  }
+
+  const onGlobalClick = (e: MouseEvent) => {
+    const btn = (e.target as HTMLElement).closest('.js-refresh-trigger') as HTMLElement | null;
+    if (btn) refresh(btn);
+  };
+
+  document.addEventListener('click', onGlobalClick);
+  document.addEventListener('astro:after-swap', () => {
+    document.removeEventListener('click', onGlobalClick);
+    document.addEventListener('click', onGlobalClick);
+  });
+
+  const ANIMATION_DURATION = 1500;
+  function animateNumber(element: HTMLElement, target: string) {
+    const isDecimal = target.includes('.');
+    const numericTarget = parseFloat(target);
+    const startTime = performance.now();
+
+    function update(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 4);
+      const currentValue = numericTarget * easeProgress;
+
+      if (isDecimal) {
+        element.textContent = currentValue.toFixed(1);
+      } else {
+        element.textContent = String(Math.floor(currentValue));
+      }
+
+      if (progress < 1) requestAnimationFrame(update);
+      else element.textContent = target;
     }
+    requestAnimationFrame(update);
+  }
 
-    const countUpObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target;
-          let target = element.getAttribute('data-target');
-          
-          const startDateStr = element.getAttribute('data-start');
-          if (startDateStr) {
+  const countUpObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const element = entry.target as HTMLElement;
+        let target = element.getAttribute('data-target');
 
-            const startDate = new Date(startDateStr);
-            const today = new Date();
-            const realDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-            
-            target = realDays.toString();
-          }
-
-          if (target && target !== '0') {
-            animateNumber(element, target);
-            countUpObserver.unobserve(element);
-          }
+        const startDateStr = element.getAttribute('data-start');
+        if (startDateStr) {
+          const startDate = new Date(startDateStr);
+          const today = new Date();
+          const realDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+          target = realDays.toString();
         }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    function initCountUpElements() {
-      const countElements = document.querySelectorAll('.js-count-up');
-      countElements.forEach((element) => countUpObserver.observe(element));
-    }
+        if (target && target !== '0') {
+          animateNumber(element, target);
+          countUpObserver.unobserve(element);
+        }
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCountUpElements);
-    } else {
-      initCountUpElements();
-    }
-    document.addEventListener('astro:after-swap', initCountUpElements);
+  function initCountUpElements() {
+    const countElements = document.querySelectorAll('.js-count-up');
+    countElements.forEach((element) => countUpObserver.observe(element));
+  }
 
-    function renderRandomTags() {
-      const containers = document.querySelectorAll('.js-tags-container');
-      containers.forEach(container => {
-        const rawData = container.getAttribute('data-tags');
-        if (!rawData) return;
+  document.addEventListener('astro:page-load', initCountUpElements);
 
-        try {
-          const allTags = JSON.parse(rawData);
-          
-          // 随机打乱标签顺序
-          const shuffled = [...allTags];
-          for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-          }
-          
-          container.innerHTML = shuffled.map(([tag, count], index) => {
-            const isLast = index === shuffled.length - 1;
-            return `
-              <span class="inline-block white-space-nowrap mr-2 mb-2">
-                <a href="/tags/${tag}" class="group inline-flex items-baseline text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:white transition-transform duration-200">
-                  <span class="group-hover:underline decoration-1 underline-offset-4">${tag}</span>
-                  <sup class="text-[9px] font-mono opacity-40 ml-0.5 group-hover:opacity-100 group-hover:text-amber-500 transition-transform">${count}</sup>
-                </a>
-                ${!isLast ? `<span class="text-neutral-300 dark:text-neutral-700 font-light select-none ml-2">/</span>` : ''}
-              </span>
-            `;
-          }).join('');
-        } catch (e) {}
-      });
-    }
+  function renderRandomTags() {
+    const containers = document.querySelectorAll('.js-tags-container');
+    containers.forEach(container => {
+      const rawData = container.getAttribute('data-tags');
+      if (!rawData) return;
 
-    renderRandomTags();
-    document.addEventListener('astro:after-swap', renderRandomTags);
-  })();
+      try {
+        const allTags: [string, number][] = JSON.parse(rawData);
+
+        const shuffled = [...allTags];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        container.innerHTML = shuffled.map(([tag, count], index) => {
+          const isLast = index === shuffled.length - 1;
+          return `
+            <span class="inline-block white-space-nowrap mr-2 mb-2">
+              <a href="/tags/${tag}" class="group inline-flex items-baseline text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:white transition-transform duration-200">
+                <span class="group-hover:underline decoration-1 underline-offset-4">${tag}</span>
+                <sup class="text-[9px] font-mono opacity-40 ml-0.5 group-hover:opacity-100 group-hover:text-amber-500 transition-transform">${count}</sup>
+              </a>
+              ${!isLast ? `<span class="text-neutral-300 dark:text-neutral-700 font-light select-none ml-2">/</span>` : ''}
+            </span>
+          `;
+        }).join('');
+      } catch (e) {}
+    });
+  }
+
+  document.addEventListener('astro:page-load', renderRandomTags);
 </script>
 
 <style>

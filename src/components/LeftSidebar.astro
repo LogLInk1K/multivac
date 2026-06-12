@@ -345,11 +345,11 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 
     <!-- 列表区域 -->
     <div class="space-y-4">
-      {watchingList.slice(0, 3).map((item) => (
+      {watchingList.slice(0, 3).map((item, idx) => (
         <div class="flex gap-3 group/item items-center">
           
           <!-- 左侧封面 -->
-          <a href="/watching" class="w-16 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-hover-light dark:bg-hover-dark cursor-pointer block relative shadow-sm">
+          <a href={`/tonight?idx=${idx}`} class="w-16 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-hover-light dark:bg-hover-dark cursor-pointer block relative shadow-sm">
             <img
               src={item.cover}
               alt={item.title}
@@ -364,7 +364,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
             <!-- 标题 + 评分 -->
             <div class="flex items-center justify-between mb-0.5">
               <h4 class="text-sm font-bold text-text-light dark:text-text-dark line-clamp-1 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-colors duration-300">
-                <a href="/watching">{item.title}</a>
+                <a href={`/tonight?idx=${idx}`}>{item.title}</a>
               </h4>
               {item.ratings && item.ratings.length > 0 && (
                 <div class="flex items-center gap-0.5 flex-shrink-0 ml-2">
@@ -388,7 +388,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
             </div>
 
             <a 
-              href="/watching"
+              href={`/tonight?idx=${idx}`}
               class="text-xs text-text-light/60 dark:text-text-dark/60 text-left break-all leading-normal tracking-wide transition-colors duration-300 group-hover/item:text-text-light/90 dark:group-hover/item:text-text-dark/90 !p-0 !m-0 [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden" 
             >
               {item.comment}

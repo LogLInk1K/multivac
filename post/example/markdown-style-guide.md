@@ -7,7 +7,7 @@ category: 格物篇
 tags: ['Markdown', '语法', '写作']
 ---
 
-这是一份在 Astro 中编写 Markdown 内容时可以使用的基本 Markdown 语法示例。
+> 这是一份在 Astro 中编写 Markdown 内容时可以使用的基本 Markdown 语法示例。
 
 ## 标题
 

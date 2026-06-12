@@ -22,13 +22,13 @@ type Props = Partial<CollectionEntry<'post'>['data']> & {
   heroImageWidth?: string;
   showDate?: boolean;
   showComments?: boolean;
-  isEncrypted?: boolean;
   id?: string;
   tags?: string[];
   category?: string;
+  encryptedPayload?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, heroImageWidth, showDate = true, showComments = true, id, tags, category } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroImageWidth, showDate = true, showComments = true, id, tags, category, encryptedPayload } = Astro.props;
 const displayImage = heroImage || defaultCover;
 
 const content = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
@@ -70,6 +70,9 @@ const readingTime = calculateReadingTime(content);
 			<TableOfContents />
 			<SidebarOfContents />
 			<main class="flex-1 pt-2 page-transition">
+			{encryptedPayload && (
+				<div data-encrypted-payload style="display:none" aria-hidden="true">{encryptedPayload}</div>
+			)}
 			<div class="max-w-[1340px] mx-auto">
 				<!-- 大屏幕布局 -->
 				<div class="hidden xl:grid grid-cols-[272px_1fr_272px] gap-8">
@@ -141,7 +144,7 @@ const readingTime = calculateReadingTime(content);
 								</div>
 							)}
 						</div>
-						<div class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark">
+						<div data-encrypted-body class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark">
 							<slot />
 						</div>
 						{showComments && (
@@ -151,7 +154,7 @@ const readingTime = calculateReadingTime(content);
 										{tags && tags.length > 0 && (
 											<div class="flex items-center gap-2 flex-wrap ml-2">
 												{tags.map((tag) => (
-													<a 
+													<a
 														href={`/tags/${tag}`}
 														class="group relative px-2 py-1 text-xs font-medium bg-gray-100/80 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-full hover:bg-gray-200/80 dark:hover:bg-white/20 transition-colors"
 													>
@@ -171,7 +174,7 @@ const readingTime = calculateReadingTime(content);
 										<span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap">文章结束</span>
 									</div>
 								</div>
-								
+
 								<ArticleMetaCard 
 									title={title} 
 									url={Astro.url?.href || ''} 
@@ -268,7 +271,7 @@ const readingTime = calculateReadingTime(content);
 								</div>
 							)}
 						</div>
-						<div class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark">
+						<div data-encrypted-body class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark">
 							<slot />
 						</div>
 						{showComments && (
@@ -503,6 +506,145 @@ const readingTime = calculateReadingTime(content);
 
 				bindFancybox();
 			});
+		</script>
+
+		<script>
+		import { decryptContent } from '../scripts/crypto';
+
+		function initPasswordProtection() {
+			const payloadEl = document.querySelector('[data-encrypted-payload]');
+			if (!payloadEl) return;
+
+			const encryptedData = payloadEl.textContent ?? '';
+			if (!encryptedData) return;
+
+			// 非 HTTPS 环境下 crypto.subtle 不可用
+			if (!crypto?.subtle) {
+				document.querySelectorAll('[data-error-message]').forEach((el) => {
+					el.textContent = '当前环境不支持解密，请使用 HTTPS 访问';
+					el.classList.remove('hidden');
+				});
+				return;
+			}
+
+			const bodyNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-encrypted-body]'));
+			if (bodyNodes.length === 0) return;
+
+			// 避免重复初始化
+			if (document.querySelector('[data-password-container][data-initialized]')) return;
+			document.querySelectorAll('[data-password-container]').forEach((el) => {
+				(el as HTMLElement).dataset.initialized = 'true';
+			});
+
+			let decrypting = false;
+
+			const slug = window.location.pathname;
+			const cacheKey = `pwd:${slug}`;
+
+			const forms = document.querySelectorAll<HTMLFormElement>('[data-password-form]');
+
+			forms.forEach((form) => {
+				const passwordInput = form.querySelector<HTMLInputElement>('[data-password-input]');
+				const errorMessage = form.querySelector<HTMLDivElement>('[data-error-message]');
+				const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+				const toggleBtn = form.querySelector<HTMLButtonElement>('[data-toggle-password]');
+
+				if (!passwordInput || !submitButton) return;
+
+				// 密码可见性切换（同步所有表单）
+				if (toggleBtn) {
+					toggleBtn.addEventListener('click', () => {
+						const isActive = toggleBtn.classList.toggle('active');
+						document.querySelectorAll<HTMLButtonElement>('[data-toggle-password]').forEach((btn) => {
+							btn.classList.toggle('active', isActive);
+						});
+						document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+							input.classList.toggle('revealed', isActive);
+						});
+					});
+				}
+
+				form.addEventListener('submit', async (e) => {
+					e.preventDefault();
+					e.stopPropagation();
+
+					if (decrypting) return;
+
+					const password = passwordInput.value.trim();
+					if (!password) {
+						if (errorMessage) {
+							errorMessage.textContent = '请输入密码';
+							errorMessage.classList.remove('hidden');
+						}
+						return;
+					}
+
+					decrypting = true;
+					document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
+						btn.textContent = '解密中...';
+						btn.disabled = true;
+					});
+					document.querySelectorAll('[data-error-message]').forEach((el) => el.classList.add('hidden'));
+
+					const success = await attemptDecrypt(password, false);
+					decrypting = false;
+
+					if (!success) {
+						document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
+							btn.textContent = '解锁文章';
+							btn.disabled = false;
+						});
+						document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+							input.value = '';
+							input.focus();
+						});
+					}
+				});
+			});
+
+			async function attemptDecrypt(password: string, isAuto: boolean): Promise<boolean> {
+				try {
+					const decryptedHtml = await decryptContent(encryptedData, password);
+
+					bodyNodes.forEach((node) => {
+						node.innerHTML = decryptedHtml;
+					});
+
+					// 隐藏所有密码卡片
+					document.querySelectorAll<HTMLElement>('[data-password-container]').forEach((el) => {
+						el.classList.add('hidden');
+					});
+
+					sessionStorage.setItem(cacheKey, password);
+
+					document.dispatchEvent(new CustomEvent('article:decrypted'));
+
+					return true;
+				} catch {
+					if (!isAuto) {
+						document.querySelectorAll('[data-error-message]').forEach((el) => {
+							el.textContent = '密码错误，请重试';
+							el.classList.remove('hidden');
+						});
+					} else {
+						sessionStorage.removeItem(cacheKey);
+					}
+					return false;
+				}
+			}
+
+			// 自动解锁
+			const savedPassword = sessionStorage.getItem(cacheKey);
+			if (savedPassword) {
+				document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+					input.value = savedPassword;
+				});
+				attemptDecrypt(savedPassword, true);
+			}
+		}
+
+		initPasswordProtection();
+		document.addEventListener('astro:page-load', initPasswordProtection);
 		</script>
 	</body>
 </html>

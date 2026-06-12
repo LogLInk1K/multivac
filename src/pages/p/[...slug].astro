@@ -18,37 +18,23 @@ type Props = CollectionEntry<'post'>;
 const post = Astro.props;
 const { Content } = await render(post);
 
-// 检查文章是否需要加密
 const isEncrypted = !!post.data.password;
 let encryptedContent = '';
 
-if (isEncrypted && post.data.password && post.body) {
-	// 使用文章的原始 body 内容进行加密
+if (isEncrypted && post.data.password) {
 	const { encryptContent } = await import('../../scripts/crypto');
-
-	// 加密原始的 markdown 内容
-	encryptedContent = await encryptContent(post.body, post.data.password);
+	const html = post.rendered?.html ?? '';
+	const contentToEncrypt = html || (typeof post.body === 'string' ? post.body : '');
+	if (!contentToEncrypt) {
+		throw new Error(`[加密] 文章 "${post.id}" 没有可加密的内容，请检查 rendered.html 和 body`);
+	}
+	encryptedContent = await encryptContent(contentToEncrypt, post.data.password);
 }
 ---
 
-<BlogPost {...post.data} id={post.id} isEncrypted={isEncrypted}>
+<BlogPost {...post.data} id={post.id} encryptedPayload={isEncrypted ? encryptedContent : undefined}>
 	{isEncrypted ? (
-		<>
-			<PasswordProtect passwordHint={post.data.passwordHint} />
-			<input type="hidden" id="encrypted-content-data" value={encryptedContent} />
-			<script>
-				declare global {
-					interface Window {
-						__ENCRYPTED_CONTENT__: string;
-					}
-				}
-
-				const dataEl = document.getElementById('encrypted-content-data') as HTMLInputElement | null;
-				if (dataEl) {
-					window.__ENCRYPTED_CONTENT__ = dataEl.value;
-				}
-			</script>
-		</>
+		<PasswordProtect passwordHint={post.data.passwordHint} />
 	) : (
 		<Content />
 	)}

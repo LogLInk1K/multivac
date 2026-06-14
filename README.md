@@ -1,6 +1,6 @@
 # Multivac
 
-> 基于 Astro 5 + Tailwind CSS 的个人博客框架，支持深色模式、文章加密、动态说说、友链管理、塔罗牌、观影记录等功能。
+> 一款基于 Astro 和 Tailwind CSS 构建的纯静态个人博客，支持深色模式、动态说说、友链管理等功能
 
 ![Astro](https://img.shields.io/badge/Astro-5.18+-BC52EE?logo=astro&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)

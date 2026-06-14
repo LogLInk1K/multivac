@@ -159,7 +159,6 @@ html.dark .bg-glow__orb--3 {
 .bg-card-light {
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.03),
     0 2px 4px rgba(0, 0, 0, 0.04),
@@ -169,7 +168,6 @@ html.dark .bg-glow__orb--3 {
 .dark .bg-card-dark {
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.03),
     0 2px 4px rgba(0, 0, 0, 0.3),
@@ -249,7 +247,7 @@ html.dark .bg-glow__orb--3 {
 }
 
 button, a {
-  transition-property: color, opacity, background-color, transform, scale, flex, box-shadow, border-color;
+  transition-property: all;
   transition-duration: 0.3s;
   transition-timing-function: var(--ease-gentle);
 }

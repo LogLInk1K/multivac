@@ -41,6 +41,11 @@ const { title, description, image } = Astro.props;
             ::view-transition-new(root) {
                 animation: fade-in 0.2s ease-out;
             }
+
+            /* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
+            html:not(.content-ready) #main-content {
+                opacity: 0;
+            }
         </style>
 
         <script is:inline>
@@ -48,14 +53,8 @@ const { title, description, image } = Astro.props;
             const theme = localStorage.getItem('theme') ||
                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.classList.toggle('dark', theme === 'dark');
-          })();
-        </script>
-        <script is:inline>
-          (function() {
-            if (!sessionStorage.getItem('hasVisited')) {
-              const style = document.createElement('style');
-              style.textContent = '#main-content{opacity:0;}';
-              document.head.appendChild(style);
+            if (sessionStorage.getItem('hasVisited')) {
+              document.documentElement.classList.add('content-ready');
             }
           })();
         </script>
@@ -97,7 +96,6 @@ const { title, description, image } = Astro.props;
 
             sessionStorage.setItem('hasVisited', 'true');
 
-            const mainContent = document.getElementById('main-content');
             const overlay = document.getElementById('welcome-overlay');
             const avatar = document.getElementById('welcome-avatar');
             const logo = document.getElementById('welcome-logo');
@@ -105,13 +103,13 @@ const { title, description, image } = Astro.props;
             const greeting = document.getElementById('welcome-greeting');
             const greetingInner = document.getElementById('welcome-greeting-inner');
 
-            if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) return;
+            if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
+              // 欢迎动画 DOM 不存在，直接显示内容
+              document.documentElement.classList.add('content-ready');
+              return;
+            }
 
             greetingInner.textContent = getGreeting();
-
-            if (mainContent) {
-              mainContent.style.opacity = '0';
-            }
 
             overlay.classList.add('active');
 
@@ -134,9 +132,7 @@ const { title, description, image } = Astro.props;
             setTimeout(() => {
               overlay.classList.add('fade-out');
 
-              if (mainContent) {
-                mainContent.style.opacity = '1';
-              }
+              document.documentElement.classList.add('content-ready');
 
               setTimeout(() => {
                 overlay.classList.remove('active');
@@ -145,15 +141,18 @@ const { title, description, image } = Astro.props;
             }, 2500);
           }
 
-          // 仅首次加载执行，路由切换后不再重复注册
+          // 首次访问时执行欢迎动画
           if (!sessionStorage.getItem('hasVisited')) {
             runWelcomeAnimation();
           }
+          // 路由切换时也检查
           document.addEventListener('astro:page-load', () => {
             if (!sessionStorage.getItem('hasVisited')) {
               runWelcomeAnimation();
+            } else {
+              document.documentElement.classList.add('content-ready');
             }
-          }, { once: true });
+          });
         </script>
     </body>
 </html>

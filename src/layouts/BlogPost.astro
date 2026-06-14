@@ -26,12 +26,13 @@ type Props = Partial<CollectionEntry<'post'>['data']> & {
   tags?: string[];
   category?: string;
   encryptedPayload?: string;
+  rawContentForStats?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, heroImageWidth, showDate = true, showComments = true, id, tags, category, encryptedPayload } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroImageWidth, showDate = true, showComments = true, id, tags, category, encryptedPayload, rawContentForStats } = Astro.props;
 const displayImage = heroImage || defaultCover;
 
-const content = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const content = rawContentForStats || (Astro.slots.has('default') ? await Astro.slots.render('default') : '');
 const wordCount = calculateWordCount(content);
 const readingTime = calculateReadingTime(content);
 import { Icon } from 'astro-icon/components';
@@ -41,19 +42,19 @@ import { Icon } from 'astro-icon/components';
 	<head>
 		<BaseHead title={title} description={description} image={displayImage} pubDate={pubDate} updatedDate={updatedDate} article={true} />
 		<ClientRouter />
+		<style is:global>
+			/* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
+			html:not(.content-ready) #main-content {
+				opacity: 0;
+			}
+		</style>
 		<script is:inline>
 			(function() {
 				const theme = localStorage.getItem('theme') ||
 					(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 				document.documentElement.classList.toggle('dark', theme === 'dark');
-			})();
-		</script>
-		<script is:inline>
-			(function() {
-				if (!sessionStorage.getItem('hasVisited')) {
-					const style = document.createElement('style');
-					style.textContent = '#main-content{opacity:0;}';
-					document.head.appendChild(style);
+				if (sessionStorage.getItem('hasVisited')) {
+					document.documentElement.classList.add('content-ready');
 				}
 			})();
 		</script>
@@ -355,8 +356,9 @@ import { Icon } from 'astro-icon/components';
 
 					decrypting = true;
 					document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
-						btn.textContent = '解密中...';
 						btn.disabled = true;
+						btn.style.opacity = '0.5';
+						btn.style.pointerEvents = 'none';
 					});
 					document.querySelectorAll('[data-error-message]').forEach((el) => el.classList.add('hidden'));
 
@@ -365,8 +367,9 @@ import { Icon } from 'astro-icon/components';
 
 					if (!success) {
 						document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
-							btn.textContent = '解锁文章';
 							btn.disabled = false;
+							btn.style.opacity = '';
+							btn.style.pointerEvents = '';
 						});
 						document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
 							input.value = '';
@@ -419,6 +422,63 @@ import { Icon } from 'astro-icon/components';
 
 		initPasswordProtection();
 		document.addEventListener('astro:page-load', initPasswordProtection);
+		</script>
+
+		<script>
+		function runBlogWelcome() {
+			if (sessionStorage.getItem('hasVisited')) {
+				document.documentElement.classList.add('content-ready');
+				return;
+			}
+
+			sessionStorage.setItem('hasVisited', 'true');
+
+			const overlay = document.getElementById('welcome-overlay');
+			const avatar = document.getElementById('welcome-avatar');
+			const logo = document.getElementById('welcome-logo');
+			const tagline = document.getElementById('welcome-tagline');
+			const greeting = document.getElementById('welcome-greeting');
+			const greetingInner = document.getElementById('welcome-greeting-inner');
+
+			if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
+				document.documentElement.classList.add('content-ready');
+				return;
+			}
+
+			const hour = new Date().getHours();
+			let greetText = '你见过凌晨四点的洛杉矶吗?';
+			if (hour >= 5 && hour < 12) greetText = '早上好，夜之城!';
+			else if (hour >= 12 && hour < 14) greetText = '真香!';
+			else if (hour >= 14 && hour < 18) greetText = '三点几哩，饮茶先啦!';
+			else if (hour >= 18 && hour < 22) greetText = '打工是不可能打工的!';
+
+			greetingInner.textContent = greetText;
+			overlay.classList.add('active');
+
+			setTimeout(() => avatar.classList.add('animate'), 100);
+			setTimeout(() => logo.classList.add('animate'), 300);
+			setTimeout(() => tagline.classList.add('animate'), 500);
+			setTimeout(() => greeting.classList.add('animate'), 700);
+			setTimeout(() => {
+				overlay.classList.add('fade-out');
+				document.documentElement.classList.add('content-ready');
+				setTimeout(() => {
+					overlay.classList.remove('active');
+					overlay.style.display = 'none';
+				}, 500);
+			}, 2500);
+		}
+
+		if (!sessionStorage.getItem('hasVisited')) {
+			runBlogWelcome();
+		}
+		document.addEventListener('astro:page-load', () => {
+			if (!sessionStorage.getItem('hasVisited')) {
+				runBlogWelcome();
+			} else {
+				document.documentElement.classList.add('content-ready');
+			}
+		});
 		</script>
 	</body>
 </html>

@@ -20,6 +20,7 @@ const { Content } = await render(post);
 
 const isEncrypted = !!post.data.password;
 let encryptedContent = '';
+let rawContentForStats = '';
 
 if (isEncrypted && post.data.password) {
 	const { encryptContent } = await import('../../scripts/crypto');
@@ -29,10 +30,11 @@ if (isEncrypted && post.data.password) {
 		throw new Error(`[加密] 文章 "${post.id}" 没有可加密的内容，请检查 rendered.html 和 body`);
 	}
 	encryptedContent = await encryptContent(contentToEncrypt, post.data.password);
+	rawContentForStats = contentToEncrypt;
 }
 ---
 
-<BlogPost {...post.data} id={post.id} encryptedPayload={isEncrypted ? encryptedContent : undefined}>
+<BlogPost {...post.data} id={post.id} encryptedPayload={isEncrypted ? encryptedContent : undefined} rawContentForStats={isEncrypted ? rawContentForStats : undefined}>
 	{isEncrypted ? (
 		<PasswordProtect passwordHint={post.data.passwordHint} />
 	) : (

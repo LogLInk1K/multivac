@@ -166,7 +166,7 @@ import { Icon } from 'astro-icon/components';
               {initialPicks.map(ri => {
                 const m = watchingList[ri];
                 return (
-                  <a href="javascript:void(0)" data-idx={ri} class="tonight-pick group block relative aspect-3/4 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
+                  <a href="javascript:void(0)" data-idx={ri} class="tonight-pick group block relative aspect-3/4 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm fluid-card" style="transition-duration: 500ms;">
                     <img src={m.cover} alt={m.title} class="w-full h-full object-cover grayscale-20 group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
                     <div class="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -274,7 +274,7 @@ import { Icon } from 'astro-icon/components';
         more.innerHTML = pks.map((ri) => {
           const m = list[ri];
           return `
-            <a href="javascript:void(0)" data-idx="${ri}" class="tonight-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-md">
+            <a href="javascript:void(0)" data-idx="${ri}" class="tonight-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm fluid-card" style="transition-duration: 500ms;">
               <img src="${m.cover}" alt="${m.title}" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
               <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">

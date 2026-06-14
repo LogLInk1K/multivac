@@ -95,7 +95,7 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <MainLayout title={pageTitle} description={pageDescription}>
-	<section class="max-w-[1340px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+	<section class="section-container py-16">
 		<div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
 			<!-- 左侧边栏 -->
 			<div class="hidden md:block">
@@ -109,7 +109,7 @@ import { Icon } from 'astro-icon/components';
 
 			<!-- 主内容区 -->
 			<div>
-				<div class="p-8 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 mb-6 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+				<div class="p-8 glass-card glass-card-dark mb-6">
 					<h1 class="text-3xl font-bold text-text-light dark:text-text-dark mb-6">{pageTitle}</h1>
 					<p class="text-text-light/70 dark:text-text-dark/70 mb-8">
 						{pageDescription}
@@ -133,7 +133,7 @@ import { Icon } from 'astro-icon/components';
 										href={friend.url}
 										target="_blank"
 										rel="noopener noreferrer"
-										class="group flex items-center gap-4 p-4 bg-background-light dark:bg-background-dark rounded-2xl hover:bg-hover-light dark:hover:bg-hover-dark transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+										class="group flex items-center gap-4 p-4 bg-background-light dark:bg-background-dark rounded-2xl hover:bg-hover-light dark:hover:bg-hover-dark fluid-card hover:shadow-lg"
 									>
 										<img
 											src={friend.avatar}

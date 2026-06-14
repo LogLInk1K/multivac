@@ -16,7 +16,7 @@ const displayImage = heroImage || defaultCover;
 const readingTime = calculateReadingTime(post.body || '');
 
 ---
-<article class="group relative bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
+<article class="group relative glass-card glass-card-dark hover:-translate-y-2 hover:shadow-2xl overflow-hidden">
   <div class="relative flex flex-col justify-between">
     
 
@@ -30,7 +30,7 @@ const readingTime = calculateReadingTime(post.body || '');
     <div class="relative p-6 flex flex-col items-start">
       
       {/* 2.1 元信息行（两端对撞） */}
-      <div class="flex flex-row items-center justify-between w-full text-[11px] font-medium tracking-wide text-text-light/40 dark:text-text-dark/40 mb-2.5 select-none">
+      <div class="flex flex-row items-center justify-between w-full text-[11px] font-medium tracking-wide text-dim mb-2.5 select-none">
         {/* 左侧技术轴 */}
         <div class="flex items-center gap-2">
           {/* 分类 */}
@@ -69,7 +69,7 @@ const readingTime = calculateReadingTime(post.body || '');
       <h3 class="text-2xl font-bold mb-2.5 line-clamp-1">
         <a
           href={`/p/${originalFileName}`}
-          class="text-text-light dark:text-text-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300"
+          class="text-text-light dark:text-text-dark accent-hover fluid-link"
         >
           {title}
         </a>

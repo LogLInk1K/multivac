@@ -237,23 +237,123 @@ html.dark .bg-glow__orb--3 {
 .dark::view-transition-new(root) { z-index: 999; }
 .dark::view-transition-old(root) { z-index: 1; }
 
-/* --- 5. 局部交互 transition --- */
-.nav-link, .blog-card {
-  transition: 
-    color 0.3s var(--ease-gentle), 
-    background-color 0.3s var(--ease-gentle), 
-    border-color 0.3s var(--ease-gentle),
-    box-shadow 0.3s var(--ease-gentle);
+/* --- 5. 公共动效库（Tailwind v4 @utility） --- */
+
+/* 流体卡片：hover 上浮 + 弥散阴影 + 边框高光 */
+@utility fluid-card {
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-gentle);
+  &:hover {
+    translate: 0 -0.25rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
 }
 
-button, a {
-  transition-property: all;
-  transition-duration: 0.3s;
+/* 流体链接：颜色 + 透明度丝滑过渡 */
+@utility fluid-link {
+  transition-property: color, opacity;
+  transition-duration: 200ms;
   transition-timing-function: var(--ease-gentle);
 }
 
+/* 流体按钮：弹性缩放 + 阴影反馈 */
+@utility fluid-btn {
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-gentle);
+  &:active {
+    scale: 0.95;
+    transition-duration: 100ms;
+  }
+}
+
+/* --- 6. 公共组件库（Tailwind v4 @utility） --- */
+
+/* 玻璃卡片：皮肤 + 毛玻璃 + 圆角 + 阴影 + 流体交互 + 边框高光 */
+@utility glass-card {
+  background-color: var(--color-card-light);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-3xl);
+  border: 1px solid transparent;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-gentle);
+  &:hover {
+    translate: 0 -0.25rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    border-color: var(--color-border-light);
+  }
+}
+
+/* 暗色皮肤覆盖（需与 glass-card 搭配） */
+@utility glass-card-dark {
+  &:where(.dark, .dark *) {
+    background-color: var(--color-card-dark);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      0 8px 24px rgba(0, 0, 0, 0.4);
+    &:hover {
+      border-color: var(--color-border-dark);
+    }
+  }
+}
+
+/* 悬浮提示：opacity + scale 复合动画基础 */
+@utility tooltip {
+  box-shadow: var(--shadow-2xl);
+  opacity: 0;
+  visibility: hidden;
+  scale: 0.95;
+  transition-property: all;
+  transition-duration: 300ms;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 页面容器：最大宽度 + 居中 + 水平内边距 */
+@utility section-container {
+  max-width: 1340px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (sm) {
+    padding-inline: 1.5rem;
+  }
+  @media (lg) {
+    padding-inline: 2rem;
+  }
+}
+
+/* 次要文本：低对比度 */
+@utility text-dim {
+  color: color-mix(in srgb, var(--color-text-light) 40%, transparent);
+  &:where(.dark, .dark *) {
+    color: color-mix(in srgb, var(--color-text-dark) 40%, transparent);
+  }
+}
+
+/* 强调悬停：主题色 hover */
+@utility accent-hover {
+  &:hover {
+    color: var(--color-primary-light);
+  }
+  &:where(.dark, .dark *) {
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+}
+
 button:active {
-  transform: scale(0.96);
+  scale: 0.96;
   transition-duration: 0.1s;
 }
 

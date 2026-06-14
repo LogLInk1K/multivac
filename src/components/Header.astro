@@ -53,7 +53,7 @@ import { Icon } from 'astro-icon/components';
                 <HeaderLink href="/watching">漫游</HeaderLink>
                 <HeaderLink href="/about">关于</HeaderLink>
             </div>
-            <h1 id="page-title" class="absolute left-1/2 -translate-x-1/2 text-lg font-bold text-text-light dark:text-text-dark opacity-0 transition-all duration-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] translate-y-2 cursor-pointer hover:text-primary-light dark:hover:text-primary-dark" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"></h1>
+            <h1 id="page-title" class="absolute left-1/2 -translate-x-1/2 text-lg font-bold text-text-light dark:text-text-dark opacity-0 transition-all duration-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] translate-y-2 cursor-pointer accent-hover" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"></h1>
         </div>
 
         <div class="flex-1 flex justify-end items-center shrink-0">
@@ -92,7 +92,7 @@ import { Icon } from 'astro-icon/components';
             </div>
         </div>
 
-        <div id="menu-panel" class="absolute top-0 w-[320px] p-2 rounded-xl bg-white/80 dark:bg-black/70 backdrop-blur-sm border border-white/20 dark:border-white/10 shadow-2xl opacity-0 scale-95 pointer-events-none transition-all duration-300 origin-top z-20" style="margin-top: 5.5rem;">
+        <div id="menu-panel" class="absolute top-0 w-[320px] p-2 rounded-xl bg-white/80 dark:bg-black/70 backdrop-blur-sm border border-white/20 dark:border-white/10 tooltip origin-top" style="margin-top: 5.5rem;">
             <div class="grid grid-cols-2 gap-2">
                 <a href="http://1k.ink/" target="_blank" rel="noopener noreferrer" class="relative flex items-center gap-3 px-4 py-3 rounded-lg group/item overflow-hidden">
                     <Icon name="home" class="w-6 h-6 text-text-light dark:text-text-dark transition-all duration-300 group-hover/item:scale-90 group-hover/item:opacity-0 group-active/item:scale-95 shrink-0" />

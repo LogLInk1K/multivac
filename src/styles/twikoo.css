@@ -98,7 +98,7 @@
   }
 
   .tk-comment {
-    @apply border border-border-light dark:border-border-dark p-4 rounded-2xl hover:shadow-md transition-all;
+    @apply border border-border-light dark:border-border-dark p-4 rounded-2xl hover:shadow-md fluid-card;
     .tk-action-icon svg {
       @apply fill-primary-light dark:fill-primary-dark;
     }

@@ -55,7 +55,7 @@ import { Icon } from 'astro-icon/components';
 
 <aside class="hidden md:block w-[272px] space-y-6">
   <!-- 公告卡片 -->
-  <div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
+  <div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
   
   <div class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative">
     <div class="flex items-center gap-2">
@@ -64,7 +64,7 @@ import { Icon } from 'astro-icon/components';
         公告
       </h3>
     </div>
-    <span class="text-[10px] tracking-widest text-text-light/40 dark:text-text-dark/40 uppercase font-medium">
+    <span class="text-[10px] tracking-widest text-dim uppercase font-medium">
       十年之约
     </span>
   </div>
@@ -94,7 +94,7 @@ import { Icon } from 'astro-icon/components';
         <span class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-colors duration-300">
           穿梭虫洞！
         </span>
-        <span class="text-xs text-text-light/40 dark:text-text-dark/40 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5">&rarr;</span>
+        <span class="text-xs text-dim group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5">&rarr;</span>
       </div>
 
       <div class="shrink-0 flex items-center transform group-hover/btn:scale-105 transition-transform duration-500 ease-out">
@@ -117,7 +117,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 </div>
   <!-- 随机推荐卡片 -->
-  <div class="pt-5 px-5 pb-2 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark relative overflow-hidden group/container">
+  <div class="pt-5 px-5 pb-2 glass-card glass-card-dark relative overflow-hidden group/container">
     <div class="absolute -right-16 -top-16 w-40 h-40 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover/container:scale-150"></div>
 
     <div class="flex items-center justify-between mb-2 relative select-none">
@@ -130,7 +130,7 @@ import { Icon } from 'astro-icon/components';
     
       <button
         type="button"
-        style="outline: none;" class="js-refresh-trigger group p-1.5 rounded-lg text-text-light/40 dark:text-text-dark/40 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/4 dark:hover:bg-white/4 transition-all duration-300 focus:outline-none active:scale-90 select-none"
+        style="outline: none;" class="js-refresh-trigger group p-1.5 rounded-lg text-dim hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/4 dark:hover:bg-white/4 fluid-btn focus:outline-none select-none"
         data-posts={JSON.stringify(postSummaries)}
         aria-label="刷新推荐"
       >
@@ -143,7 +143,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- 标签卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="p-6 glass-card glass-card-dark">
     <div class="relative mb-5">
       <h3 class="inline-block text-lg font-black italic tracking-tight text-neutral-800 dark:text-neutral-100 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-2 after:w-full after:bg-yellow-400/30 dark:after:bg-indigo-500/40 after:-z-10">
         TAGS
@@ -154,7 +154,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- RSS订阅卡片 -->
-  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]">
+  <div class="relative overflow-hidden p-6 glass-card glass-card-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]">
     <div class="relative">
       <div class="absolute -right-2 -top-6 text-7xl font-black italic tracking-tighter text-text-light/3 dark:text-text-dark/5 select-none pointer-events-none font-sans">
         订阅
@@ -182,7 +182,7 @@ import { Icon } from 'astro-icon/components';
             }, 2200);
           });
         "
-        class="group/btn w-full h-11 relative rounded-2xl bg-neutral-100 dark:bg-neutral-950/80 border border-neutral-200/50 dark:border-neutral-800/80 p-1 cursor-pointer overflow-hidden select-none active:scale-[0.98] transition-all duration-300"
+        class="group/btn w-full h-11 relative rounded-2xl bg-neutral-100 dark:bg-neutral-950/80 border border-neutral-200/50 dark:border-neutral-800/80 p-1 cursor-pointer overflow-hidden select-none active:scale-[0.98] fluid-btn"
       >
         <div class="absolute inset-y-1 inset-x-2 flex items-center justify-between pointer-events-none select-none z-0">
           <div class="flex gap-1.5 pl-4 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 group-[.is-success]/btn:opacity-0">
@@ -211,14 +211,14 @@ import { Icon } from 'astro-icon/components';
           </div>
         </div>
       </button>
-      <div class="mt-3 text-[10px] text-text-light/40 dark:text-text-dark/40 font-normal text-center">
+      <div class="mt-3 text-[10px] text-dim font-normal text-center">
         支持 Feedly、Inoreader、Reeder 等
       </div>
     </div>
   </div>
 
   <!-- 博客统计卡片 -->
-  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard">
+  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard">
     <div class="absolute -right-6 -bottom-10 text-[140px] font-black italic tracking-tighter text-neutral-800/3 dark:text-neutral-100/2 select-none pointer-events-none transform origin-bottom-right transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/statcard:scale-110 group-hover/statcard:translate-x-2 group-hover/statcard:text-primary-light/4 dark:group-hover/statcard:text-primary-dark/3">
       字
     </div>
@@ -232,7 +232,7 @@ import { Icon } from 'astro-icon/components';
 
     <div class="grid grid-cols-5 gap-2 items-end pt-6 pb-2 relative z-10">
       <a href="/archives" class="col-span-3 group/item cursor-pointer block">
-        <span class="text-[10px] font-normal tracking-widest text-text-light/40 dark:text-text-dark/40 block mb-1">已发表文章</span>
+        <span class="text-[10px] font-normal tracking-widest text-dim block mb-1">已发表文章</span>
         <div class="flex items-baseline gap-1">
           <div class="text-2xl font-black font-mono tracking-tight text-neutral-700 dark:text-neutral-300 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform js-count-up" data-target={posts.length}>0</div>
           <span class="text-[10px] font-bold text-text-light/30 dark:text-text-dark/30">篇</span>
@@ -242,18 +242,18 @@ import { Icon } from 'astro-icon/components';
 
       <div class="col-span-2 flex flex-col gap-2.5 items-end justify-end border-l border-neutral-200/40 dark:border-neutral-800/40 pr-1">
         <a href="/categories" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
-          <span class="text-[10px] font-normal tracking-wider text-text-light/40 dark:text-text-dark/40 group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">分类</span>
+          <span class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">分类</span>
           <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={totalCategories}>0</span>
         </a>
         <a href="/tags" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
-          <span class="text-[10px] font-normal tracking-wider text-text-light/40 dark:text-text-dark/40 group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">标签</span>
+          <span class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">标签</span>
           <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={Object.keys(allTags).length}>0</span>
         </a>
       </div>
     </div>
 
     <div class="mt-4 pt-3.5 border-t border-neutral-200/40 dark:border-neutral-800/40 flex items-center justify-between text-xs relative z-10">
-      <div class="flex items-center gap-2 text-text-light/40 dark:text-text-dark/40 tracking-widest text-[11px]">
+      <div class="flex items-center gap-2 text-dim tracking-widest text-[11px]">
         <span class="w-1.5 h-1.5 bg-neutral-300 dark:bg-neutral-700 rounded-none"></span>
         持续运行
       </div>

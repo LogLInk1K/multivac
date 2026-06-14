@@ -75,7 +75,7 @@ import { Icon } from 'astro-icon/components';
 
 <aside class="hidden md:block w-[272px] space-y-6">
   <!-- 个人信息卡片 -->
-  <div class="p-4 h-[300px] bg-primary-light dark:bg-primary-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 matrix-card relative overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="p-4 h-[300px] bg-primary-light dark:bg-primary-dark rounded-3xl shadow-sm fluid-card matrix-card relative overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
     <!-- 顶部：醉后不知天在水 文本 -->
     <div class="absolute top-4 left-0 right-0 flex justify-center">
       <div class="px-3 py-1 bg-white/20 dark:bg-black/50 rounded-full greeting-container">
@@ -108,7 +108,7 @@ import { Icon } from 'astro-icon/components';
     <!-- 底部：信息区 -->
     <div class="absolute bottom-4 left-4 right-4 flex justify-between items-center">
       <!-- 左侧：博主信息容器 -->
-      <a href="/about" class="text-container block hover:opacity-85 transition-opacity duration-200">
+      <a href="/about" class="text-container block hover:opacity-85 fluid-link">
         <h2 class="text-xl font-bold text-white dark:text-black mb-1 matrix-text" data-text="波罗歌">波罗歌</h2>
         <p class="text-xs text-white dark:text-black/90 opacity-60 matrix-text" data-text="万维网中潮汛来">万维网中潮汛来</p>
       </a>
@@ -116,7 +116,7 @@ import { Icon } from 'astro-icon/components';
       <!-- 右侧：社交图标容器 -->
       <div class="icons-container flex space-x-2">
         <a href="https://github.com/LogLInk1K" target="_blank" rel="noopener noreferrer" 
-           class="text-white hover:text-white transition-all duration-200 hover:scale-110 relative group w-10 h-10 rounded-full bg-white/20 dark:bg-black/50 hover:bg-white/30 dark:hover:bg-black/70 flex items-center justify-center">
+           class="text-white hover:text-white fluid-btn hover:scale-110 relative group w-10 h-10 rounded-full bg-white/20 dark:bg-black/50 hover:bg-white/30 dark:hover:bg-black/70 flex items-center justify-center">
           <span class="sr-only">GitHub</span>
           <Icon name="github" class="w-5 h-5" aria-hidden="true" />
           <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-white text-black dark:bg-black dark:text-white text-sm rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none whitespace-nowrap">
@@ -124,7 +124,7 @@ import { Icon } from 'astro-icon/components';
           </div>
         </a>
         <a href="https://space.bilibili.com/12787362" target="_blank" rel="noopener noreferrer" 
-           class="text-white hover:text-white transition-all duration-200 hover:scale-110 relative group w-10 h-10 rounded-full bg-white/20 dark:bg-black/50 hover:bg-white/30 dark:hover:bg-black/70 flex items-center justify-center">
+           class="text-white hover:text-white fluid-btn hover:scale-110 relative group w-10 h-10 rounded-full bg-white/20 dark:bg-black/50 hover:bg-white/30 dark:hover:bg-black/70 flex items-center justify-center">
           <span class="sr-only">Bilibili</span>
           <Icon name="bilibili" class="w-5 h-5" aria-hidden="true" />
           <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-white text-black dark:bg-black dark:text-white text-sm rounded-lg shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none whitespace-nowrap">
@@ -136,7 +136,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- 音乐卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="p-6 glass-card glass-card-dark">
 
     <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none group-hover/music:bg-primary-light/20 dark:group-hover/music:bg-primary-dark/20 transition-all duration-500"></div>
 
@@ -174,7 +174,7 @@ import { Icon } from 'astro-icon/components';
             </h4>
           </a>
           
-          <p class="text-[11px]  font-bold text-text-light/40 dark:text-text-dark/40 tracking-wider leading-none mt-0.5" id="playlist-count">
+          <p class="text-[11px]  font-bold text-dim tracking-wider leading-none mt-0.5" id="playlist-count">
             加载中...
           </p>
           
@@ -211,23 +211,23 @@ import { Icon } from 'astro-icon/components';
             </div>
 
           </div>
-          <div class="flex justify-between text-[10px]  font-bold tracking-wider text-text-light/40 dark:text-text-dark/40">
+          <div class="flex justify-between text-[10px]  font-bold tracking-wider text-dim">
             <span id="current-time">0:00</span>
             <span id="total-time">0:00</span>
           </div>
         </div>
 
         <div class="flex items-center justify-center gap-8 text-neutral-400 dark:text-neutral-500">
-          <button onclick="playPrev()" class="p-1 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer active:scale-90 flex items-center justify-center" title="上一首">
+          <button onclick="playPrev()" class="p-1 hover:text-neutral-800 dark:hover:text-white fluid-link cursor-pointer active:scale-90 flex items-center justify-center" title="上一首">
             <Icon name="play-prev" class="w-5 h-5" />
           </button>
           
-          <button onclick="togglePlay()" class="p-1 text-neutral-700 dark:text-neutral-300 hover:text-primary-light dark:hover:text-primary-dark transition-colors cursor-pointer active:scale-95 flex items-center justify-center group/playbtn" title="播放/暂停">
+          <button onclick="togglePlay()" class="p-1 text-neutral-700 dark:text-neutral-300 accent-hover fluid-link cursor-pointer active:scale-95 flex items-center justify-center group/playbtn" title="播放/暂停">
             <Icon id="control-play-icon" name="play" class="w-6 h-6 transition-transform group-hover/playbtn:scale-105" />
             <Icon id="control-pause-icon" name="pause" class="w-6 h-6 hidden transition-transform group-hover/playbtn:scale-105" />
           </button>
           
-          <button onclick="playNext()" class="p-1 hover:text-neutral-800 dark:hover:text-white transition-colors cursor-pointer active:scale-90 flex items-center justify-center" title="下一首">
+          <button onclick="playNext()" class="p-1 hover:text-neutral-800 dark:hover:text-white fluid-link cursor-pointer active:scale-90 flex items-center justify-center" title="下一首">
             <Icon name="play-next" class="w-5 h-5" />
           </button>
         </div>
@@ -239,7 +239,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- 分类卡片 -->
-  <div class="pt-5 px-5 pb-4 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="pt-5 px-5 pb-4 glass-card glass-card-dark">
     
 
   <div class="flex items-center justify-between px-1 pt-0.5 pb-4 select-none">
@@ -295,7 +295,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- 一言卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="p-6 glass-card glass-card-dark">
     
     <div class="flex gap-4 items-start min-h-[100px]">
       
@@ -308,7 +308,7 @@ import { Icon } from 'astro-icon/components';
         </p>
         
         <div class="flex items-center justify-between border-t border-black/6 dark:border-white/6 pt-3 mt-4">
-          <span class="text-[10px] font-bold tracking-widest text-text-light/40 dark:text-text-dark/40 uppercase ">HITO</span>
+          <span class="text-[10px] font-bold tracking-widest text-dim uppercase ">HITO</span>
           <p class="hitokoto-from text-xs text-text-light/60 dark:text-text-dark/60 font-light tracking-wide min-h-[1em]"></p>
         </div>
         
@@ -318,7 +318,7 @@ import { Icon } from 'astro-icon/components';
   </div>
 
   <!-- 最近在看卡片 -->
-  <div class="p-6 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+  <div class="p-6 glass-card glass-card-dark">
     
     <!-- 顶部标题栏 - 加号方块解构 -->
     <div class="flex items-center justify-between mb-4">

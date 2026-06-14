@@ -218,7 +218,7 @@ import { Icon } from 'astro-icon/components';
       ` : '';
 
       return `
-        <article class="group bg-card-light dark:bg-card-dark rounded-2xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark cursor-pointer" onclick="window.location.href='/tonight?idx=${originalIndex}'">
+        <article class="group bg-card-light dark:bg-card-dark rounded-2xl shadow-sm fluid-card overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark cursor-pointer" onclick="window.location.href='/tonight?idx=${originalIndex}'">
           <div class="relative aspect-[3/4] overflow-hidden bg-hover-light dark:bg-hover-dark rounded-t-2xl">
             <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 will-change-transform" loading="lazy" />
             ${ratingsHtml}
@@ -248,7 +248,7 @@ import { Icon } from 'astro-icon/components';
       <div class="flex justify-center items-center mt-12 mb-8 px-4">
         <nav class="flex items-center gap-1 md:gap-2" aria-label="分页导航">
           ${currentPage > 1 ? `
-            <button onclick="window.goToPage(${currentPage - 1})" class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-primary-light/5 hover:border-primary-light dark:hover:border-primary-dark transition-all duration-300" title="上一页">
+            <button onclick="window.goToPage(${currentPage - 1})" class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-primary-light/5 hover:border-primary-light dark:hover:border-primary-dark fluid-card" title="上一页">
               <svg class="w-5 h-5 md:-ml-1 md:mr-1 group-hover:-translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15 19l-7-7 7-7"></path></svg>
               <span class="hidden md:inline font-medium text-sm">上一页</span>
             </button>
@@ -272,7 +272,7 @@ import { Icon } from 'astro-icon/components';
           </div>
 
           ${currentPage < totalPages ? `
-            <button onclick="window.goToPage(${currentPage + 1})" class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-primary-light/5 hover:border-primary-light dark:hover:border-primary-dark transition-all duration-300" title="下一页">
+            <button onclick="window.goToPage(${currentPage + 1})" class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-primary-light/5 hover:border-primary-light dark:hover:border-primary-dark fluid-card" title="下一页">
               <span class="hidden md:inline font-medium text-sm">下一页</span>
               <svg class="w-5 h-5 md:-mr-1 md:ml-1 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M9 5l7 7-7 7"></path></svg>
             </button>
@@ -299,7 +299,7 @@ import { Icon } from 'astro-icon/components';
 
 <MainLayout title={pageTitle} description={pageDescription}>
   <div id="watching-bridge" data-list={Buffer.from(JSON.stringify(watchingList)).toString('base64')} hidden aria-hidden="true"></div>
-  <section class="max-w-[1340px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <section class="section-container py-16">
     <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
       <div class="hidden md:block">
         <div class="space-y-6">
@@ -311,7 +311,7 @@ import { Icon } from 'astro-icon/components';
       </div>
 
       <div>
-        <div class="p-8 bg-card-light dark:bg-card-dark rounded-3xl shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 mb-6 border border-transparent hover:border-border-light dark:hover:border-border-dark">
+        <div class="p-8 glass-card glass-card-dark mb-6">
           <h1 class="text-3xl font-bold text-text-light dark:text-text-dark mb-2">{pageTitle}</h1>
           <p class="text-text-light/70 dark:text-text-dark/70">
             {pageDescription}

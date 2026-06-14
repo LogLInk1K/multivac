@@ -20,7 +20,7 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <MainLayout title="全部分类" description="查看博客的所有分类">
-  <section class="max-w-[1340px] mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+  <section class="section-container pt-24 pb-16">
     <div class="max-w-3xl mx-auto">
       <h1 class="text-4xl font-bold text-text-light dark:text-text-dark mb-8 text-center">全部分类</h1>
       <div class="flex flex-wrap gap-4 justify-center">
@@ -29,7 +29,7 @@ import { Icon } from 'astro-icon/components';
           return (
             <a
               href={`/categories/${category}`}
-              class="group relative inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-card-light dark:bg-card-dark hover:shadow-lg hover:-translate-y-1 transition-all duration-300 will-change-transform"
+              class="group relative inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-card-light dark:bg-card-dark fluid-card will-change-transform"
             >
               <div class="flex items-center gap-3">
                 <Icon name="folder" class="w-5 h-5 text-primary-light dark:text-primary-dark" />

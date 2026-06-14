@@ -11,7 +11,7 @@ import { Icon } from 'astro-icon/components';
 >
     <nav 
         id="nav-container"
-        class="relative max-w-[calc(100%-40px)] md:max-w-[calc(100%-40px)] xl:max-w-[1300px] mx-auto flex items-center transition-all duration-500 ease-in-out border-b border-transparent px-4 sm:px-6 lg:px-8 py-4"
+        class="relative max-w-[calc(100%-40px)] md:max-w-[calc(100%-40px)] xl:max-w-[1340px] mx-auto flex items-center transition-all duration-500 ease-in-out border-b border-transparent px-4 sm:px-6 lg:px-8 py-4"
     >
 		<div
 			id="nav-bg"
@@ -59,7 +59,7 @@ import { Icon } from 'astro-icon/components';
         <div class="flex-1 flex justify-end items-center shrink-0">
             <button 
                 onclick="window.openSearchModal()" 
-                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-2"
+                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-3"
                 aria-label="搜索"
             >
                 <Icon name="search" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
@@ -70,25 +70,28 @@ import { Icon } from 'astro-icon/components';
                     </div>
                 </div>
             </button>
-            <div id="theme-toggle-container" class="flex items-center mr-0 transition-all duration-300">
+            <div id="theme-toggle-container" class="flex items-center">
                 <ThemeToggle />
             </div>
-            <div
-                id="scroll-counter"
-                class="inline-flex items-center justify-center h-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 opacity-0 overflow-hidden mr-0"
-                style="width: 1.75rem; transform: scale(0) translateZ(0); transform-origin: center center; perspective: 1000px;"
-                onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-            >
-                <span id="scroll-value" class="px-1.5 whitespace-nowrap" style="transform: translateZ(0);">0</span>
-                <span
-                    id="scroll-arrow"
-                    class="hidden px-2 text-sm font-sans whitespace-nowrap"
-                >
-                    <span class="md:hidden flex items-center justify-center">
-                        <Icon name="chevron-up" class="w-4 h-4" />
-                    </span>
-                    <span class="hidden md:inline">返回顶部</span>
-                </span>
+            <div id="scroll-counter-wrap" class="grid-counter-flow">
+                <div class="min-w-0 ml-3">
+                    <div
+                        id="scroll-counter"
+                        class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 overflow-hidden whitespace-nowrap"
+                        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                    >
+                        <span id="scroll-value" class="px-1.5">0</span>
+                        <span
+                            id="scroll-arrow"
+                            class="hidden px-2 text-sm font-sans whitespace-nowrap"
+                        >
+                            <span class="md:hidden flex items-center justify-center">
+                                <Icon name="chevron-up" class="w-4 h-4" />
+                            </span>
+                            <span class="hidden md:inline">返回顶部</span>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -226,11 +229,10 @@ import { Icon } from 'astro-icon/components';
     function initHeader() {
         const nav = document.getElementById('nav-container');
         const navBg = document.getElementById('nav-bg');
+        const scrollCounterWrap = document.getElementById('scroll-counter-wrap');
         const scrollCounter = document.getElementById('scroll-counter');
         const scrollValue = document.getElementById('scroll-value');
         const scrollArrow = document.getElementById('scroll-arrow');
-        const themeToggleContainer = document.getElementById('theme-toggle-container');
-        const themeToggleButton = document.getElementById('theme-toggle-btn');
         const navLinks = document.getElementById('nav-links');
         const pageTitle = document.getElementById('page-title');
         const menuTriggerBtn = document.getElementById('menu-trigger-btn');
@@ -256,8 +258,8 @@ import { Icon } from 'astro-icon/components';
                 const leftPos = rect.left - navRect.left - 20;
                 menuPanel.style.left = `${leftPos}px`;
                 menuPanel.style.marginTop = '70px';
-                menuPanel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-                menuPanel.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
+                menuPanel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
+                menuPanel.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
                 isMenuOpen = true;
                 
                 // 清除圆形背景的内联样式，让CSS类重新生效
@@ -269,8 +271,8 @@ import { Icon } from 'astro-icon/components';
             };
 
             const hideMenu = () => {
-                menuPanel.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-                menuPanel.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                menuPanel.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
+                menuPanel.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
                 isMenuOpen = false;
                 
                 // 清除触摸激活定时器并移除触摸点击状态
@@ -351,7 +353,7 @@ import { Icon } from 'astro-icon/components';
             const scrollDirection = lastScrollDirection;
             
             if (scrollY > 20) {
-                nav?.classList.remove('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1300px]', 'px-4', 'sm:px-6', 'lg:px-8');
+                nav?.classList.remove('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1340px]', 'px-4', 'sm:px-6', 'lg:px-8');
                 nav?.classList.add('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
                 navBg?.classList.replace('opacity-0', 'opacity-100');
                 
@@ -368,7 +370,7 @@ import { Icon } from 'astro-icon/components';
                     pageTitle?.classList.remove('translate-y-0');
                 }
             } else {
-                nav?.classList.add('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1300px]', 'px-4', 'sm:px-6', 'lg:px-8');
+                nav?.classList.add('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1340px]', 'px-4', 'sm:px-6', 'lg:px-8');
                 nav?.classList.remove('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
                 navBg?.classList.replace('opacity-100', 'opacity-0');
                 navLinks?.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
@@ -376,40 +378,26 @@ import { Icon } from 'astro-icon/components';
                 pageTitle?.classList.add('opacity-0', 'pointer-events-none');
             }
 
-            if (scrollCounter && scrollValue && scrollArrow && themeToggleContainer && themeToggleButton) {
+            if (scrollCounterWrap && scrollCounter && scrollValue && scrollArrow) {
                 const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
                 const scrollPercent = scrollHeight > 0 ? Math.min(1, scrollY / scrollHeight) : 0;
                 const displayValue = Math.floor(scrollPercent * 99);
 
                 if (scrollY > 20) {
-                    // 显示滚动计数器
-                    scrollCounter.classList.remove('opacity-0', 'mr-0');
-                    scrollCounter.classList.add('opacity-100', 'mr-1');
-                    scrollCounter.style.transform = 'scale(1) translateZ(0)';
-                    themeToggleContainer.classList.remove('mr-0', '-mr-2');
-                    themeToggleContainer.classList.add('mr-2');
-                    themeToggleButton.classList.remove('-mr-2');
+                    // 展开计数器轨道
+                    scrollCounterWrap.classList.add('is-scrolled');
 
                     if (displayValue >= 90) {
                         scrollValue.classList.add('hidden');
                         scrollArrow.classList.remove('hidden');
-                        // 小屏幕不拓宽，大中屏幕拓宽
-                        scrollCounter.style.width = window.innerWidth >= 768 ? '5rem' : '1.75rem';
                     } else {
                         scrollValue.classList.remove('hidden');
                         scrollArrow.classList.add('hidden');
-                        scrollCounter.style.width = '1.75rem';
                         scrollValue.textContent = displayValue.toString();
                     }
                 } else {
-                    // 隐藏滚动计数器
-                    scrollCounter.classList.add('opacity-0', 'mr-0');
-                    scrollCounter.classList.remove('opacity-100', 'mr-1');
-                    scrollCounter.style.transform = 'scale(0) translateZ(0)';
-                    scrollCounter.style.width = '0';
-                    themeToggleContainer.classList.remove('mr-2');
-                    themeToggleContainer.classList.add('mr-0', '-mr-2');
-                    themeToggleButton.classList.add('-mr-2');
+                    // 收起计数器轨道
+                    scrollCounterWrap.classList.remove('is-scrolled');
                 }
             }
         }

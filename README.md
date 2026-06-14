@@ -2,9 +2,9 @@
 
 > 一款基于 Astro 和 Tailwind CSS 构建的纯静态个人博客，支持深色模式、动态说说、友链管理等功能
 
-![Astro](https://img.shields.io/badge/Astro-5.18+-BC52EE?logo=astro&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwind-css&logoColor=white)
+![Astro](https://img.shields.io/badge/Astro-6.4+-BC52EE?logo=astro&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.3-06B6D4?logo=tailwind-css&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
@@ -71,9 +71,9 @@
 
 | 层级 | 技术 |
 |------|------|
-| 框架 | [Astro 5](https://astro.build) — 静态站点生成，Content Collections |
-| 样式 | [Tailwind CSS 3](https://tailwindcss.com) + @tailwindcss/typography + PostCSS Nesting |
-| 语言 | TypeScript 5.9 |
+| 框架 | [Astro 6](https://astro.build) — 静态站点生成，Content Collections |
+| 样式 | [Tailwind CSS 4](https://tailwindcss.com) + @tailwindcss/typography + @tailwindcss/vite |
+| 语言 | TypeScript 6 |
 | 内容 | Markdown / MDX / YAML |
 | 加密 | Web Crypto API (AES-256-GCM + PBKDF2, 600k iterations) |
 | 评论 | [Twikoo](https://twikoo.js.org) — 懒加载，路由切换自动重挂载 |

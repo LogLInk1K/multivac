@@ -59,7 +59,7 @@ import { Icon } from 'astro-icon/components';
         <div class="flex-1 flex justify-end items-center shrink-0">
             <button 
                 onclick="window.openSearchModal()" 
-                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-3"
+                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-1"
                 aria-label="搜索"
             >
                 <Icon name="search" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
@@ -85,10 +85,9 @@ import { Icon } from 'astro-icon/components';
                             id="scroll-arrow"
                             class="hidden px-2 text-sm font-sans whitespace-nowrap"
                         >
-                            <span class="md:hidden flex items-center justify-center">
+                            <span class="flex items-center justify-center">
                                 <Icon name="chevron-up" class="w-4 h-4" />
                             </span>
-                            <span class="hidden md:inline">返回顶部</span>
                         </span>
                     </div>
                 </div>

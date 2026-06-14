@@ -250,6 +250,30 @@ html.dark .bg-glow__orb--3 {
   }
 }
 
+/* 流体图标按钮：hover 时放大 + 增强阴影 */
+@utility fluid-icon {
+  will-change: transform;
+  transition-property: scale, box-shadow, background-color, border-color;
+  transition-duration: 300ms;
+  transition-timing-function: var(--ease-gentle);
+  &:hover {
+    scale: 1.1;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* 侧栏按钮组：聚光灯效果 — hover 时其余按钮降低透明度（排除隐藏按钮） */
+@utility sidebar-icon-group {
+  &:has(> :hover) > *:not(:hover):not(.opacity-0) {
+    opacity: 0.4;
+  }
+  & > * {
+    transition-property: opacity, scale, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: var(--ease-gentle);
+  }
+}
+
 /* 流体链接：颜色 + 透明度丝滑过渡 */
 @utility fluid-link {
   transition-property: color, opacity;

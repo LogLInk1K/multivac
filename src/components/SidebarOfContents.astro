@@ -9,7 +9,7 @@ import { Icon } from 'astro-icon/components';
 <!-- 侧边功能图标组 - 与目录水平对称 -->
 <div
   id="sidebar-of-contents"
-  class="hidden xl:flex fixed top-1/2 -translate-y-1/2 left-[max(4rem,calc((100vw-1340px)/2-2rem))] z-40 flex-col gap-4"
+  class="hidden xl:flex fixed top-1/2 -translate-y-1/2 left-[max(4rem,calc((100vw-1340px)/2-2rem))] z-40 flex-col gap-4 sidebar-icon-group"
 >
   <!-- 返回上一页按钮 -->
   <div
@@ -25,7 +25,7 @@ import { Icon } from 'astro-icon/components';
       <div class="absolute right-[-5px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[5px] border-l-card-light dark:border-l-card-dark"></div>
     </div>
     <!-- 圆形背景 + 向左箭头图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/40 dark:group-hover/bar:border-primary-dark/40 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/40 dark:group-hover/bar:border-primary-dark/40 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="chevron-left" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>
@@ -67,7 +67,7 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <!-- 圆形背景 + 分享图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="share" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>
@@ -123,7 +123,7 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <!-- 圆形背景 + 打赏图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="heart" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>
@@ -185,7 +185,7 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <!-- 圆形背景 + 订阅图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="bell" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>
@@ -204,7 +204,7 @@ import { Icon } from 'astro-icon/components';
       <div class="absolute right-[-5px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[5px] border-l-card-light dark:border-l-card-dark"></div>
     </div>
     <!-- 圆形背景 + 评论图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="comment" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>
@@ -223,7 +223,7 @@ import { Icon } from 'astro-icon/components';
       <div class="absolute right-[-5px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[5px] border-l-card-light dark:border-l-card-dark"></div>
     </div>
     <!-- 圆形背景 + 向上箭头图标 -->
-    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-card shadow-md hover:shadow-lg">
+    <div class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark flex items-center justify-center group-hover/bar:bg-primary-light/10 dark:group-hover/bar:bg-primary-dark/10 group-hover/bar:border-primary-light/30 dark:group-hover/bar:border-primary-dark/30 fluid-icon shadow-md hover:shadow-lg">
       <Icon name="chevron-up" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover/bar:text-primary-light dark:group-hover/bar:text-primary-dark transition-all duration-300" is:inline />
     </div>
   </div>

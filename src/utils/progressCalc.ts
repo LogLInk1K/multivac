@@ -112,7 +112,7 @@ export function calcAllProgress(): ProgressItem[] {
       title: '七曜',
       subtitle: '本周',
       progress: weekProgress,
-      footerLeft: `星期${WEEKDAY_NAMES[dayOffset]}`,
+      footerLeft: `星期${WEEKDAY_NAMES[now.getDay()]}`,
       footerRight: `余 ${weekDaysLeft} 天`,
       icon: ICONS.week,
     },

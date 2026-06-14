@@ -70,7 +70,7 @@ import { Icon } from 'astro-icon/components';
               </div>
               <div class="text-center">
                 <p class="text-black/30 dark:text-white/30 text-xs font-mono tracking-widest mb-1.5">{dateStr} · 周{weekDay}</p>
-                <p class="text-black/50 dark:text-white/60 text-sm font-medium">执行随机扰动以开始</p>
+                <p id="tarot-front-hint" class="text-black/50 dark:text-white/60 text-sm font-medium">执行随机扰动以开始</p>
               </div>
             </div>
           </div>
@@ -116,12 +116,7 @@ import { Icon } from 'astro-icon/components';
         </div>
       </div>
 
-      <div id="tarot-actions" class="mt-8 flex items-center justify-center gap-3 opacity-0 transition-opacity duration-500">
-        <button id="tarot-redraw" class="group flex items-center gap-2 px-5 py-2 rounded-full font-mono text-xs bg-black/3 dark:bg-white/5 border border-black/6 dark:border-white/10 hover:border-blue-400/40 dark:hover:border-sky-400/30 hover:bg-blue-50/30 dark:hover:bg-sky-400/5 transition-all duration-300 text-black/40 dark:text-white/50 hover:text-blue-600 dark:hover:text-sky-400">
-          <Icon name="refresh" class="w-3.5 h-3.5 transition-transform duration-700 group-hover:rotate-180" />
-          rerun_random_seed()
-        </button>
-      </div>
+      <p id="tarot-hint" class="mt-6 text-black/40 dark:text-white/40 text-xs tracking-widest opacity-0 transition-opacity duration-500 select-none text-center">点击牌面重新抽牌</p>
 
       <div id="tarot-particles" class="tarot-particles"></div>
     </div>
@@ -132,23 +127,44 @@ import { Icon } from 'astro-icon/components';
   function initTarot() {
     const scene = document.getElementById('tarot-scene');
     const cardEl = document.getElementById('fortune-card');
-    const actions = document.getElementById('tarot-actions');
     const particles = document.getElementById('tarot-particles');
     const dataEl = document.getElementById('tarot-data') as HTMLElement;
     let flipped = false;
+    let animating = false;
 
     if (!cardEl || !scene || !dataEl) return;
 
     const cards = JSON.parse(dataEl.dataset.cards || '[]');
 
     scene.addEventListener('click', () => {
-      if (flipped) return;
-      flipped = true;
-      cardEl.classList.add('flipped');
+      if (animating) return;
+      animating = true;
 
-      setTimeout(() => {
-        if (actions) actions.style.opacity = '1';
-      }, 400);
+      if (!flipped) {
+        // 首次：直接翻转
+        flipped = true;
+        cardEl.classList.add('flipped');
+        animating = false;
+        // 显示可再次点击的提示
+        const hint = document.getElementById('tarot-hint');
+        if (hint) hint.classList.add('visible');
+        // 更新正面文案（翻转动画结束后再换）
+        const frontHint = document.getElementById('tarot-front-hint');
+        if (frontHint) setTimeout(() => { frontHint.textContent = '命运尚有另一面'; }, 600);
+      } else {
+        // 已翻转：翻回正面 → 换牌 → 再翻转
+        cardEl.classList.remove('flipped');
+
+        setTimeout(() => {
+          const data = generateTarot();
+          updateCard(data);
+
+          setTimeout(() => {
+            cardEl.classList.add('flipped');
+            animating = false;
+          }, 300);
+        }, 400);
+      }
     });
 
     function generateTarot() {
@@ -213,26 +229,6 @@ import { Icon } from 'astro-icon/components';
 
     // 第一次打开运行单次覆写以防止服务端和客户端渲染冲突
     updateCard(generateTarot());
-
-    const redrawBtn = document.getElementById('tarot-redraw');
-    if (redrawBtn) {
-      redrawBtn.addEventListener('click', () => {
-        if (!cardEl) return;
-
-        cardEl.classList.remove('flipped');
-        flipped = false;
-
-        setTimeout(() => {
-          const data = generateTarot();
-          updateCard(data);
-
-          setTimeout(() => {
-            flipped = true;
-            cardEl.classList.add('flipped');
-          }, 300);
-        }, 400);
-      });
-    }
 
     if (particles && particles.childElementCount === 0) {
       for (let i = 0; i < 20; i++) {
@@ -312,6 +308,11 @@ import { Icon } from 'astro-icon/components';
     10%, 90% { opacity: 1; }
     50% { transform: translateY(-20px); }
   }
+  @keyframes hint-breathe {
+    0%, 100% { opacity: 0; }
+    30%, 70% { opacity: 1; }
+  }
+  #tarot-hint.visible { animation: hint-breathe 3s ease-in-out infinite; }
   .tarot-scene:hover .tarot-face-front { border-color: rgba(59,130,246,0.15); }
   .tarot-scene:hover .tarot-card-inner:not(.flipped) { transform: translateY(-1px); }
   .tarot-card-bg-text { transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); font-family: system-ui, -apple-system, sans-serif; }

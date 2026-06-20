@@ -60,11 +60,13 @@ const emojiFiles = ['cool', 'cat', 'yummy', 'cry', 'nerd', 'laugh'];
 <link rel="preconnect" href="https://registry.npmmirror.com" />
 <link rel="preconnect" href="https://twikoo.1k.ink" />
 
-<!-- Twikoo base styles (keep persistent under ViewTransitions) -->
-<link rel="stylesheet" href="/libs/twikoo/twikoo-base.css" data-astro-transition-persist />
+<!-- Twikoo base styles: async load (below-fold, non-render-blocking) -->
+<link rel="stylesheet" href="/libs/twikoo/twikoo-base.css" media="print" onload="this.media='all'" data-astro-transition-persist />
+<noscript><link rel="stylesheet" href="/libs/twikoo/twikoo-base.css" /></noscript>
 
-<!-- APlayer (用于实际播放功能，但隐藏默认界面) -->
-<link rel="stylesheet" href="/libs/aplayer/APlayer.min.css" />
+<!-- APlayer styles: async load (below-fold, non-render-blocking) -->
+<link rel="stylesheet" href="/libs/aplayer/APlayer.min.css" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="/libs/aplayer/APlayer.min.css" /></noscript>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

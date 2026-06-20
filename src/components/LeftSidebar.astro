@@ -73,7 +73,7 @@ const sortedCategories = Object.entries(categories).sort((a, b) => b[1] - a[1]);
 import { Icon } from 'astro-icon/components';
 ---
 
-<aside class="hidden md:block w-[272px] space-y-6">
+<aside transition:persist="left-sidebar" class="hidden md:block w-[272px] space-y-6">
   <!-- 个人信息卡片 -->
   <div class="p-4 h-[300px] bg-primary-light dark:bg-primary-dark rounded-3xl shadow-sm fluid-card matrix-card relative overflow-hidden border border-transparent hover:border-border-light dark:hover:border-border-dark">
     <!-- 顶部：醉后不知天在水 文本 -->

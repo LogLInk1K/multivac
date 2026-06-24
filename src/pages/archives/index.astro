@@ -4,11 +4,16 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import LeftSidebar from '../../components/LeftSidebar.astro';
 import RightSidebar from '../../components/RightSidebar.astro';
 import ArchiveItem from '../../components/ArchiveItem.astro';
+import Pagination from '../../components/Pagination.astro';
 import { SITE_DESCRIPTION} from '../../consts';
 
-const posts = (await getCollection('post', ({ data }) => !data.draft && !data.friends && !data.friendGroups && !data.moments)).sort(
+const allPosts = (await getCollection('post', ({ data }) => !data.draft && !data.friends && !data.friendGroups && !data.moments)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const postsPerPage = 13;
+const totalPages = Math.ceil(allPosts.length / postsPerPage);
+const posts = allPosts.slice(0, postsPerPage);
 
 const postsByYear = posts.reduce((acc, post) => {
 	const year = post.data.pubDate.getFullYear();
@@ -49,6 +54,8 @@ const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 							</div>
 						))}
 					</div>
+
+					<Pagination currentPage={1} totalPages={totalPages} basePath="/archives" />
 				</div>
 			</div>
 	</section>

@@ -78,17 +78,15 @@ import { Icon } from 'astro-icon/components';
                 <div class="min-w-0 ml-3">
                     <div
                         id="scroll-counter"
-                        class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 overflow-hidden whitespace-nowrap"
+                        class="relative grid place-items-center h-7 w-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 overflow-hidden whitespace-nowrap"
                         onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
                     >
-                        <span id="scroll-value" class="px-1.5">0</span>
+                        <span id="scroll-value" class="absolute inset-0 flex items-center justify-center will-change-[transform,opacity]">0</span>
                         <span
                             id="scroll-arrow"
-                            class="hidden px-2 text-sm font-sans whitespace-nowrap"
+                            class="absolute inset-0 flex items-center justify-center opacity-0 will-change-[transform,opacity]"
                         >
-                            <span class="flex items-center justify-center">
-                                <Icon name="chevron-up" class="w-4 h-4" />
-                            </span>
+                            <Icon name="chevron-up" class="w-4 h-4" />
                         </span>
                     </div>
                 </div>
@@ -206,6 +204,25 @@ import { Icon } from 'astro-icon/components';
         a[href]:focus-visible {
             outline: none !important;
             box-shadow: none !important;
+        }
+
+        /* 果冻弹入动画 */
+        @keyframes jelly-in {
+            0% { transform: scale(0) translateY(8px) rotate(45deg); opacity: 0; }
+            50% { transform: scale(1.25) translateY(-2px) rotate(-5deg); opacity: 1; }
+            70% { transform: scale(0.9) translateY(1px) rotate(2deg); opacity: 1; }
+            85% { transform: scale(1.08) translateY(-1px) rotate(-1deg); opacity: 1; }
+            100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
+        }
+        @keyframes jelly-out {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(0.7) translateY(-4px); opacity: 0; }
+        }
+        #scroll-arrow.jelly-in {
+            animation: jelly-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        #scroll-value.jelly-out {
+            animation: jelly-out 120ms ease-in forwards;
         }
 
         /* 菜单按钮触摸屏点击状态 */
@@ -388,16 +405,25 @@ import { Icon } from 'astro-icon/components';
                     scrollCounterWrap.classList.add('is-scrolled');
 
                     if (displayValue >= 90) {
-                        scrollValue.classList.add('hidden');
-                        scrollArrow.classList.remove('hidden');
+                        if (!scrollValue.classList.contains('jelly-out')) {
+                            scrollValue.classList.add('jelly-out');
+                            scrollArrow.classList.remove('jelly-in');
+                            // 强制重排以重新触发动画
+                            void scrollArrow.offsetWidth;
+                            scrollArrow.classList.add('jelly-in');
+                        }
                     } else {
-                        scrollValue.classList.remove('hidden');
-                        scrollArrow.classList.add('hidden');
+                        if (scrollValue.classList.contains('jelly-out')) {
+                            scrollValue.classList.remove('jelly-out');
+                            scrollArrow.classList.remove('jelly-in');
+                        }
                         scrollValue.textContent = displayValue.toString();
                     }
                 } else {
                     // 收起计数器轨道
                     scrollCounterWrap.classList.remove('is-scrolled');
+                    scrollValue.classList.remove('jelly-out');
+                    scrollArrow.classList.remove('jelly-in');
                 }
             }
         }

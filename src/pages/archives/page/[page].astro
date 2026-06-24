@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../../layouts/MainLayout.astro';
+import LeftSidebar from '../../../components/LeftSidebar.astro';
+import RightSidebar from '../../../components/RightSidebar.astro';
+import ArchiveItem from '../../../components/ArchiveItem.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { SITE_DESCRIPTION } from '../../../consts';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('post', ({ data }) => !data.draft && !data.friends && !data.friendGroups && !data.moments)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+
+  const postsPerPage = 13;
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+
+  const paths = [];
+  for (let page = 2; page <= totalPages; page++) {
+    paths.push({
+      params: { page: String(page) },
+      props: { posts, totalPages },
+    });
+  }
+  return paths;
+}
+
+const { posts, totalPages } = Astro.props;
+const currentPage = Number(Astro.params.page) || 1;
+const postsPerPage = 13;
+const startIndex = (currentPage - 1) * postsPerPage;
+const pagePosts = posts.slice(startIndex, startIndex + postsPerPage);
+
+const postsByYear = pagePosts.reduce((acc, post) => {
+  const year = post.data.pubDate.getFullYear();
+  if (!acc[year]) {
+    acc[year] = [];
+  }
+  acc[year].push(post);
+  return acc;
+}, {} as Record<number, typeof pagePosts>);
+
+const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
+---
+
+<MainLayout title={`文稿 - 第 ${currentPage} 页`} description={SITE_DESCRIPTION}>
+  <section class="section-container py-16">
+    <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
+      <div class="hidden md:block">
+        <div class="space-y-6">
+          <LeftSidebar />
+          <div class="md:block">
+            <RightSidebar />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="space-y-6">
+          {sortedYears.map((year) => (
+            <div class="p-6 glass-card glass-card-dark">
+              <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{year}</h2>
+              {postsByYear[year].map((post) => (
+                <ArchiveItem key={post.id} post={post} />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/archives" />
+      </div>
+    </div>
+  </section>
+</MainLayout>

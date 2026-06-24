@@ -48,8 +48,7 @@ export default defineConfig({
       external: ['node:fs', 'node:path'],
     },
     build: {
-      // 保持 esbuild，它的速度与 Astro 最契合，二次压缩交给 astro-compress
-      minify: 'esbuild',
+      minify: true, 
       cssMinify: true,
     },
   },

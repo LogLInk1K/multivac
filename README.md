@@ -1,8 +1,8 @@
 # Multivac
 
-> 一款基于 Astro v6 和 Tailwind CSS v4 构建的纯静态个人博客，支持深色模式、动态说说、友链管理等功能
+> 一款基于 Astro v7 和 Tailwind CSS v4 构建的纯静态个人博客，支持深色模式、动态说说、友链管理等功能
 
-![Astro](https://img.shields.io/badge/Astro-v6-BC52EE?logo=astro&logoColor=white)
+![Astro](https://img.shields.io/badge/Astro-v7-BC52EE?logo=astro&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwind-css&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-v6-3178C6?logo=typescript&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -71,7 +71,7 @@
 
 | 层级 | 技术 |
 |------|------|
-| 框架 | [Astro 6](https://astro.build) — 静态站点生成，Content Collections |
+| 框架 | [Astro 7](https://astro.build) — 静态站点生成，Content Collections |
 | 样式 | [Tailwind CSS v4](https://tailwindcss.com) + @tailwindcss/typography + @tailwindcss/vite |
 | 语言 | TypeScript 6|
 | 内容 | Markdown / MDX / YAML |

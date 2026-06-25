@@ -7,6 +7,7 @@
 @theme {
   /* 字体 */
   --font-sans: 'Inter Variable', 'SF Pro Display', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-plus-jakarta: 'Plus Jakarta Sans', 'Inter Variable', sans-serif;
 
   /* 自定义字重 */
   --font-weight-510: 510;
@@ -199,6 +200,14 @@ html.dark .bg-glow__orb--3 {
   src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/PlusJakartaSans-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
   font-display: swap;
 }
 

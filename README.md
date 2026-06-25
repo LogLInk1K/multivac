@@ -16,7 +16,7 @@
 - **零框架水合** — 纯 Astro 组件 + 原生 `<script>`，无 React/Vue 运行时开销，交互逻辑按需加载
 - **深色模式** — 跟随系统 / 手动切换，View Transitions API 圆形扩散过渡动画，路由切换无闪烁
 - **响应式三栏布局** — 大屏三栏（左栏 + 内容 + 右栏），中屏两栏，小屏单栏，自适应折叠
-- **资源压缩** — astro-compress 压缩 HTML/CSS/JS/SVG
+- **资源压缩** — Vite 内置压缩（HTML/CSS/JS）
 - **预取策略** — 视口内链接自动预取（`defaultStrategy: viewport`），避免全量预取抢占带宽
 - **RSS & Sitemap** — 自动生成订阅源和站点地图
 
@@ -73,7 +73,7 @@
 |------|------|
 | 框架 | [Astro 7](https://astro.build) — 静态站点生成，Content Collections |
 | 样式 | [Tailwind CSS v4](https://tailwindcss.com) + @tailwindcss/typography + @tailwindcss/vite |
-| 语言 | TypeScript 6|
+| 语言 | TypeScript 6 |
 | 内容 | Markdown / MDX / YAML |
 | 加密 | Web Crypto API (AES-256-GCM + PBKDF2, 600k iterations) |
 | 评论 | [Twikoo](https://twikoo.js.org) — 懒加载，路由切换自动重挂载 |
@@ -81,7 +81,7 @@
 | 音乐 | [APlayer](https://aplayer.js.org) — 网易云歌单 |
 | 图标 | astro-icon (SVG sprite) |
 | 字体 | Inter Variable (西文) + Plus Jakarta Sans (Logo) + 系统中文回退 |
-| 压缩 | astro-compress (HTML/CSS/JS/SVG) |
+| 压缩 | Vite 内置 minify（HTML/CSS/JS） |
 | 部署 | Vercel (SSG + Web Analytics) / Cloudflare Pages / 通用静态托管 |
 
 ## 项目结构
@@ -146,7 +146,7 @@ site/
 │   ├── scripts/
 │   │   └── crypto.ts              # AES-256-GCM 加密/解密（PBKDF2 派生密钥）
 │   ├── styles/
-│   │   ├── global.css             # 全局样式 + 背景光晕 + 滚动条
+│   │   ├── global.css             # @theme 主题配置 + 全局样式 + 背景光晕 + 滚动条
 │   │   ├── markdown.css           # Markdown 排版样式
 │   │   └── twikoo.css             # Twikoo 评论自定义样式
 │   ├── utils/
@@ -157,9 +157,7 @@ site/
 │   └── content.config.ts          # Content Collections Schema 定义
 ├── scripts/
 │   └── backup.ts                  # 私有内容备份脚本（同步至 GitHub 私有仓库）
-├── astro.config.ts               # Astro 配置（集成/压缩/适配器/预取）
-├── tailwind.config.js             # 主题色/字体/字号体系/暗色模式
-├── postcss.config.js              # PostCSS (autoprefixer + nesting)
+├── astro.config.ts               # Astro 配置（集成/适配器/预取）
 ├── tsconfig.json                  # TypeScript 配置
 ├── vercel.json                    # Vercel 缓存策略
 ├── .env.example                   # 环境变量示例文件
@@ -322,21 +320,30 @@ export default defineConfig({
 
 ### 主题色 & 字体
 
-`tailwind.config.js`：
+`src/styles/global.css`：
 
-```javascript
-colors: {
-  primary:    { light: '#425aef', dark: '#ffc848' },   // 主色
-  background: { light: '#f7f9fe', dark: '#000000' },   // 背景
-  text:       { light: '#1F2937', dark: '#FFFFFF' },    // 文本
-  card:       { light: 'rgba(255,255,255,0.55)', dark: 'rgba(255,255,255,0.04)' },
-  border:     { light: 'rgba(0,0,0,0.06)', dark: 'rgba(255,255,255,0.08)' },
-  hover:      { light: '#F1F5F9', dark: '#2A2A2A' },
-  // ...更多
-},
-fontFamily: {
-  sans: ['Inter Variable', 'PingFang SC', 'Microsoft YaHei', ...],
-},
+```css
+@theme {
+  /* 字体 */
+  --font-sans: 'Inter Variable', 'SF Pro Display', '-apple-system', 'PingFang SC',
+               'Microsoft YaHei', 'Source Han Sans SC', sans-serif;
+  --font-plus-jakarta: 'Plus Jakarta Sans', 'Inter Variable', sans-serif;  /* Logo 专用 */
+
+  /* 主题色 */
+  --color-primary-light: #425aef;
+  --color-primary-dark: #ffc848;
+  --color-background-light: #f7f9fe;
+  --color-background-dark: #000000;
+  --color-text-light: #1F2937;
+  --color-text-dark: #FFFFFF;
+  --color-card-light: rgba(255, 255, 255, 0.55);
+  --color-card-dark: rgba(255, 255, 255, 0.04);
+  --color-border-light: rgba(0, 0, 0, 0.06);
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-hover-light: #F1F5F9;
+  --color-hover-dark: #2A2A2A;
+  /* ...更多 */
+}
 ```
 
 ### 评论系统

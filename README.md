@@ -88,80 +88,80 @@
 
 ```
 site/
-├── post/                          # 内容目录（.gitignore 忽略私有文章）
-│   └── example/                   # 示例文章（仅 Dev 可见，Build 自动剔除）
+├── post/                           # 内容目录（.gitignore 忽略私有文章）
+│   └── example/                    # 示例文章（仅 Dev 可见，Build 自动剔除）
 ├── public/
-│   ├── fonts/                     # Inter Variable, Plus Jakarta Sans (woff2)
-│   ├── img/                       # 头像、封面、emoji、站点图标
-│   │   └── emoji/                 # 3D Emoji (cat, cool, cry, laugh, nerd, yummy)
-│   ├── libs/                      # APlayer CSS/JS, Twikoo 基础样式
-│   ├── _headers                   # Cloudflare Pages 缓存头
+│   ├── fonts/                      # Inter Variable, Plus Jakarta Sans (woff2)
+│   ├── img/                        # 头像、封面、emoji、站点图标
+│   │   └── emoji/                  # 3D Emoji (cat, cool, cry, laugh, nerd, yummy)
+│   ├── libs/                       # APlayer CSS/JS, Twikoo 基础样式
+│   ├── _headers                    # Cloudflare Pages 缓存头
 │   └── favicon.svg
 ├── src/
 │   ├── components/
-│   │   ├── LeftSidebar.astro      # 个人卡片 + 音乐 + 分类 + 一言 + 最近在看
-│   │   ├── RightSidebar.astro     # 公告 + 标签云 + 随机文章 + 站点统计
-│   │   ├── BlogCard.astro         # 文章卡片（封面 + 标题 + 摘要 + 元信息）
-│   │   ├── ArticleMetaCard.astro  # 文章元数据卡片（作者/日期/协议/链接）
-│   │   ├── RecentPosts.astro      # 文章底部相关推荐
-│   │   ├── PasswordProtect.astro  # 文章加密输入组件（密码显隐切换）
-│   │   ├── ThemeToggle.astro      # 深色模式切换（圆形扩散动画）
-│   │   ├── SearchModal.astro      # 全文搜索弹窗（Ctrl+K）
-│   │   ├── Twikoo.astro           # 评论区（懒加载 + 路由重挂载）
-│   │   ├── MomentsTicker.astro    # 首页动态滚动条（动态 + 年进度）
-│   │   ├── WelcomeAnimation.astro # 首次访问欢迎动画
-│   │   ├── TableOfContents.astro  # 浮动 TOC（移动端）
-│   │   ├── SidebarOfContents.astro# 侧栏 TOC（桌面端）
-│   │   ├── Header.astro           # 顶部导航（毛玻璃 + 菜单面板 + 页面标题）
-│   │   ├── HeaderLink.astro       # 导航链接
-│   │   ├── Footer.astro           # 页脚（技术栈图标 + CC 协议）
-│   │   ├── Pagination.astro       # 分页组件
-│   │   ├── FormattedDate.astro    # 日期格式化
-│   │   ├── ArchiveItem.astro      # 归档列表项
-│   │   └── BaseHead.astro         # HTML Head（SEO + OG + 结构化数据）
+│   │   ├── LeftSidebar.astro       # 个人卡片 + 音乐 + 分类 + 一言 + 最近在看
+│   │   ├── RightSidebar.astro      # 公告 + 标签云 + 随机文章 + 站点统计
+│   │   ├── BlogCard.astro          # 文章卡片（封面 + 标题 + 摘要 + 元信息）
+│   │   ├── ArticleMetaCard.astro   # 文章元数据卡片（作者/日期/协议/链接）
+│   │   ├── RecentPosts.astro       # 文章底部相关推荐
+│   │   ├── PasswordProtect.astro   # 文章加密输入组件（密码显隐切换）
+│   │   ├── ThemeToggle.astro       # 深色模式切换（圆形扩散动画）
+│   │   ├── SearchModal.astro       # 全文搜索弹窗（Ctrl+K）
+│   │   ├── Twikoo.astro            # 评论区（懒加载 + 路由重挂载）
+│   │   ├── MomentsTicker.astro     # 首页动态滚动条（动态 + 年进度）
+│   │   ├── WelcomeAnimation.astro  # 首次访问欢迎动画
+│   │   ├── TableOfContents.astro   # 浮动 TOC
+│   │   ├── SidebarOfContents.astro # 侧栏 TOC
+│   │   ├── Header.astro            # 顶部导航（毛玻璃 + 菜单面板 + 页面标题）
+│   │   ├── HeaderLink.astro        # 导航链接
+│   │   ├── Footer.astro            # 页脚（技术栈图标 + CC 协议）
+│   │   ├── Pagination.astro        # 分页组件
+│   │   ├── FormattedDate.astro     # 日期格式化
+│   │   ├── ArchiveItem.astro       # 归档列表项
+│   │   └── BaseHead.astro          # HTML Head（SEO + OG + 结构化数据）
 │   ├── layouts/
-│   │   ├── MainLayout.astro       # 全局布局（Header + Footer + 背景光晕）
-│   │   └── BlogPost.astro         # 文章详情布局（TOC + 元数据 + 评论 + 推荐）
+│   │   ├── MainLayout.astro        # 全局布局（Header + Footer + 背景光晕）
+│   │   └── BlogPost.astro          # 文章详情布局（TOC + 元数据 + 评论 + 推荐）
 │   ├── pages/
-│   │   ├── index.astro            # 首页（文章列表 + 动态滚动条 + 三栏）
-│   │   ├── p/[...slug].astro      # 文章详情（加密/普通）
-│   │   ├── page/[page].astro      # 文章分页
-│   │   ├── moments/index.astro    # 动态说说（Fancybox 灯箱）
-│   │   ├── friends/index.astro    # 友链（分组 + 申请说明）
-│   │   ├── watching/index.astro   # 观影记录（卡片网格 + 评分）
-│   │   ├── tonight/index.astro    # 今晚看什么（随机推荐 + 详情）
-│   │   ├── tarot/index.astro      # 赛博塔罗牌
-│   │   ├── progress/index.astro   # 时间进度（水墨风格）
-│   │   ├── about/index.astro      # 关于页
-│   │   ├── archives/index.astro   # 归档页
+│   │   ├── index.astro             # 首页（文章列表 + 动态滚动条 + 三栏）
+│   │   ├── p/[...slug].astro       # 文章详情（加密/普通）
+│   │   ├── page/[page].astro       # 文章分页
+│   │   ├── moments/index.astro     # 动态说说（Fancybox 灯箱）
+│   │   ├── friends/index.astro     # 友链（分组 + 申请说明）
+│   │   ├── watching/index.astro    # 观影记录（卡片网格 + 评分）
+│   │   ├── tonight/index.astro     # 今晚看什么（随机推荐 + 详情）
+│   │   ├── tarot/index.astro       # 赛博塔罗牌（随机推荐 + 详情）
+│   │   ├── progress/index.astro    # 时间进度（水墨风格）
+│   │   ├── about/index.astro       # 关于页
+│   │   ├── archives/index.astro    # 归档页
 │   │   ├── categories/
-│   │   │   ├── index.astro        # 分类列表
-│   │   │   └── [slug].astro       # 分类详情
+│   │   │   ├── index.astro         # 分类列表
+│   │   │   └── [slug].astro        # 分类详情
 │   │   ├── tags/
-│   │   │   ├── index.astro        # 标签列表
-│   │   │   └── [slug].astro       # 标签详情
-│   │   ├── rss.xml.js             # RSS 订阅源
-│   │   ├── search-data.json.ts    # 搜索索引 API
-│   │   └── robots.txt.ts          # Robots.txt
+│   │   │   ├── index.astro         # 标签列表
+│   │   │   └── [slug].astro        # 标签详情
+│   │   ├── rss.xml.js              # RSS 订阅源
+│   │   ├── search-data.json.ts     # 搜索索引 API
+│   │   └── robots.txt.ts           # Robots.txt
 │   ├── scripts/
-│   │   └── crypto.ts              # AES-256-GCM 加密/解密（PBKDF2 派生密钥）
+│   │   └── crypto.ts               # AES-256-GCM 加密/解密（PBKDF2 派生密钥）
 │   ├── styles/
-│   │   ├── global.css             # @theme 主题配置 + 全局样式 + 背景光晕 + 滚动条
-│   │   ├── markdown.css           # Markdown 排版样式
-│   │   └── twikoo.css             # Twikoo 评论自定义样式
+│   │   ├── global.css              # @theme 主题配置 + 全局样式 + 背景光晕 + 滚动条
+│   │   ├── markdown.css            # Markdown 排版样式
+│   │   └── twikoo.css              # Twikoo 评论自定义样式
 │   ├── utils/
-│   │   ├── readingTime.ts         # 阅读时间计算（中英文混合计数）
-│   │   └── progressCalc.ts        # 时间进度计算（年/季/月/周/日）
-│   ├── icons/                     # 60+ SVG 图标源文件
-│   ├── consts.ts                  # 站点标题 & 描述
-│   └── content.config.ts          # Content Collections Schema 定义
+│   │   ├── readingTime.ts          # 阅读时间计算（中英文混合计数）
+│   │   └── progressCalc.ts         # 时间进度计算（年/季/月/周/日）
+│   ├── icons/                      # 60+ SVG 图标源文件
+│   ├── consts.ts                   # 站点标题 & 描述
+│   └── content.config.ts           # Content Collections Schema 定义
 ├── scripts/
-│   └── backup.ts                  # 私有内容备份脚本（同步至 GitHub 私有仓库）
-├── astro.config.ts               # Astro 配置（集成/适配器/预取）
-├── tsconfig.json                  # TypeScript 配置
-├── vercel.json                    # Vercel 缓存策略
-├── .env.example                   # 环境变量示例文件
-└── package.json
+│   └── backup.ts                   # 私有内容备份脚本（同步至 GitHub 私有仓库）
+├── astro.config.ts                 # Astro 配置（集成/适配器/预取）
+├── tsconfig.json                   # TypeScript 配置
+├── vercel.json                     # Vercel 缓存策略
+├── .env.example                    # 环境变量示例文件
+└── package.json                    # 项目依赖配置
 ```
 
 ## 快速开始

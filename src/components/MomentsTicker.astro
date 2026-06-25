@@ -156,8 +156,16 @@ import { Icon } from 'astro-icon/components';
   </div>
 )}
 
-<script>
-  import { calcYearProgress } from '../utils/progressCalc';
+<script is:inline>
+  function calcYearProgress() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear + 1, 0, 1);
+    const yearProgress = Math.floor(((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100);
+    const daysLeft = Math.ceil((endOfYear.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    return { yearProgress, daysLeft };
+  }
 
   function initMomentsTicker() {
     const container = document.getElementById('moments-ticker');
@@ -168,36 +176,34 @@ import { Icon } from 'astro-icon/components';
     const ring = document.getElementById('year-progress-ring');
     const text = document.getElementById('year-progress-text');
     const daysLeftEl = document.getElementById('year-days-left');
-    if (ring) ring.setAttribute('stroke-dasharray', `${yearProgress * 0.974} 97.4`);
-    if (text) text.textContent = `${yearProgress}%`;
-    if (daysLeftEl) daysLeftEl.innerHTML = `还剩 <span class="font-bold text-zinc-700 dark:text-zinc-300">${daysLeft}</span> 天`;
+    if (ring) ring.setAttribute('stroke-dasharray', (yearProgress * 0.974) + ' 97.4');
+    if (text) text.textContent = yearProgress + '%';
+    if (daysLeftEl) daysLeftEl.innerHTML = '\u8fd8\u5269 <span class="font-bold text-zinc-700 dark:text-zinc-300">' + daysLeft + '</span> \u5929';
 
     const items = container.querySelectorAll('.moments-item');
     if (items.length === 0) return;
 
-    // 采用更平滑的 cubic-bezier 缓动函数
     const EASE = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
-    items.forEach((item, i) => {
-      const el = item as HTMLElement;
-      el.style.transition = `all 0.6s ${EASE}`;
+    items.forEach(function(item, i) {
+      item.style.transition = 'all 0.6s ' + EASE;
       if (i === 0) {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
       } else {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(16px)';
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(16px)';
       }
     });
 
     let currentIndex = 0;
 
-    const timer = setInterval(() => {
+    const timer = setInterval(function() {
       const prevIndex = currentIndex;
       currentIndex = (currentIndex + 1) % items.length;
 
-      const prev = items[prevIndex] as HTMLElement;
-      const next = items[currentIndex] as HTMLElement;
+      const prev = items[prevIndex];
+      const next = items[currentIndex];
 
       if (prev) {
         prev.style.opacity = '0';
@@ -208,19 +214,18 @@ import { Icon } from 'astro-icon/components';
         next.style.transform = 'translateY(0)';
       }
 
-      setTimeout(() => {
+      setTimeout(function() {
         if (prev) {
           prev.style.transition = 'none';
           prev.style.transform = 'translateY(16px)';
-          void prev.offsetHeight; // 触发回流
-          prev.style.transition = `all 0.6s ${EASE}`;
+          void prev.offsetHeight;
+          prev.style.transition = 'all 0.6s ' + EASE;
         }
       }, 600);
-    }, 4000); // 略微延长停留时间，提高可读性
+    }, 4000);
 
-    (container as any).__momentsTimer = timer;
+    container.__momentsTimer = timer;
 
-    // 电影数据注入逻辑保持不变
     const watchingRaw = container.getAttribute('data-watching');
     if (watchingRaw) {
       try {
@@ -230,20 +235,20 @@ import { Icon } from 'astro-icon/components';
           const movie = watchingItems[idx];
           const movieEl = document.getElementById('movie-recommend-text');
           const movieMetaEl = document.getElementById('movie-recommend-meta');
-          const movieCoverEl = document.getElementById('movie-cover') as HTMLImageElement;
-          const movieLink = document.getElementById('movie-recommend-link') as HTMLAnchorElement;
+          const movieCoverEl = document.getElementById('movie-cover');
+          const movieLink = document.getElementById('movie-recommend-link');
           if (movieEl && movie) movieEl.textContent = movie.title;
           if (movieMetaEl && movie) {
-            const parts: string[] = [];
+            const parts = [];
             if (movie.type) parts.push(movie.type);
             if (movie.year) parts.push(String(movie.year));
-            if (movie.ratings && movie.ratings.length > 0) parts.push(`★ ${movie.ratings[0].score.toFixed(1)}`);
-            movieMetaEl.textContent = parts.join(' · ');
+            if (movie.ratings && movie.ratings.length > 0) parts.push('\u2605 ' + movie.ratings[0].score.toFixed(1));
+            movieMetaEl.textContent = parts.join(' \u00b7 ');
           }
           if (movieCoverEl && movie && movie.cover) {
-            movieCoverEl.style.backgroundImage = `url(${movie.cover.replace(/\/view\/photo\/[lms]\//, '/view/photo/thumb/')})`;
+            movieCoverEl.style.backgroundImage = 'url(' + movie.cover.replace(/\/view\/photo\/[lms]\//, '/view/photo/thumb/') + ')';
           }
-          if (movieLink) movieLink.href = `/tonight?idx=${idx}`;
+          if (movieLink) movieLink.href = '/tonight?idx=' + idx;
         }
       } catch (e) {}
     }
@@ -251,18 +256,18 @@ import { Icon } from 'astro-icon/components';
 
   function cleanupMomentsTicker() {
     const container = document.getElementById('moments-ticker');
-    if (container && (container as any).__momentsTimer) {
-      clearInterval((container as any).__momentsTimer);
-      (container as any).__momentsTimer = null;
+    if (container && container.__momentsTimer) {
+      clearInterval(container.__momentsTimer);
+      container.__momentsTimer = null;
     }
   }
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:page-load', function() {
     cleanupMomentsTicker();
     initMomentsTicker();
   });
 
-  document.addEventListener('astro:after-swap', () => {
+  document.addEventListener('astro:after-swap', function() {
     cleanupMomentsTicker();
     initMomentsTicker();
   });

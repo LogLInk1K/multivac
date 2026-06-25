@@ -713,10 +713,40 @@ import { Icon } from 'astro-icon/components';
       el.removeAttribute('data-state');
       (el as HTMLElement).style.display = 'none';
     });
+
+    // 重置头像 inline styles，防止 cleanup 时头像卡在中间状态
+    const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
+    if (avatarImage) {
+      avatarImage.style.visibility = '';
+      avatarImage.style.opacity = '';
+      avatarImage.style.transform = '';
+      avatarImage.style.filter = '';
+      avatarImage.style.transition = '';
+    }
+
+    // 重置问候文字 inline styles
+    const greetingText = document.querySelector('.greeting-text') as HTMLElement;
+    const greetingContainer = greetingText?.parentElement as HTMLElement;
+    if (greetingText) {
+      greetingText.textContent = '醉后不知天在水';
+      greetingText.style.transform = '';
+      greetingText.style.opacity = '';
+      greetingText.style.filter = '';
+      greetingText.style.transition = '';
+    }
+    if (greetingContainer) {
+      greetingContainer.style.transform = '';
+      greetingContainer.style.opacity = '';
+      greetingContainer.style.filter = '';
+      greetingContainer.style.transition = '';
+    }
   }
 
   // 挂载 Astro 标准生命周期
-  initEmojiEffects();
+  // 首次加载时无定时器，正常初始化；persist 保留动画时不重复初始化
+  if (!avatarTimeout && animTimers.length === 0) {
+    initEmojiEffects();
+  }
   document.addEventListener('astro:page-load', function() {
     // persist 保留了运行中的动画，跳过重新初始化
     if (avatarTimeout || animTimers.length > 0) return;

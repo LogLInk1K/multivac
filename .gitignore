@@ -1,5 +1,6 @@
 # build output
 dist/
+
 # generated types
 .astro/
 
@@ -14,20 +15,6 @@ pnpm-debug.log*
 
 # environment variables
 .env
-.env.production
-.env.local
-.env.*.local
-
-# editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.json
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
 # macOS-specific files
 .DS_Store
@@ -35,26 +22,17 @@ pnpm-debug.log*
 # Windows-specific files
 Thumbs.db
 
-# jetbrains setting folder
-.idea/
-
-# vite
-.vite/
-
-# testing
-coverage/
-
-# temporary files
-*.tmp
-*.temp
-.temp/
+# cloud deployment files
 .wrangler/
+.vercel/
 
+# AI assistant
 .claude/
+.spec/
 
 # ignore private posts
 post/*
 !post/example/
 
-.vercel
+# local templates or backups
 twikoo_template/

@@ -209,8 +209,8 @@ import Icon from '../../components/Icon.astro';
     const visiblePages = getVisiblePages();
     const ELLIPSIS = '···';
 
-    const iconPrev = window.renderIcon?.('chevron-left-arrow', 'w-5 h-5 md:-ml-1 md:mr-1 group-hover:-translate-x-0.5 transition-transform') || '';
-    const iconNext = window.renderIcon?.('chevron-right', 'w-5 h-5 md:-mr-1 md:ml-1 group-hover:translate-x-0.5 transition-transform') || '';
+    const iconPrev = window.renderIcon?.('chevron-left-arrow', 'w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-ml-1 md:mr-1 group-hover:-translate-x-0.5 transition-transform') || '';
+    const iconNext = window.renderIcon?.('chevron-right', 'w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-mr-1 md:ml-1 group-hover:translate-x-0.5 transition-transform') || '';
 
     paginationContainer.innerHTML = totalPages > 1 ? `
       <div class="flex justify-center items-center mt-12 mb-8 px-4">
@@ -223,7 +223,7 @@ import Icon from '../../components/Icon.astro';
           ` : ''}
 
           <div class="flex items-center gap-1 md:gap-2">
-            ${visiblePages.map((page, idx) => {
+            ${visiblePages.map((page) => {
               if (page === ELLIPSIS) {
                 return `<div class="page-ellipsis-jump" data-total="${totalPages}" data-mode="moments">
                   <span class="page-ellipsis-jump__dot">···</span>

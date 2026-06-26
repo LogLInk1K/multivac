@@ -87,9 +87,8 @@ import Icon from './Icon.astro';
         )}
 
         <div class="flex items-center gap-1 md:gap-2">
-            {visiblePages.map((page, idx) => {
+            {visiblePages.map((page) => {
                 if (page === ELLIPSIS) {
-                    const ellipsisId = `ellipsis-${currentPage}-${idx}`;
                     return (
                         <div class="page-ellipsis-jump" data-total={totalPages} data-base={basePath.replace(/\/$/, '') || ''}>
                             <span class="page-ellipsis-jump__dot">···</span>

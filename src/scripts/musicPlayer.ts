@@ -1,4 +1,4 @@
-// 共享音乐播放器模块 —— LeftSidebar 和 BlogPost 胶囊共用
+// 共享音乐播放器模块 —— LeftSidebar 和 BlogPost 共用
 
 export interface SongData {
   name?: string;
@@ -295,6 +295,64 @@ export function updateSidebarProgress() {
   if (totalTimeEl) {
     totalTimeEl.textContent = formatTime(currentAp.audio.duration || 0);
   }
+}
+
+/** SidebarOfContents 音乐面板专用：更新播放状态 UI */
+export function updateMusicPanelUI() {
+  const state = ensureState();
+  const currentAp = state.ap;
+  if (!currentAp) return;
+
+  const isPlaying = !currentAp.audio.paused;
+  const currentSong = currentAp.list.audios[currentAp.list.index];
+
+  const songEl = document.getElementById('sidebar-song');
+  const artistEl = document.getElementById('sidebar-artist');
+  const coverEl = document.getElementById('sidebar-cover') as HTMLImageElement | null;
+  const btnCover = document.getElementById('sidebar-btn-cover') as HTMLImageElement | null;
+  const playIcon = document.getElementById('sidebar-play-icon');
+  const pauseIcon = document.getElementById('sidebar-pause-icon');
+  const btnVinyl = document.getElementById('sidebar-btn-vinyl');
+
+  if (currentSong) {
+    if (songEl) songEl.textContent = currentSong.name;
+    if (artistEl) artistEl.textContent = currentSong.artist;
+    if (coverEl && currentSong.cover && coverEl.src !== currentSong.cover) {
+      coverEl.src = currentSong.cover;
+    }
+    if (btnCover && currentSong.cover && btnCover.src !== currentSong.cover) {
+      btnCover.src = currentSong.cover;
+    }
+  }
+
+  if (isPlaying) {
+    playIcon?.classList.add('hidden');
+    pauseIcon?.classList.remove('hidden');
+    btnVinyl?.classList.add('is-playing');
+    btnVinyl?.classList.remove('is-paused');
+  } else {
+    playIcon?.classList.remove('hidden');
+    pauseIcon?.classList.add('hidden');
+    btnVinyl?.classList.remove('is-playing');
+    btnVinyl?.classList.add('is-paused');
+  }
+}
+
+/** SidebarOfContents 音乐面板专用：更新进度条和时间 */
+export function updateMusicPanelProgress() {
+  const currentAp = ensureState().ap;
+  if (!currentAp) return;
+
+  const progressBar = document.getElementById('sidebar-progress-bar');
+  const currentTimeEl = document.getElementById('sidebar-current-time');
+  const totalTimeEl = document.getElementById('sidebar-total-time');
+
+  if (currentAp.audio.duration) {
+    const percent = (currentAp.audio.currentTime / currentAp.audio.duration) * 100;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+  }
+  if (currentTimeEl) currentTimeEl.textContent = formatTime(currentAp.audio.currentTime);
+  if (totalTimeEl) totalTimeEl.textContent = formatTime(currentAp.audio.duration);
 }
 
 /** 通用：进度条点击/拖拽跳转 */

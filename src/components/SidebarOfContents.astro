@@ -351,20 +351,6 @@ import Icon from './Icon.astro';
     transition-delay: 0s !important;
   }
 
-  /* 音乐面板黑胶旋转 */
-  #sidebar-vinyl.is-playing,
-  #sidebar-btn-vinyl.is-playing {
-    animation: vinyl-spin 8s linear infinite;
-  }
-  #sidebar-vinyl.is-paused,
-  #sidebar-btn-vinyl.is-paused {
-    animation: vinyl-spin 8s linear infinite;
-    animation-play-state: paused;
-  }
-  @keyframes vinyl-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
 </style>
 
 <script>
@@ -953,62 +939,7 @@ import Icon from './Icon.astro';
     });
 
     // 音乐面板初始化
-    import('../scripts/musicPlayer').then(({ initPlayerCore, ensureState, startPeriodicUpdate, formatTime, initProgressBarClick, registerUIUpdater, registerProgressUpdater }) => {
-      function updateMusicPanel() {
-        const ap = (window as any).musicPlayerState?.ap;
-        const songEl = document.getElementById('sidebar-song');
-        const artistEl = document.getElementById('sidebar-artist');
-        const coverEl = document.getElementById('sidebar-cover') as HTMLImageElement | null;
-        const playIcon = document.getElementById('sidebar-play-icon');
-        const pauseIcon = document.getElementById('sidebar-pause-icon');
-        const vinyl = document.getElementById('sidebar-vinyl');
-        const btnVinyl = document.getElementById('sidebar-btn-vinyl');
-        const btnCover = document.getElementById('sidebar-btn-cover') as HTMLImageElement | null;
-        const progressBar = document.getElementById('sidebar-progress-bar');
-        const currentTimeEl = document.getElementById('sidebar-current-time');
-        const totalTimeEl = document.getElementById('sidebar-total-time');
-
-        if (!ap) return;
-
-        const isPlaying = !ap.audio.paused;
-        const currentSong = ap.list.audios[ap.list.index];
-
-        if (currentSong) {
-          if (songEl) songEl.textContent = currentSong.name;
-          if (artistEl) artistEl.textContent = currentSong.artist;
-          if (coverEl && currentSong.cover && coverEl.src !== currentSong.cover) {
-            coverEl.src = currentSong.cover;
-          }
-          if (btnCover && currentSong.cover && btnCover.src !== currentSong.cover) {
-            btnCover.src = currentSong.cover;
-          }
-        }
-
-        // 更新进度条和时间
-        if (ap.audio.duration) {
-          const percent = (ap.audio.currentTime / ap.audio.duration) * 100;
-          if (progressBar) progressBar.style.width = `${percent}%`;
-          if (currentTimeEl) currentTimeEl.textContent = formatTime(ap.audio.currentTime);
-          if (totalTimeEl) totalTimeEl.textContent = formatTime(ap.audio.duration);
-        }
-
-        if (isPlaying) {
-          playIcon?.classList.add('hidden');
-          pauseIcon?.classList.remove('hidden');
-          vinyl?.classList.remove('is-paused');
-          vinyl?.classList.add('is-playing');
-          btnVinyl?.classList.remove('is-paused');
-          btnVinyl?.classList.add('is-playing');
-        } else {
-          playIcon?.classList.remove('hidden');
-          pauseIcon?.classList.add('hidden');
-          vinyl?.classList.remove('is-playing');
-          vinyl?.classList.add('is-paused');
-          btnVinyl?.classList.remove('is-playing');
-          btnVinyl?.classList.add('is-paused');
-        }
-      }
-
+    import('../scripts/musicPlayer').then(({ initPlayerCore, ensureState, startPeriodicUpdate, updateMusicPanelUI, updateMusicPanelProgress, initProgressBarClick, registerUIUpdater, registerProgressUpdater }) => {
       async function initMusicPanel() {
         ensureState();
 
@@ -1016,10 +947,11 @@ import Icon from './Icon.astro';
           await initPlayerCore('hidden-aplayer-sidebar');
         }
 
-        registerUIUpdater(updateMusicPanel);
-        registerProgressUpdater(updateMusicPanel);
+        registerUIUpdater(updateMusicPanelUI);
+        registerProgressUpdater(updateMusicPanelProgress);
 
-        updateMusicPanel();
+        updateMusicPanelUI();
+        updateMusicPanelProgress();
         startPeriodicUpdate();
       }
 

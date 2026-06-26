@@ -89,7 +89,6 @@ import Icon from './Icon.astro';
           
           <img
             src="/img/avatar.webp"
-            fetchpriority="high"
             alt="博主头像"
             class="w-[115px] h-[115px] rounded-full object-cover ring-4 ring-white/50 dark:ring-black/50 shadow-lg avatar-image transform-gpu cursor-pointer"
           />
@@ -538,14 +537,31 @@ import Icon from './Icon.astro';
 
 <!-- Emoji 头像切换 -->
 <script>
-  // 全局状态：挂到 window 上，模块重新执行时不会丢失
-  const _s = () => (window as any).__emojiState ||= { timeout: undefined as number | undefined, timers: [] as number[], animating: false };
-  const getTimeout = () => _s().timeout;
-  const getTimers = () => _s().timers;
-  const getAnimating = () => _s().animating;
+  // 将状态挂载到全局/模块作用域，确保跨页面时状态不丢失
+  let avatarTimeout: number | undefined;
+  let animTimers: number[] = []; 
+  let isAvatarAnimating = false;
+  let isInitialized = false; // 标记是否全站首次初始化
 
-  function initEmojiEffects() {
-    cleanupEmoji(); // 启动时先彻底清空残留
+  function initEmojiEffects(isPageTransition = false) {
+    // 1. 如果是跨页面切换，且当前正在跑动画，直接放行，让定时器继续驱动被守卫的 DOM
+    if (isPageTransition && isAvatarAnimating) {
+      return;
+    }
+
+    // 2. 如果没有在跑动画，或者是整站第一次刷新，才允许彻底重置和初试化
+    if (!isAvatarAnimating) {
+      cleanupEmoji();
+      // 首次进站 3 秒后执行首次切换
+      avatarTimeout = window.setTimeout(triggerAvatarChange, 3000);
+    }
+  }
+
+  function triggerAvatarChange() {
+    const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
+    // 如果切页面后组件因为某种意外挂了，安全退出
+    if (!avatarImage || isAvatarAnimating) return;
+    isAvatarAnimating = true;
 
     const emojiTexts: Record<string, string> = {
       'cool': '传奇主唱井芹仁菜',
@@ -555,117 +571,77 @@ import Icon from './Icon.astro';
       'nerd': '感觉不如……原神',
       'laugh': '知识学爆'
     };
-
     const emojiKeys = Object.keys(emojiTexts);
-    const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
     const greetingText = document.querySelector('.greeting-text') as HTMLElement;
     const greetingContainer = greetingText?.parentElement as HTMLElement;
 
-    // 辅助工具：向调度桶里注入延时任务
     const schedule = (fn: () => void, delay: number) => {
       const timer = window.setTimeout(fn, delay);
-      getTimers().push(timer);
+      animTimers.push(timer);
     };
 
-    function triggerAvatarChange() {
-      if (!avatarImage || getAnimating()) return;
-      _s().animating = true;
+    // 每次随机捞 3 个不同的 Emoji 出来跑马灯
+    const shuffled = [...emojiKeys].sort(() => Math.random() - 0.5).slice(0, 3);
 
-      // 每次随机捞 3 个不同的 Emoji 出来跑马灯
-      const shuffled = [...emojiKeys].sort(() => Math.random() - 0.5).slice(0, 3);
+    // 1. 原头像/文字 退场
+    avatarImage.style.transform = 'perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9)';
+    avatarImage.style.opacity = '0';
+    avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    avatarImage.style.filter = 'blur(4px) brightness(1.1)';
 
-      // 1. 原头像/文字 退场
-      avatarImage.style.transform = 'perspective(1000px) rotateY(25deg) rotateZ(5deg) scale(0.9)';
-      avatarImage.style.opacity = '0';
-      avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      avatarImage.style.filter = 'blur(4px) brightness(1.1)';
-
-      if (greetingText && greetingContainer) {
-        [greetingText, greetingContainer].forEach(el => {
-          el.style.transform = 'scale(0.9) translateZ(0)';
-          el.style.opacity = '0';
-          el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-          el.style.filter = 'blur(2px) brightness(1.1)';
-        });
-      }
-
-      schedule(() => { avatarImage.style.visibility = 'hidden'; }, 450);
-
-      // 2. 依次编排 3 个静态 Emoji 的高保真舞台秀
-      let timelineCursor = 500; // 时间轴游标，毫秒
-
-      shuffled.forEach((fileKey) => {
-        const emojiEl = document.querySelector(`.static-emoji[data-file="${fileKey}"]`) as HTMLElement;
-        if (!emojiEl) return;
-
-        // 【核心防御】：进场前，确保它的状态是干净的隐藏态
-        schedule(() => {
-          emojiEl.removeAttribute('data-state');
-          emojiEl.style.display = 'block'; 
-        }, timelineCursor);
-
-        timelineCursor += 50;
-
-        // 节拍 1：弹起登场
-        schedule(() => {
-          emojiEl.setAttribute('data-state', 'enter');
-          if (greetingText && greetingContainer) {
-            greetingText.textContent = emojiTexts[fileKey];
-            [greetingText, greetingContainer].forEach(el => {
-              el.style.transform = 'scale(1.2) translateZ(0)';
-              el.style.opacity = '1';
-              el.style.filter = 'blur(0px) brightness(1)';
-              el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-            });
-          }
-        }, timelineCursor);
-
-        timelineCursor += 300;
-
-        // 节拍 2 & 3：回弹至完美归位
-        schedule(() => {
-          emojiEl.setAttribute('data-state', 'active');
-          if (greetingText && greetingContainer) {
-            greetingText.style.transform = 'scale(1) translateZ(0)';
-            greetingContainer.style.transform = 'scale(1) translateZ(0)';
-          }
-        }, timelineCursor);
-
-        // 节拍 4：展示停留 (3秒)
-        timelineCursor += 3000;
-
-        // 节拍 5：退场倾斜淡出
-        schedule(() => {
-          emojiEl.setAttribute('data-state', 'exit');
-          if (greetingText && greetingContainer) {
-            [greetingText, greetingContainer].forEach(el => {
-              el.style.transform = 'scale(0.9) translateZ(0)';
-              el.style.opacity = '0';
-              el.style.filter = 'blur(2px) brightness(1.1)';
-            });
-          }
-        }, timelineCursor);
-
-        timelineCursor += 550;
-
-        // 最终步：谢幕关灯，恢复初始隐形态，让出舞台
-        schedule(() => {
-          emojiEl.removeAttribute('data-state');
-          emojiEl.style.display = 'none';
-        }, timelineCursor);
-
-        timelineCursor += 400; // 下一个 Emoji 登场前的空隙延迟
+    if (greetingText && greetingContainer) {
+      [greetingText, greetingContainer].forEach(el => {
+        el.style.transform = 'scale(0.9) translateZ(0)';
+        el.style.opacity = '0';
+        el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        el.style.filter = 'blur(2px) brightness(1.1)';
       });
+    }
 
-      // 3. 原头像回归
+    schedule(() => { avatarImage.style.visibility = 'hidden'; }, 450);
+
+    // 2. 依次编排 3 个静态 Emoji 切换
+    let timelineCursor = 500;
+
+    shuffled.forEach((fileKey) => {
+      const emojiEl = document.querySelector(`.static-emoji[data-file="${fileKey}"]`) as HTMLElement;
+      if (!emojiEl) return;
+
       schedule(() => {
-        avatarImage.style.visibility = 'visible';
-        avatarImage.style.transform = 'perspective(1000px) rotateY(-25deg) rotateZ(-5deg) scale(0.9)';
-        avatarImage.style.opacity = '0';
-        avatarImage.style.filter = 'blur(4px) brightness(1.1)';
-        
+        emojiEl.removeAttribute('data-state');
+        emojiEl.style.display = 'block'; 
+      }, timelineCursor);
+
+      timelineCursor += 50;
+
+      schedule(() => {
+        emojiEl.setAttribute('data-state', 'enter');
         if (greetingText && greetingContainer) {
-          greetingText.textContent = '醉后不知天在水';
+          greetingText.textContent = emojiTexts[fileKey];
+          [greetingText, greetingContainer].forEach(el => {
+            el.style.transform = 'scale(1.2) translateZ(0)';
+            el.style.opacity = '1';
+            el.style.filter = 'blur(0px) brightness(1)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          });
+        }
+      }, timelineCursor);
+
+      timelineCursor += 300;
+
+      schedule(() => {
+        emojiEl.setAttribute('data-state', 'active');
+        if (greetingText && greetingContainer) {
+          greetingText.style.transform = 'scale(1) translateZ(0)';
+          greetingContainer.style.transform = 'scale(1) translateZ(0)';
+        }
+      }, timelineCursor);
+
+      timelineCursor += 3000;
+
+      schedule(() => {
+        emojiEl.setAttribute('data-state', 'exit');
+        if (greetingText && greetingContainer) {
           [greetingText, greetingContainer].forEach(el => {
             el.style.transform = 'scale(0.9) translateZ(0)';
             el.style.opacity = '0';
@@ -674,92 +650,92 @@ import Icon from './Icon.astro';
         }
       }, timelineCursor);
 
-      timelineCursor += 100;
+      timelineCursor += 550;
 
       schedule(() => {
-        avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1)';
-        avatarImage.style.opacity = '1';
-        avatarImage.style.filter = 'blur(0px) brightness(1)';
-        avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        if (greetingText && greetingContainer) {
-          [greetingText, greetingContainer].forEach(el => {
-            el.style.transform = 'scale(1)';
-            el.style.opacity = '1';
-            el.style.filter = 'blur(0px) brightness(1)';
-            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-          });
-        }
+        emojiEl.removeAttribute('data-state');
+        emojiEl.style.display = 'none';
       }, timelineCursor);
 
-      timelineCursor += 600;
+      timelineCursor += 400;
+    });
 
-      // 宣告本轮大功告成，拉响下一个 5s 之后的警报
-      schedule(() => {
-        _s().animating = false;
-        _s().timeout = window.setTimeout(triggerAvatarChange, 5000);
-      }, timelineCursor);
-    }
+    // 3. 原头像/文字 回归
+    schedule(() => {
+      avatarImage.style.visibility = 'visible';
+      avatarImage.style.transform = 'perspective(1000px) rotateY(-25deg) rotateZ(-5deg) scale(0.9)';
+      avatarImage.style.opacity = '0';
+      avatarImage.style.filter = 'blur(4px) brightness(1.1)';
+      
+      if (greetingText && greetingContainer) {
+        greetingText.textContent = '醉后不知天在水';
+        [greetingText, greetingContainer].forEach(el => {
+          el.style.transform = 'scale(0.9) translateZ(0)';
+          el.style.opacity = '0';
+          el.style.filter = 'blur(2px) brightness(1.1)';
+        });
+      }
+    }, timelineCursor);
 
-    // 进站 3 秒后执行首次秀
-    _s().timeout = window.setTimeout(triggerAvatarChange, 3000);
+    timelineCursor += 100;
+
+    schedule(() => {
+      avatarImage.style.transform = 'perspective(1000px) rotateY(0deg) rotateZ(0deg) scale(1)';
+      avatarImage.style.opacity = '1';
+      avatarImage.style.filter = 'blur(0px) brightness(1)';
+      avatarImage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      
+      if (greetingText && greetingContainer) {
+        [greetingText, greetingContainer].forEach(el => {
+          el.style.transform = 'scale(1)';
+          el.style.opacity = '1';
+          el.style.filter = 'blur(0px) brightness(1)';
+          el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+      }
+    }, timelineCursor);
+
+    timelineCursor += 600;
+
+    schedule(() => {
+      isAvatarAnimating = false;
+      avatarTimeout = window.setTimeout(triggerAvatarChange, 5000);
+    }, timelineCursor);
   }
 
   function cleanupEmoji() {
-    const s = _s();
-    if (s.timeout) clearTimeout(s.timeout);
-    s.timers.forEach((t: number) => clearTimeout(t));
-    s.timers = [];
-    s.animating = false;
-    s.timeout = undefined;
+    if (avatarTimeout) clearTimeout(avatarTimeout);
+    animTimers.forEach(t => clearTimeout(t));
+    animTimers = [];
+    isAvatarAnimating = false;
 
     document.querySelectorAll('.static-emoji').forEach(el => {
       el.removeAttribute('data-state');
       (el as HTMLElement).style.display = 'none';
     });
-
-    // 重置头像 inline styles，防止 cleanup 时头像卡在中间状态
-    const avatarImage = document.querySelector('.avatar-image') as HTMLImageElement;
-    if (avatarImage) {
-      avatarImage.style.visibility = '';
-      avatarImage.style.opacity = '';
-      avatarImage.style.transform = '';
-      avatarImage.style.filter = '';
-      avatarImage.style.transition = '';
-    }
-
-    // 重置问候文字 inline styles
-    const greetingText = document.querySelector('.greeting-text') as HTMLElement;
-    const greetingContainer = greetingText?.parentElement as HTMLElement;
-    if (greetingText) {
-      greetingText.textContent = '醉后不知天在水';
-      greetingText.style.transform = '';
-      greetingText.style.opacity = '';
-      greetingText.style.filter = '';
-      greetingText.style.transition = '';
-    }
-    if (greetingContainer) {
-      greetingContainer.style.transform = '';
-      greetingContainer.style.opacity = '';
-      greetingContainer.style.filter = '';
-      greetingContainer.style.transition = '';
-    }
   }
 
-  // 挂载 Astro 标准生命周期
-  // 首次加载时无定时器，正常初始化；persist 保留动画时不重复初始化
-  if (!getTimeout() && getTimers().length === 0) {
-    initEmojiEffects();
+  // --- 生命周期编排 ---
+
+  // 1. 首次进入页面（整站刷新）
+  if (!isInitialized) {
+    isInitialized = true;
+    initEmojiEffects(false);
   }
-  document.addEventListener('astro:page-load', function() {
-    // persist 保留了运行中的动画，跳过重新初始化
-    if (getTimeout() || getTimers().length > 0) return;
-    initEmojiEffects();
+
+  // 2. 每次路由切换渲染完成后（传参 true 代表是页面平滑过渡）
+  document.addEventListener('astro:page-load', () => {
+    // 排除首次加载，只有真正的路由切页才触发断点续传检测
+    if (document.documentElement.hasAttribute('data-astro-transition')) {
+      initEmojiEffects(true);
+    }
   });
-  document.addEventListener('astro:before-preparation', function() {
-    // persist 保留 DOM 时，动画继续运行不中断
-    if (getTimeout() || getTimers().length > 0) return;
-    cleanupEmoji();
+
+  // 3. 准备切页时：如果当前没在跑动画，才安全清理定时器（在静止期切页）
+  document.addEventListener('astro:before-preparation', () => {
+    if (!isAvatarAnimating) {
+      cleanupEmoji();
+    }
   });
 </script>
 

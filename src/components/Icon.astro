@@ -10,14 +10,19 @@ type AvailableIcons = keyof typeof icons extends `/src/icons/${infer K}.svg` ? K
 interface Props {
   name: AvailableIcons;
   class?: string;
+  id?: string;
 }
 
-const { name, class: className } = Astro.props;
+const { name, class: className, id } = Astro.props;
 const svgRaw = icons[`/src/icons/${name}.svg`];
 
-const output = (svgRaw && className) 
-  ? svgRaw.replace(/^<svg/i, `<svg class="${className}"`) 
-  : svgRaw;
+const output = (() => {
+  if (!svgRaw) return '';
+  let svg = svgRaw;
+  if (id) svg = svg.replace(/^<svg/i, `<svg id="${id}"`);
+  if (className) svg = svg.replace(/^<svg/i, `<svg class="${className}"`);
+  return svg;
+})();
 ---
 
 <Fragment set:html={output} />

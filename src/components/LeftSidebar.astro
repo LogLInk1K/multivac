@@ -538,9 +538,11 @@ import Icon from './Icon.astro';
 
 <!-- Emoji 头像切换 -->
 <script>
-  let avatarTimeout: number | undefined;
-  let animTimers: number[] = []; // 用于收集当前周期所有定时器，方便统一安全清理
-  let isAvatarAnimating = false;
+  // 全局状态：挂到 window 上，模块重新执行时不会丢失
+  const _s = () => (window as any).__emojiState ||= { timeout: undefined as number | undefined, timers: [] as number[], animating: false };
+  const getTimeout = () => _s().timeout;
+  const getTimers = () => _s().timers;
+  const getAnimating = () => _s().animating;
 
   function initEmojiEffects() {
     cleanupEmoji(); // 启动时先彻底清空残留
@@ -562,12 +564,12 @@ import Icon from './Icon.astro';
     // 辅助工具：向调度桶里注入延时任务
     const schedule = (fn: () => void, delay: number) => {
       const timer = window.setTimeout(fn, delay);
-      animTimers.push(timer);
+      getTimers().push(timer);
     };
 
     function triggerAvatarChange() {
-      if (!avatarImage || isAvatarAnimating) return;
-      isAvatarAnimating = true;
+      if (!avatarImage || getAnimating()) return;
+      _s().animating = true;
 
       // 每次随机捞 3 个不同的 Emoji 出来跑马灯
       const shuffled = [...emojiKeys].sort(() => Math.random() - 0.5).slice(0, 3);
@@ -692,22 +694,24 @@ import Icon from './Icon.astro';
 
       timelineCursor += 600;
 
-      // 宣告本轮大功告成，拉响下一个 15s 之后的警报
+      // 宣告本轮大功告成，拉响下一个 5s 之后的警报
       schedule(() => {
-        isAvatarAnimating = false;
-        avatarTimeout = window.setTimeout(triggerAvatarChange, 5000);
+        _s().animating = false;
+        _s().timeout = window.setTimeout(triggerAvatarChange, 5000);
       }, timelineCursor);
     }
 
     // 进站 3 秒后执行首次秀
-    avatarTimeout = window.setTimeout(triggerAvatarChange, 3000);
+    _s().timeout = window.setTimeout(triggerAvatarChange, 3000);
   }
 
   function cleanupEmoji() {
-    if (avatarTimeout) clearTimeout(avatarTimeout);
-    animTimers.forEach(t => clearTimeout(t));
-    animTimers = [];
-    isAvatarAnimating = false;
+    const s = _s();
+    if (s.timeout) clearTimeout(s.timeout);
+    s.timers.forEach((t: number) => clearTimeout(t));
+    s.timers = [];
+    s.animating = false;
+    s.timeout = undefined;
 
     document.querySelectorAll('.static-emoji').forEach(el => {
       el.removeAttribute('data-state');
@@ -744,17 +748,17 @@ import Icon from './Icon.astro';
 
   // 挂载 Astro 标准生命周期
   // 首次加载时无定时器，正常初始化；persist 保留动画时不重复初始化
-  if (!avatarTimeout && animTimers.length === 0) {
+  if (!getTimeout() && getTimers().length === 0) {
     initEmojiEffects();
   }
   document.addEventListener('astro:page-load', function() {
     // persist 保留了运行中的动画，跳过重新初始化
-    if (avatarTimeout || animTimers.length > 0) return;
+    if (getTimeout() || getTimers().length > 0) return;
     initEmojiEffects();
   });
   document.addEventListener('astro:before-preparation', function() {
     // persist 保留 DOM 时，动画继续运行不中断
-    if (avatarTimeout || animTimers.length > 0) return;
+    if (getTimeout() || getTimers().length > 0) return;
     cleanupEmoji();
   });
 </script>

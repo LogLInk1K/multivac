@@ -2,6 +2,6 @@
   "recommendations": [
     "astro-build.astro-vscode",
     "unifiedjs.vscode-mdx",
-    "tailwindcss.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss"
   ]
 }

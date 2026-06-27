@@ -29,11 +29,21 @@ import Icon from './Icon.astro';
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center w-full gap-2 md:gap-0">
-				<span class="text-sm text-gray-500 dark:text-gray-400">
-					Design & Build with 🧊 by 
-					<a href="https://github.com/LogLInk1K/Multivac" target="_blank" rel="noopener noreferrer" class="group relative [@media(hover:hover)]:hover:text-primary-light dark:[@media(hover:hover)]:hover:text-primary-dark transition-colors underline-offset-4">
-						<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-							查看博客开源仓库
+				<span class="text-sm text-gray-500 dark:text-gray-400 inline-flex flex-wrap items-center gap-1.5">
+					<span>Design & Build with</span>
+					
+					<Icon name="nintendo-gamecube" class="w-[1em] h-[1em]" />
+
+					<span>by</span>
+
+					<a 
+						href="https://github.com/LogLInk1K/Multivac" 
+						target="_blank" 
+						rel="noopener noreferrer" 
+						class="relative [@media(hover:hover)]:hover:text-primary-light dark:[@media(hover:hover)]:hover:text-primary-dark transition-colors"
+					>
+						<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom pointer-events-none">
+							前往 Multivac 主题仓库
 						</div>
 						LogLInk1K
 					</a>
@@ -57,7 +67,7 @@ import Icon from './Icon.astro';
             <div class="flex flex-col items-center md:items-start gap-2">
 				<div class="flex flex-col md:flex-row items-center justify-between w-full gap-2 md:gap-4">
 					<p class="text-sm text-gray-500 dark:text-gray-400">
-						Copyright &copy; 2021 - {today.getFullYear()}
+						Copyright &copy; 2021 - {today.getFullYear()} 
 					</p>
 					<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1 group relative" aria-label="知识共享 署名-非商业性使用-禁止演绎 4.0 国际协议">
 						<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">

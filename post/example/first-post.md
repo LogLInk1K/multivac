@@ -3,7 +3,7 @@ title: '第一篇文章'
 description: '欢迎来到我的博客，这是我的第一篇文章。'
 pubDate: '2022-07-08'
 heroImage: '/img/blog-placeholder-3.jpg'
-category: 顺心意
+category: DEMO
 tags: ['博客', '介绍']
 ---
 

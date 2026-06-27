@@ -3,7 +3,7 @@ title: '第二篇文章'
 description: '探讨前端开发的未来趋势'
 pubDate: '2022-07-15'
 heroImage: '/img/blog-placeholder-4.jpg'
-category: 格物篇
+category: DEMO
 tags: ['前端', 'WebAssembly', '组件化', '性能优化']
 ---
 

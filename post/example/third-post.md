@@ -3,7 +3,7 @@ title: '第三篇文章'
 description: '分享一些关于设计思维的思考'
 pubDate: '2022-07-22'
 heroImage: '/img/blog-placeholder-2.jpg'
-category: 格物篇
+category: DEMO
 tags: ['设计思维', '用户体验', '创新']
 ---
 

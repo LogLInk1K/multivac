@@ -90,7 +90,97 @@ npm run preview    # 本地预览构建结果
 
 完整字段与注释见 `config.example.yaml`。
 
+## 功能配置
 
+### 动态说说
+
+新建 `post/moments/index.yml`：
+
+```yaml
+---
+title: 动态说说
+description: 记录生活的点点滴滴
+pubDate: 2026-01-01
+moments:
+  - content: 今天天气真好！
+    date: 2026/01/20
+  - content: 多图动态
+    date: 2026/01/19
+    images:
+      - https://example.com/img1.jpg
+      - https://example.com/img2.jpg
+---
+```
+
+### 友链
+
+新建 `post/friends/index.yml`：
+
+```yaml
+---
+title: 友情链接
+description: 相逢意气为君饮
+pubDate: 2026-01-01
+friendGroups:
+  - title: 博主
+    description: 优秀的博客
+    friends:
+      - name: 友链名称
+        url: https://example.com
+        avatar: https://example.com/avatar.jpg
+        description: 友链描述
+sections:
+  - title: 申请友链
+    content: |-
+      欢迎交换友链！请确保您的网站：
+      - 内容积极向上
+      - 网站可以正常访问
+---
+```
+
+### 观影记录
+
+新建 `post/watching/index.yml`：
+
+```yaml
+---
+title: 最近在看
+description: 影视动漫追踪
+pubDate: 2026-01-01
+watching:
+  - title: 虫师
+    year: 2005
+    cover: https://example.com/img.jpg
+    comment: 远山如雾
+    type: 动画
+    country: 日本
+    ratings:
+      - source: douban
+        score: 9.4
+    links:
+      - source: douban
+        url: https://movie.douban.com/subject/1800597/
+---
+```
+
+支持 `douban` 和 `bangumi` 两种评分来源，观影页卡片网格展示，点击进入详情页。
+
+### 关于页
+
+新建 `post/about/about.md`：
+
+```markdown
+---
+title: 关于我
+pubDate: 2026-01-01
+description: Hello,world.
+heroImage: /img/avatar.webp
+heroImageWidth: "160"
+showDate: false
+---
+
+Hello,world.👋
+```
 
 ## 隐私与内容过滤
 

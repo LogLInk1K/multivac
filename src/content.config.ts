@@ -96,8 +96,10 @@ const config = defineCollection({
 		author: z.object({
 			name: z.string(),
 			avatar: z.string(),
+			subName: z.string().optional(),
 			slogan: z.string(),
-			subSlogan: z.string(),
+			desc: z.string(),
+			subDesc: z.string().optional(),
 			description: z.string(),
 		}),
 		nav: z.object({

@@ -77,7 +77,7 @@ import Icon from './Icon.astro';
 ---
 
 <!-- 音乐播放器配置数据 -->
-<div id="music-data" data-api-endpoints={JSON.stringify(siteConfig.music.apiEndpoints)} data-author-name={siteConfig.author.name} data-author-sub-slogan={siteConfig.author.subSlogan} class="hidden"></div>
+<div id="music-data" data-api-endpoints={JSON.stringify(siteConfig.music.apiEndpoints)} data-author-name={siteConfig.author.name} data-author-sub-name={siteConfig.author.subName || ''} data-author-desc={siteConfig.author.desc} data-author-sub-desc={siteConfig.author.subDesc || ''} class="hidden"></div>
 
 <aside transition:persist="left-sidebar" class="hidden md:block w-[272px] space-y-6">
   <!-- 个人信息卡片 -->
@@ -113,7 +113,7 @@ import Icon from './Icon.astro';
       <!-- 左侧：博主信息容器 -->
       <a href="/about" class="text-container block hover:opacity-85 fluid-link">
         <h2 class="text-xl font-bold text-white dark:text-black mb-1 matrix-text" data-text={siteConfig.author.name}>{siteConfig.author.name}</h2>
-        <p class="text-xs text-white dark:text-black/90 opacity-60 matrix-text" data-text={siteConfig.author.subSlogan}>{siteConfig.author.subSlogan}</p>
+        <p class="text-xs text-white dark:text-black/90 opacity-60 matrix-text" data-text={siteConfig.author.desc}>{siteConfig.author.desc}</p>
       </a>
 
       <!-- 右侧：社交图标容器 -->
@@ -699,10 +699,12 @@ import Icon from './Icon.astro';
     // --- 文字矩阵特效独立运行 ---
     const musicDataEl = document.getElementById('music-data');
     const authorName = musicDataEl?.getAttribute('data-author-name') || '';
-    const authorSubSlogan = musicDataEl?.getAttribute('data-author-sub-slogan') || '';
+    const authorSubName = musicDataEl?.getAttribute('data-author-sub-name') || '';
+    const authorDesc = musicDataEl?.getAttribute('data-author-desc') || '';
+    const authorSubDesc = musicDataEl?.getAttribute('data-author-sub-desc') || '';
     const matrixTextPairs = [
-      { name: authorName, desc: authorSubSlogan },
-      { name: authorName.replace(/.$/, c => String.fromCharCode(c.charCodeAt(0) + 1)), desc: '今日方知我是我' }
+      { name: authorName, desc: authorDesc },
+      ...(authorSubName ? [{ name: authorSubName, desc: authorSubDesc || authorDesc }] : []),
     ];
     let currentTextPairIndex = 0;
 

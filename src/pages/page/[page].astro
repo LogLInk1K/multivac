@@ -5,17 +5,21 @@ import LeftSidebar from '../../components/LeftSidebar.astro';
 import RightSidebar from '../../components/RightSidebar.astro';
 import Pagination from '../../components/Pagination.astro';
 import MomentsTicker from '../../components/MomentsTicker.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { getSiteConfig, isArticlePost } from '../../utils/config';
+
+const siteConfig = await getSiteConfig();
 
 // 动态路由需要的getStaticPaths函数
 export async function getStaticPaths() {
+  const siteConfig = await getSiteConfig();
+
   // 获取所有文章并按时间倒序排序
-  const allPosts = (await getCollection('post', (post: CollectionEntry<'post'>) => !post.data.draft && !post.id.startsWith('about/') && !post.data.friends && !post.data.friendGroups && !post.data.moments && !post.data.watching))
+  const allPosts = (await getCollection('post', isArticlePost))
     .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
   // 分页设置
-  const postsPerPage = 4;
+  const postsPerPage = siteConfig.site.postsPerPage;
   const totalPages = Math.ceil(allPosts.length / postsPerPage);
 
   // 生成所有可能的页码路径
@@ -29,11 +33,11 @@ export async function getStaticPaths() {
 }
 
 // 获取所有文章并按时间倒序排序
-const allPosts = (await getCollection('post', (post: CollectionEntry<'post'>) => !post.data.draft && !post.id.startsWith('about/') && !post.data.friends && !post.data.friendGroups && !post.data.moments && !post.data.watching))
+const allPosts = (await getCollection('post', isArticlePost))
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
 // 分页设置
-const postsPerPage = 4;
+const postsPerPage = siteConfig.site.postsPerPage;
 const totalPages = Math.ceil(allPosts.length / postsPerPage);
 
 // 计算当前页要显示的文章
@@ -42,7 +46,7 @@ const startIndex = (currentPage - 1) * postsPerPage;
 const posts = allPosts.slice(startIndex, startIndex + postsPerPage);
 ---
 
-<MainLayout title={`${SITE_TITLE} - 第 ${currentPage} 页`} description={SITE_DESCRIPTION}>
+<MainLayout title={`${siteConfig.site.title} - 第 ${currentPage} 页`} description={siteConfig.site.description}>
 	<section class="section-container py-16">
 			<div transition:persist="moments-ticker" class="mb-6">
 				<MomentsTicker />

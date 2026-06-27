@@ -7,9 +7,12 @@
 site:
   title: "你的站点标题"          # 浏览器标签页标题、RSS 标题
   description: "你的站点描述"    # SEO 描述、RSS 描述
+  logo: "LOG"                   # 顶部导航栏品牌文字
   lang: "zh-CN"                 # HTML lang 属性，影响日期格式化
   startYear: 2021               # 站点创建年份，用于页脚版权区间
   startDate: "2021-01-02"       # 站点创建日期，用于运行时长计算
+  postsPerPage: 4               # 首页每页文章数
+  archivesPerPage: 13           # 归档页每页文章数
 
 # ── 作者信息 ──────────────────────────────────────────────────
 author:
@@ -33,7 +36,7 @@ nav:
   menuLinks:                    # 汉堡菜单链接（移动端）
     - label: "主页"
       href: "/"
-      icon: "home"              # Iconify 图标名
+      icon: "home"              
       external: true            # 是否外部链接（新标签页打开）
     - label: "博客"
       href: "/"
@@ -56,10 +59,10 @@ nav:
       icon: "about"
 
 # ── 社交链接 ──────────────────────────────────────────────────
-social:                          # 侧栏社交图标按钮
+social:                         # 侧栏社交图标按钮
   - name: "GitHub"              # 无障碍标签
     url: "https://github.com/your-username"
-    icon: "github"              # Iconify 图标名
+    icon: "github"              
   - name: "Bilibili"
     url: "https://space.bilibili.com/your-uid"
     icon: "bilibili"
@@ -75,17 +78,16 @@ music:
 # ── 评论系统 ──────────────────────────────────────────────────
 comment:
   twikoo:
-    envId: "https://your-twikoo-env.vercel.app"  # Twikoo 云函数地址
+    envId: "https://your-twikoo-env.vercel.app"   # Twikoo 云函数地址
     version: "1.7.13"                             # Twikoo JS/CSS 版本号
 
 # ── 静态资源路径 ──────────────────────────────────────────────
 assets:
   defaultCover: "/img/df-cover.webp"       # 文章默认封面图
-  defaultFallback: "/img/df-about.webp"    # OG 元数据回退图
-  defaultAbout: "/img/df-about.webp"       # 关于页/侧栏回退图
+  defaultAbout: "/img/df-about.webp"       # OG 元数据/关于页/侧栏回退图
   wechatQr: "/img/wechatGood.webp"         # 微信赞赏码
   alipayQr: "/img/alipayGood.webp"         # 支付宝赞赏码
-  emojiFiles:                               # 需预加载的 emoji SVG 文件名
+  emojiFiles:                              # 需预加载的 emoji SVG 文件名
     - "cool"
     - "cat"
     - "yummy"

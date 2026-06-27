@@ -5,10 +5,12 @@ import LeftSidebar from '../../components/LeftSidebar.astro';
 import RightSidebar from '../../components/RightSidebar.astro';
 import MomentsTicker from '../../components/MomentsTicker.astro';
 import ArchiveItem from '../../components/ArchiveItem.astro';
-import { SITE_DESCRIPTION } from '../../consts';
+import { getSiteConfig, isArticlePost } from '../../utils/config';
+
+const siteConfig = await getSiteConfig();
 
 export async function getStaticPaths() {
-  const posts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+  const posts = await getCollection('post', isArticlePost);
   const categories = new Set(posts.map(post => post.data.category).filter(Boolean));
   
   return Array.from(categories).map(category => ({
@@ -17,13 +19,13 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const allPosts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+const allPosts = await getCollection('post', isArticlePost);
 const posts = allPosts.filter(post => post.data.category === slug).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
-<MainLayout title={`分类: ${slug}`} description={SITE_DESCRIPTION}>
+<MainLayout title={`分类: ${slug}`} description={siteConfig.site.description}>
 	<section class="section-container py-16">
 			<div transition:persist="moments-ticker" class="mb-6">
 				<MomentsTicker />

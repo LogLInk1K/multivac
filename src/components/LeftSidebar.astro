@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import { getSiteConfig } from '../utils/config';
+import { getSiteConfig, isArticlePost } from '../utils/config';
 
 const siteConfig = await getSiteConfig();
 
@@ -25,7 +25,7 @@ interface WatchingItem {
   links?: Link[];
 }
 
-const posts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+const posts = await getCollection('post', isArticlePost);
 
 const defaultWatching: WatchingItem[] = [
   {

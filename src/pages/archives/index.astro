@@ -6,13 +6,15 @@ import RightSidebar from '../../components/RightSidebar.astro';
 import MomentsTicker from '../../components/MomentsTicker.astro';
 import ArchiveItem from '../../components/ArchiveItem.astro';
 import Pagination from '../../components/Pagination.astro';
-import { SITE_DESCRIPTION} from '../../consts';
+import { getSiteConfig, isArticlePost } from '../../utils/config';
 
-const allPosts = (await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching)).sort(
+const siteConfig = await getSiteConfig();
+
+const allPosts = (await getCollection('post', isArticlePost)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const postsPerPage = 13;
+const postsPerPage = siteConfig.site.archivesPerPage;
 const totalPages = Math.ceil(allPosts.length / postsPerPage);
 const posts = allPosts.slice(0, postsPerPage);
 
@@ -28,7 +30,7 @@ const postsByYear = posts.reduce((acc, post) => {
 const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 ---
 
-<MainLayout title=文稿 description={SITE_DESCRIPTION}>
+<MainLayout title=文稿 description={siteConfig.site.description}>
 	<section class="section-container py-16">
 			<div transition:persist="moments-ticker" class="mb-6">
 				<MomentsTicker />

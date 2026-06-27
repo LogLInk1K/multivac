@@ -2,10 +2,10 @@
 import { getCollection } from 'astro:content';
 import { calculateReadingTime } from '../utils/readingTime';
 import FormattedDate from './FormattedDate.astro';
-import { getSiteConfig } from '../utils/config';
+import { getSiteConfig, isArticlePost } from '../utils/config';
 
 const siteConfig = await getSiteConfig();
-const allPosts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+const allPosts = await getCollection('post', isArticlePost);
 const defaultCover = siteConfig.assets.defaultCover;
 
 interface Props {

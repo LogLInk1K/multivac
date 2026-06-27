@@ -22,7 +22,7 @@ const post = defineCollection({
 			tags: z.array(z.string()).default([]),
 			category: z.string().optional(),
 			draft: z.boolean().default(false),
-			author: z.string().default('波罗歌'),
+			author: z.string().optional(),
 			readingTime: z.number().optional(),
 			password: z.string().optional(),
 			passwordHint: z.string().optional(),
@@ -86,9 +86,12 @@ const config = defineCollection({
 		site: z.object({
 			title: z.string(),
 			description: z.string(),
+			logo: z.string(),
 			lang: z.string().default('zh-CN'),
 			startYear: z.number(),
 			startDate: z.string(),
+			postsPerPage: z.number().int().min(1).default(4),
+			archivesPerPage: z.number().int().min(1).default(13),
 		}),
 		author: z.object({
 			name: z.string(),
@@ -127,7 +130,6 @@ const config = defineCollection({
 		}),
 		assets: z.object({
 			defaultCover: z.string(),
-			defaultFallback: z.string(),
 			defaultAbout: z.string(),
 			wechatQr: z.string(),
 			alipayQr: z.string(),

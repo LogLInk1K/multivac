@@ -1,18 +1,17 @@
 import { getCollection } from 'astro:content';
 import rss from '@astrojs/rss';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getSiteConfig } from '../utils/config';
+import { getSiteConfig, isArticlePost } from '../utils/config';
 
 const siteConfig = await getSiteConfig();
 const defaultCover = siteConfig.assets.defaultCover;
 
 export async function GET(context) {
-	const posts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+	const posts = await getCollection('post', isArticlePost);
 	const sortedPosts = posts.sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate));
 	
 	return rss({
-		title: SITE_TITLE,
-		description: SITE_DESCRIPTION,
+		title: siteConfig.site.title,
+		description: siteConfig.site.description,
 		site: context.site,
 		items: sortedPosts.map((post) => {
 			const coverImage = post.data.heroImage || defaultCover;

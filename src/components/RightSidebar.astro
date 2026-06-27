@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import { getSiteConfig } from '../utils/config';
+import { getSiteConfig, isArticlePost } from '../utils/config';
 
 const siteConfig = await getSiteConfig();
 
 const defaultCover = siteConfig.assets.defaultCover;
 
-const posts = await getCollection('post', ({ data, id }) => !data.draft && !id.startsWith('about/') && !data.friends && !data.friendGroups && !data.moments && !data.watching);
+const posts = await getCollection('post', isArticlePost);
 
 // 1. 标签逻辑处理
 const allTags = posts.reduce((acc, post) => {

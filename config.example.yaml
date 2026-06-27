@@ -5,8 +5,9 @@
 
 # ── 站点基础信息 ──────────────────────────────────────────────
 site:
-  title: "你的站点标题"          # 浏览器标签页标题、RSS 标题
-  description: "你的站点描述"    # SEO 描述、RSS 描述
+  url: "https://example.com"    # 站点 URL，影响 RSS、Sitemap 等绝对 URL 生成
+  title: "你的站点标题"         # 浏览器标签页标题、RSS 标题
+  description: "你的站点描述"   # SEO 描述、RSS 描述
   logo: "LOG"                   # 顶部导航栏品牌文字
   lang: "zh-CN"                 # HTML lang 属性，影响日期格式化
   startYear: 2021               # 站点创建年份，用于页脚版权区间

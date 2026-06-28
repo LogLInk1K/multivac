@@ -5,7 +5,7 @@ import LeftSidebar from '../components/LeftSidebar.astro';
 import RightSidebar from '../components/RightSidebar.astro';
 import Pagination from '../components/Pagination.astro';
 import MomentsTicker from '../components/MomentsTicker.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import { getSiteConfig, isArticlePost } from '../utils/config';
 
 const siteConfig = await getSiteConfig();

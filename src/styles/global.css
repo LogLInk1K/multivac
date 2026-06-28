@@ -497,19 +497,8 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   background-color: #666;
 }
 
-/* fancybox简单样式适配 */
-.fancybox__slide {
-  padding: 2rem !important;
-}
-.fancybox__viewport.is-draggable img {
-  border-radius: 12px;
-}
-.f-carousel__toolbar__column.is-right .f-button:first-child {
-  border-radius: 12px 0 0 12px;
-}
-.f-carousel__toolbar__column.is-right .f-button:last-child {
-  border-radius: 0 12px 12px 0;
-}
+
+
 
 /* 代码块折叠功能 */
 .prose pre {

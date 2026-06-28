@@ -16,7 +16,7 @@ import { getSiteConfig } from '../utils/config';
 const siteConfig = await getSiteConfig();
 const defaultCover = siteConfig.assets.defaultCover;
 import { ClientRouter } from 'astro:transitions';
-import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
 
 type Props = Partial<CollectionEntry<'post'>['data']> & {
   title: string;
@@ -202,13 +202,12 @@ import Icon from '../components/Icon.astro';
 		<Footer />
 	</div>
 		<script>
-			import { Fancybox } from "@fancyapps/ui";
+			import { Lightbox } from '../scripts/lightbox';
 
-			function bindFancybox() {
-				Fancybox.unbind("[data-fancybox]");
-				Fancybox.close();
+			function bindLightbox() {
+				Lightbox.close();
 
-				Fancybox.bind("[data-fancybox]", {
+				Lightbox.bind("[data-lightbox]", {
 					Hash: false,
 					hideScrollbar: false,
 				});
@@ -272,15 +271,14 @@ import Icon from '../components/Icon.astro';
 				
 				const seenImages = new Set();
 				images.forEach((img) => {
-					const htmlImg = img as HTMLElement;
 					const src = img.getAttribute('src');
 					
-					if (src && !src.startsWith('data:') && htmlImg.offsetParent !== null) {
+					if (src && !src.startsWith('data:')) {
 						if (seenImages.has(src)) {
 							return;
 						}
 						seenImages.add(src);
-						img.setAttribute('data-fancybox', 'gallery');
+						img.setAttribute('data-lightbox', 'gallery');
 						img.setAttribute('data-src', src);
 						img.setAttribute('data-caption', img.getAttribute('alt') || '');
 						img.classList.add('cursor-pointer', 'hover:scale-105', 'transition-transform', 'duration-300');
@@ -330,7 +328,7 @@ import Icon from '../components/Icon.astro';
 					update();
 				}
 
-				bindFancybox();
+				bindLightbox();
 			});
 		</script>
 

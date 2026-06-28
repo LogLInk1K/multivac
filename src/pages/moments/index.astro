@@ -7,7 +7,7 @@ import { getEntry } from 'astro:content';
 import { getSiteConfig } from '../../utils/config';
 
 const siteConfig = await getSiteConfig();
-import "@fancyapps/ui/dist/fancybox/fancybox.css";
+
 
 const defaultMoments = [
 	{
@@ -66,7 +66,7 @@ import Icon from '../../components/Icon.astro';
   declare global {
     interface Window {
       momentsGoToPage: ((page: number) => void) | undefined;
-      bindFancybox: (() => void) | undefined;
+      bindLightbox: (() => void) | undefined;
     }
   }
 
@@ -162,7 +162,7 @@ import Icon from '../../components/Icon.astro';
         if (moment.images.length === 1) {
           imagesHtml = `
             <div class="mb-4">
-              <a data-fancybox="gallery-${moment.id}" data-src="${moment.images[0]}" href="${moment.images[0]}">
+              <a data-lightbox="gallery-${moment.id}" data-src="${moment.images[0]}" href="${moment.images[0]}">
                 <img src="${moment.images[0]}" alt="动态图片" loading="lazy" decoding="async" class="w-auto max-h-[120px] object-cover rounded-xl bg-hero-light dark:bg-hero-dark cursor-pointer hover:scale-105 transition-transform duration-300" />
               </a>
             </div>
@@ -173,7 +173,7 @@ import Icon from '../../components/Icon.astro';
             <div class="mb-4">
               <div class="grid gap-3 max-w-[500px] ${gridCols}">
                 ${moment.images.map((image) => `
-                  <a data-fancybox="gallery-${moment.id}" data-src="${image}" href="${image}">
+                  <a data-lightbox="gallery-${moment.id}" data-src="${image}" href="${image}">
                     <img src="${image}" alt="动态图片" loading="lazy" decoding="async" class="w-full aspect-square object-cover rounded-xl bg-hero-light dark:bg-hero-dark cursor-pointer hover:scale-105 transition-transform duration-300 will-change-transform" />
                   </a>
                 `).join('')}
@@ -265,8 +265,8 @@ import Icon from '../../components/Icon.astro';
       countDisplay.textContent = `第 ${currentPage} / ${totalPages} 页，共 ${moments.length} 条动态`;
     }
 
-    if (window.bindFancybox) {
-      window.bindFancybox();
+    if (window.bindLightbox) {
+      window.bindLightbox();
     }
   }
 
@@ -331,19 +331,18 @@ import Icon from '../../components/Icon.astro';
 </MainLayout>
 
 <script>
-  import { Fancybox } from "@fancyapps/ui";
+  import { Lightbox } from '../../scripts/lightbox';
 
-  function bindFancybox() {
-    Fancybox.unbind("[data-fancybox]");
-    Fancybox.close();
+  function bindLightbox() {
+    Lightbox.close();
 
-    Fancybox.bind("[data-fancybox]", {
+    Lightbox.bind("[data-lightbox]", {
       Hash: false,
       hideScrollbar: false,
     });
   }
 
-  (window as any).bindFancybox = bindFancybox;
+  (window as any).bindLightbox = bindLightbox;
 
-  document.addEventListener("astro:page-load", bindFancybox);
+  document.addEventListener("astro:page-load", bindLightbox);
 </script>

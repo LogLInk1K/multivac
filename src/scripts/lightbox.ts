@@ -4,13 +4,14 @@
  * 功能：
  * - 点击 [data-lightbox] 元素弹出灯箱 overlay
  * - 支持画廊分组（data-lightbox="gallery-name"）
- * - 画廊内左右切换（按钮 + 键盘左右箭头）
+ * - 画廊内左右切换（按钮 + 键盘左右箭头）—— 附带滑入/滑出动画
  * - 关闭（按钮 + Esc 键 + 点击背景）
- * - 缩放（双击放大/还原，滚轮缩放）
- * - 拖拽移动放大后的图片
+ * - 缩放（双击放大/还原，滚轮缩放）—— 以鼠标指针位置为中心
+ * - 拖拽移动放大后的图片—— 自由平移查看溢出区域
  * - 触屏手势（单指拖拽、双指缩放）
- * - CSS 过渡动画
+ * - 完整过渡动画系统（打开 / 切换 / 关闭 各阶段独立控制）
  * - 兼容 Astro View Transitions（事件委托 + DOM/样式自动恢复）
+ *
  */
 
 type GalleryItem = {
@@ -19,48 +20,135 @@ type GalleryItem = {
   el: HTMLElement;
 };
 
-
-
-
+/* ──────────────────────────────────────────────────────────────────
+ * CSS 动画系统
+ *
+ * 核心原则：
+ *  1. overlay 只管 visibility（不参与 opacity），避免子元素背景闪烁
+ *  2. backdrop / content / btn 各自独立 opacity，分层淡入淡出
+ *  3. 图片缩放动画用 CSS class 触发（lb-enter / lb-exit / lb-slide-*）
+ *     完成后立即移除 class，不干扰 JS 缩放 transform
+ *  4. 图片切换用 lb-slide-prev / lb-slide-next 实现方向性滑入滑出
+ * ────────────────────────────────────────────────────────────────── */
 const LB_STYLES = `
+/* ── Overlay 容器 ── */
 .lb-overlay {
   position: fixed; inset: 0; z-index: 99999;
   display: flex; align-items: center; justify-content: center;
-  opacity: 0; visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  visibility: hidden;
+  /* 关闭时：等所有淡出动画结束(300ms)后再隐藏，防止突然消失 */
+  transition: visibility 0s 0.3s;
 }
 .lb-overlay.active {
-  opacity: 1; visibility: visible;
+  visibility: visible;
+  /* 打开时：立即可见，无延迟 */
+  transition: visibility 0s;
 }
+
+/* ── Backdrop（深色背景层）── */
 .lb-backdrop {
   position: absolute; inset: 0;
   background: rgba(0,0,0,0.85);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
+.lb-overlay.active .lb-backdrop {
+  opacity: 1;
+}
+
+/* ── Content（图片+文字层）── */
 .lb-content {
   position: relative; z-index: 1;
-  max-width: 92vw; max-height: 88vh;
   display: flex; flex-direction: column; align-items: center;
+  /* 初始隐藏，比 backdrop 晚 50ms 出现（层次感） */
+  opacity: 0;
+  transition: opacity 0.25s ease 0.05s;
 }
+.lb-overlay.active .lb-content {
+  opacity: 1;
+}
+
+/* ── 图片容器 ── */
 .lb-img-wrap {
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
   touch-action: none;
   user-select: none;
+  line-height: 0;
 }
 .lb-img-wrap.lb-dragging { cursor: grabbing; }
-.lb-img-wrap:not(.lb-dragging) { cursor: grab; }
 .lb-img-wrap.lb-zoomed { cursor: grab; }
 .lb-img-wrap:not(.lb-zoomed) { cursor: pointer; }
+
+/* ── 图片 ── */
 .lb-img {
   max-width: 90vw; max-height: 85vh;
   object-fit: contain;
+  /* 缩放/拖拽过渡（仅 transform，不含 opacity，避免与开关动画冲突） */
   transition: transform 0.2s ease-out;
-  transform-origin: center center;
+  transform-origin: 0 0;
   border-radius: 6px;
+  display: block;
 }
 .lb-img.lb-no-transition {
   transition: none;
 }
+
+/* ── 图片打开动画（scale + opacity）── */
+.lb-img.lb-enter {
+  opacity: 0;
+  transform: scale(0.92) !important;
+  transition: opacity 0.25s ease 0.05s, transform 0.25s cubic-bezier(0.16,1,0.3,1) 0.05s !important;
+}
+.lb-img.lb-enter-active {
+  opacity: 1;
+  transform: scale(1) !important;
+}
+
+/* ── 图片关闭动画 ── */
+.lb-img.lb-exit {
+  opacity: 1;
+  transform: scale(1) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+.lb-img.lb-exit-active {
+  opacity: 0;
+  transform: scale(0.92) !important;
+}
+
+/* ── 图片切换动画（方向性滑入/滑出）── */
+.lb-img.lb-slide-out-prev {
+  opacity: 1; transform: translateX(0) scale(1) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+.lb-img.lb-slide-out-prev-active {
+  opacity: 0; transform: translateX(40px) scale(0.95) !important;
+}
+.lb-img.lb-slide-out-next {
+  opacity: 1; transform: translateX(0) scale(1) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+.lb-img.lb-slide-out-next-active {
+  opacity: 0; transform: translateX(-40px) scale(0.95) !important;
+}
+.lb-img.lb-slide-in-prev {
+  opacity: 0; transform: translateX(-40px) scale(0.95) !important;
+  transition: opacity 0.25s cubic-bezier(0.16,1,0.3,1),
+              transform 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.lb-img.lb-slide-in-prev-active {
+  opacity: 1; transform: translateX(0) scale(1) !important;
+}
+.lb-img.lb-slide-in-next {
+  opacity: 0; transform: translateX(40px) scale(0.95) !important;
+  transition: opacity 0.25s cubic-bezier(0.16,1,0.3,1),
+              transform 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+.lb-img.lb-slide-in-next-active {
+  opacity: 1; transform: translateX(0) scale(1) !important;
+}
+
+/* ── Caption ── */
 .lb-caption {
   color: rgba(255,255,255,0.8);
   font-size: 14px; line-height: 1.5;
@@ -68,13 +156,27 @@ const LB_STYLES = `
   padding: 8px 16px 0;
   max-width: 90vw;
   word-break: break-word;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.12s;
+}
+.lb-overlay.active .lb-caption {
+  opacity: 1;
 }
 .lb-caption:empty { display: none; }
+
+/* ── Counter ── */
 .lb-counter {
   color: rgba(255,255,255,0.5);
   font-size: 13px;
   padding: 4px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.12s;
 }
+.lb-overlay.active .lb-counter {
+  opacity: 1;
+}
+
+/* ── 操作按钮 ── */
 .lb-btn {
   position: absolute; z-index: 2;
   width: 44px; height: 44px;
@@ -82,19 +184,46 @@ const LB_STYLES = `
   background: rgba(255,255,255,0.1);
   color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, transform 0.2s;
+  /* 按钮独立淡入淡出，不影响其 background 色值 */
+  opacity: 0;
+  transition: opacity 0.15s ease 0.1s, background 0.2s ease;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
-.lb-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
+.lb-overlay.active .lb-btn {
+  opacity: 1;
+  transition: opacity 0.15s ease 0.1s, background 0.2s ease, transform 0.2s ease;
+}
+.lb-btn:hover { background: rgba(255,255,255,0.25); }
 .lb-btn svg { width: 20px; height: 20px; }
+
+/* ── 按钮定位（hover 时 scale 不可覆盖 translateY）── */
 .lb-close { top: 16px; right: 16px; }
-.lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
-.lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
-.lb-prev:hover, .lb-next:hover { transform: translateY(-50%) scale(1.1); }
+.lb-close:hover { transform: scale(1.1); }
+.lb-prev { left: 16px; top: 50%; margin-top: -22px; }
+.lb-prev:hover { transform: scale(1.1); }
+.lb-next { right: 16px; top: 50%; margin-top: -22px; }
+.lb-next:hover { transform: scale(1.1); }
+
+/* ── 单图模式 ── */
 .lb-overlay.lb-single .lb-prev,
-.lb-overlay.lb-single .lb-next { display: none; }
+.lb-overlay.lb-single .lb-next,
 .lb-overlay.lb-single .lb-counter { display: none; }
+
+/* ── 响应式 ── */
+@media (max-width: 640px) {
+  .lb-btn { width: 36px; height: 36px; }
+  .lb-btn svg { width: 16px; height: 16px; }
+  .lb-close { top: 12px; right: 12px; }
+  .lb-prev { left: 8px; }
+  .lb-next { right: 8px; }
+  .lb-caption { font-size: 13px; padding: 6px 12px 0; }
+  .lb-counter { font-size: 12px; }
+  .lb-img.lb-slide-out-prev-active { transform: translateX(24px) scale(0.95) !important; }
+  .lb-img.lb-slide-out-next-active { transform: translateX(-24px) scale(0.95) !important; }
+  .lb-img.lb-slide-in-prev { transform: translateX(-24px) scale(0.95) !important; }
+  .lb-img.lb-slide-in-next { transform: translateX(40px) scale(0.95) !important; }
+}
 `;
 
 class Lightbox {
@@ -111,16 +240,23 @@ class Lightbox {
   private gallery: GalleryItem[] = [];
   private currentIndex = 0;
 
-  // 缩放 / 拖拽状态
+  // ── 缩放 / 拖拽状态 ──
   private scale = 1;
   private translateX = 0;
   private translateY = 0;
+
+  // 拖拽
   private isDragging = false;
   private dragStartX = 0;
   private dragStartY = 0;
   private dragStartTX = 0;
   private dragStartTY = 0;
+
+  // 触屏双指缩放
   private lastTouchDist = 0;
+
+  // 动画锁：切换/关闭动画进行中时不接受新操作
+  private animating = false;
 
   private static instance: Lightbox | null = null;
   private static delegated = false;
@@ -141,14 +277,8 @@ class Lightbox {
     return Lightbox.instance;
   }
 
-  // ───────── DOM / 样式恢复（View Transition 核心保障） ─────────
+  // ───────── DOM / 样式恢复 ─────────
 
-  /**
-   * 恢复 overlay 和 style 到当前 DOM。
-   * Astro View Transition 会替换 body 和合并 head，
-   * 导致动态挂载的 overlay 和 style 丢失。
-   * 此方法确保两者始终在场。
-   */
   private recover() {
     if (!document.body.contains(this.overlay)) {
       document.body.appendChild(this.overlay);
@@ -158,11 +288,6 @@ class Lightbox {
     }
   }
 
-  /**
-   * 注册多个生命周期事件，确保 View Transition 后 DOM/样式始终恢复。
-   * astro:after-swap — body/head 已被替换，此时恢复
-   * astro:page-load  — 兜底恢复（某些场景 after-swap 可能未触发）
-   */
   private setupRecoveryHooks() {
     const recover = () => this.recover();
     document.addEventListener('astro:after-swap', recover);
@@ -228,7 +353,6 @@ class Lightbox {
   // ───────── 缩放 / 拖拽 / 键盘事件 ─────────
 
   private bindInteractionEvents() {
-    // 键盘
     document.addEventListener('keydown', (e) => {
       if (!this.overlay.classList.contains('active')) return;
       if (e.key === 'Escape') this.close();
@@ -236,9 +360,9 @@ class Lightbox {
       if (e.key === 'ArrowRight') this.next();
     });
 
-    // 鼠标双击缩放
     this.imgContainer.addEventListener('dblclick', (e) => {
       e.preventDefault();
+      if (this.animating) return;
       if (this.scale > 1) {
         this.resetZoom();
       } else {
@@ -246,9 +370,9 @@ class Lightbox {
       }
     });
 
-    // 滚轮缩放
     this.imgContainer.addEventListener('wheel', (e) => {
       e.preventDefault();
+      if (this.animating) return;
       const delta = e.deltaY > 0 ? -0.15 : 0.15;
       const newScale = Math.max(1, Math.min(8, this.scale + delta));
       if (newScale !== this.scale) {
@@ -256,9 +380,8 @@ class Lightbox {
       }
     }, { passive: false });
 
-    // 鼠标拖拽
     this.imgContainer.addEventListener('mousedown', (e) => {
-      if (this.scale <= 1) return;
+      if (this.scale <= 1 || this.animating) return;
       e.preventDefault();
       this.isDragging = true;
       this.dragStartX = e.clientX;
@@ -282,8 +405,8 @@ class Lightbox {
       this.applyTransform(false);
     });
 
-    // 触屏手势
     this.imgContainer.addEventListener('touchstart', (e) => {
+      if (this.animating) return;
       if (e.touches.length === 1 && this.scale > 1) {
         this.isDragging = true;
         this.dragStartX = e.touches[0].clientX;
@@ -307,11 +430,9 @@ class Lightbox {
         const dist = this.getTouchDist(e.touches);
         const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
         const scaleFactor = dist / this.lastTouchDist;
         const newScale = Math.max(1, Math.min(8, this.scale * scaleFactor));
         this.zoomTo(newScale, cx, cy);
-
         this.lastTouchDist = dist;
       }
     }, { passive: false });
@@ -320,7 +441,6 @@ class Lightbox {
       this.isDragging = false;
     }, { passive: true });
 
-    // 图片加载后自适应
     this.img.addEventListener('load', () => {
       this.resetZoom();
     });
@@ -332,28 +452,40 @@ class Lightbox {
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  // ───────── 缩放 ─────────
+  // ───────── 缩放逻辑 ─────────
 
   private zoomTo(newScale: number, cx?: number, cy?: number) {
-    if (cx !== undefined && cy !== undefined) {
-      const rect = this.img.getBoundingClientRect();
-      const imgCX = rect.left + rect.width / 2;
-      const imgCY = rect.top + rect.height / 2;
-      const ratio = newScale / this.scale;
-      this.translateX = cx - ratio * (cx - imgCX - this.translateX) - imgCX;
-      this.translateY = cy - ratio * (cy - imgCY - this.translateY) - imgCY;
-    }
-    this.scale = newScale;
-    this.applyTransform(false);
+    const oldScale = this.scale;
+    const oldTX = this.translateX;
+    const oldTY = this.translateY;
+    const ratio = newScale / oldScale;
 
-    if (this.scale > 1) {
-      this.imgContainer.classList.add('lb-zoomed');
+    const rect = this.img.getBoundingClientRect();
+    const cssLeft = rect.left - oldTX;
+    const cssTop = rect.top - oldTY;
+
+    if (cx !== undefined && cy !== undefined) {
+      this.translateX = cx - (cx - cssLeft - oldTX) * ratio - cssLeft;
+      this.translateY = cy - (cy - cssTop - oldTY) * ratio - cssTop;
     } else {
-      this.imgContainer.classList.remove('lb-zoomed');
+      const imgCX = cssLeft + oldTX + this.img.clientWidth / 2 * oldScale;
+      const imgCY = cssTop + oldTY + this.img.clientHeight / 2 * oldScale;
+      this.translateX = imgCX - (imgCX - cssLeft - oldTX) * ratio - cssLeft;
+      this.translateY = imgCY - (imgCY - cssTop - oldTY) * ratio - cssTop;
+    }
+
+    this.scale = newScale;
+
+    if (this.scale <= 1) {
+      this.scale = 1;
       this.translateX = 0;
       this.translateY = 0;
-      this.applyTransform(false);
+      this.imgContainer.classList.remove('lb-zoomed');
+    } else {
+      this.imgContainer.classList.add('lb-zoomed');
     }
+
+    this.applyTransform(false);
   }
 
   private resetZoom() {
@@ -373,23 +505,38 @@ class Lightbox {
     this.img.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
   }
 
-  // ───────── 公共 API ─────────
+  // ───────── CSS class 动画辅助 ─────────
 
   /**
-   * 使用事件委托绑定点击。
-   * listener 挂在 document 上，View Transition 替换 DOM 后依然有效。
-   * 打开灯箱前先 recover() 确保 overlay + style 在场。
+   * 触发 CSS class 动画：先设初始 class → 强制 reflow → 加 active class → 过渡完成后清理。
+   * 动画 class 用 !important 覆盖 JS transform，完成后移除恢复 JS 控制。
    */
+  private animateClass(el: HTMLElement, startClass: string, activeClass: string, duration: number): Promise<void> {
+    this.animating = true;
+    el.classList.add(startClass);
+
+    // 强制浏览器应用初始状态（否则 transition 可能不触发）
+    void el.offsetWidth;
+
+    el.classList.add(activeClass);
+
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        el.classList.remove(startClass, activeClass);
+        this.animating = false;
+        resolve();
+      }, duration);
+    });
+  }
+
+  // ───────── 公共 API ─────────
+
   static bind(_selector: string = '[data-lightbox]', _options?: { Hash?: boolean; hideScrollbar?: boolean }) {
     const lb = Lightbox.getInstance();
 
     if (!Lightbox.delegated) {
       Lightbox.delegated = true;
 
-      // 在 capture 阶段注册，确保在 Astro View Transitions 路由器之前拦截。
-      // Astro 路由器也在 document 上监听 <a> 的 click（bubble 阶段），
-      // 如果在 bubble 阶段注册，Astro 路由器可能先执行 navigate() 导致页面跳转。
-      // capture 阶段 + stopImmediatePropagation 确保灯箱拦截优先。
       document.addEventListener('click', (e: MouseEvent) => {
         const target = Lightbox.closestDataLightbox(e.target as Element);
         if (!target) return;
@@ -397,22 +544,14 @@ class Lightbox {
         e.stopImmediatePropagation();
         lb.recover();
         lb.openFrom(target);
-      }, true); // true = capture phase
+      }, true);
     }
   }
 
-  /**
-   * 从点击元素向上查找 [data-lightbox] 元素。
-   * 跨越 SVG namespace 边界：先在当前 namespace 中 closest，
-   * 未找到则检查宿主 <img> / <object> 元素。
-   */
   private static closestDataLightbox(el: Element): HTMLElement | null {
-    // 先尝试常规 closest（HTML namespace）
     const hit = el.closest('[data-lightbox]');
     if (hit) return hit as HTMLElement;
 
-    // 如果 el 在 SVG namespace 中，closest 不跨越到 HTML。
-    // 检查是否是 <svg> 内部元素，向上找宿主 <img> 或 <object>
     let node: Node | null = el;
     while (node) {
       if (node instanceof HTMLElement && node.hasAttribute('data-lightbox')) {
@@ -460,25 +599,26 @@ class Lightbox {
       this.currentIndex = 0;
     }
 
-    this.show();
+    this.open();
   }
 
-  private show() {
+  /**
+   * 打开灯箱 —— 设置内容 → 触发打开动画
+   */
+  private open() {
     const item = this.gallery[this.currentIndex];
     if (!item) return;
 
     this.resetZoom();
+    this.img.style.transform = '';
 
-    // 清除之前可能遗留的 <object>/<iframe>
-    const existing = this.imgContainer.querySelectorAll('.lb-alt-media');
-    existing.forEach(n => n.remove());
+    // 清除之前可能遗留的替代渲染元素
+    this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
 
-    // 判断是否需要用 <object> 渲染（SVG 等矢量格式）
     const srcLower = item.src.split('?')[0].split('#')[0].toLowerCase();
     const isSvg = srcLower.endsWith('.svg');
 
     if (isSvg) {
-      // SVG 用 <object> 渲染，支持交互式 SVG 且不依赖 <img> 的安全沙箱
       this.img.style.display = 'none';
       const obj = document.createElement('object');
       obj.className = 'lb-alt-media';
@@ -497,32 +637,118 @@ class Lightbox {
     const isSingle = this.gallery.length <= 1;
     this.overlay.classList.toggle('lb-single', isSingle);
     this.counterEl.textContent = isSingle ? '' : `${this.currentIndex + 1} / ${this.gallery.length}`;
-
     this.prevBtn.style.display = isSingle ? 'none' : '';
     this.nextBtn.style.display = isSingle ? 'none' : '';
 
+    // 先让 overlay 可见（visibility: visible），然后触发图片进入动画
     this.overlay.classList.add('active');
+
+    // 图片从缩小+透明 → 正常大小+可见（250ms）
+    this.animateClass(this.img, 'lb-enter', 'lb-enter-active', 300);
   }
 
+  /**
+   * 关闭灯箱 —— 触发关闭动画 → 延迟清理
+   */
   private close() {
+    if (this.animating) return;
+
+    // 图片从正常 → 缩小+透明（200ms）
+    const promise = this.animateClass(this.img, 'lb-exit', 'lb-exit-active', 250);
+
+    // 同时移除 active，触发 backdrop/content/btn 淡出
     this.overlay.classList.remove('active');
-    this.resetZoom();
-    this.img.src = '';
-    this.img.style.display = '';
-    // 清理 <object> 等替代渲染元素
-    this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+
+    // overlay visibility 有 0.3s 延迟，确保淡出完成后才隐藏
+    promise.then(() => {
+      this.resetZoom();
+      this.img.style.transform = '';
+      this.img.src = '';
+      this.img.style.display = '';
+      this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+    });
   }
 
+  /**
+   * 切换到上一张 —— 旧图向右滑出，新图从左侧滑入
+   */
   private prev() {
-    if (this.gallery.length <= 1) return;
-    this.currentIndex = (this.currentIndex - 1 + this.gallery.length) % this.gallery.length;
-    this.show();
+    if (this.gallery.length <= 1 || this.animating) return;
+    this.slideTo((this.currentIndex - 1 + this.gallery.length) % this.gallery.length, 'prev');
   }
 
+  /**
+   * 切换到下一张 —— 旧图向左滑出，新图从右侧滑入
+   */
   private next() {
-    if (this.gallery.length <= 1) return;
-    this.currentIndex = (this.currentIndex + 1) % this.gallery.length;
-    this.show();
+    if (this.gallery.length <= 1 || this.animating) return;
+    this.slideTo((this.currentIndex + 1) % this.gallery.length, 'next');
+  }
+
+  /**
+   * 方向性滑入/滑出切换图片
+   * direction: 'prev' → 旧图右滑出+新图左滑入, 'next' → 旧图左滑出+新图右滑入
+   */
+  private slideTo(newIndex: number, direction: 'prev' | 'next') {
+    const slideOutClass = direction === 'prev' ? 'lb-slide-out-prev' : 'lb-slide-out-next';
+    const slideOutActiveClass = direction === 'prev' ? 'lb-slide-out-prev-active' : 'lb-slide-out-next-active';
+    const slideInClass = direction === 'prev' ? 'lb-slide-in-prev' : 'lb-slide-in-next';
+    const slideInActiveClass = direction === 'prev' ? 'lb-slide-in-prev-active' : 'lb-slide-in-next-active';
+
+    this.animating = true;
+
+    // Phase 1：旧图滑出（200ms）
+    this.img.classList.add(slideOutClass);
+    void this.img.offsetWidth;
+    this.img.classList.add(slideOutActiveClass);
+
+    setTimeout(() => {
+      // Phase 2：旧图动画结束，清理 class，换新图 src
+      this.img.classList.remove(slideOutClass, slideOutActiveClass);
+      this.img.style.transform = '';
+      this.resetZoom();
+
+      this.currentIndex = newIndex;
+      const item = this.gallery[this.currentIndex];
+      if (!item) { this.animating = false; return; }
+
+      // 更新内容
+      this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+      const srcLower = item.src.split('?')[0].split('#')[0].toLowerCase();
+      const isSvg = srcLower.endsWith('.svg');
+
+      if (isSvg) {
+        this.img.style.display = 'none';
+        const obj = document.createElement('object');
+        obj.className = 'lb-alt-media';
+        obj.type = 'image/svg+xml';
+        obj.data = item.src;
+        obj.style.cssText = 'max-width:90vw;max-height:85vh;width:100%;height:auto;border-radius:6px;';
+        this.imgContainer.appendChild(obj);
+      } else {
+        this.img.style.display = '';
+        this.img.src = item.src;
+      }
+
+      this.img.alt = item.caption || '';
+      this.captionEl.textContent = item.caption || '';
+      const isSingle = this.gallery.length <= 1;
+      this.overlay.classList.toggle('lb-single', isSingle);
+      this.counterEl.textContent = isSingle ? '' : `${this.currentIndex + 1} / ${this.gallery.length}`;
+      this.prevBtn.style.display = isSingle ? 'none' : '';
+      this.nextBtn.style.display = isSingle ? 'none' : '';
+
+      // Phase 3：新图滑入（250ms）
+      this.img.classList.add(slideInClass);
+      void this.img.offsetWidth;
+      this.img.classList.add(slideInActiveClass);
+
+      setTimeout(() => {
+        this.img.classList.remove(slideInClass, slideInActiveClass);
+        this.img.style.transform = '';
+        this.animating = false;
+      }, 300);
+    }, 250);
   }
 }
 

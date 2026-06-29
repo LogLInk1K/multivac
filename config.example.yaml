@@ -137,3 +137,11 @@ tenYearPledge:
 
 # ── 文章密码提示 ──────────────────────────────────────────────
 passwordHint: "提示：密码由文章作者设置"  # 密码保护文章的默认提示语
+
+# ── 自动化备份 ──────────────────────────────────────────────
+backup:
+  enabled: false                  # 自动化备份总开关 (true/false)
+  repo_url: "git@github.com:your_username/your_private_repo.git" # 私有备份仓 Git 地址 (推荐 SSH)
+  sync_config: false              # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
+  sync_post: false                # 是否同步 post/ 文件夹 (可选，默认 false)
+  sync_twikoo: false              # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)

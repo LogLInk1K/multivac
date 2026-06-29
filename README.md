@@ -87,6 +87,7 @@ npm run preview    # 本地预览构建结果
 | `preconnect` | 预连接域名 |
 | `tenYearPledge` | 十年之约链接 |
 | `passwordHint` | 加密文章默认提示语 |
+| `backup` | 自动化备份配置 |
 
 完整字段与注释见 `config.example.yaml`。
 
@@ -193,19 +194,26 @@ Hello,world.👋
 - `.gitignore` 忽略 `post/*`（仅保留 `!post/example/`），私有内容不进入版本控制
 - Content Collections Schema 强制校验 frontmatter 字段类型与约束
 
-## 私有内容备份
+## 私有内容备份（可选配置）
 
-复制 `.env.example` 为 `.env` 并填入配置：
+项目支持将本地内容一键安全备份至私有 Git 仓库。
 
-```bash
-cp .env.example .env
+1. 配置备份规则（在 config.multivac.yaml 中修改）：
+
+```yaml
+backup:
+  enabled: false                  # 自动化备份总开关 (true/false)
+  repo_url: "git@github.com:your_username/your_private_repo.git" # 私有备份仓 Git 地址 (推荐 SSH)
+  sync_config: false              # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
+  sync_post: false                # 是否同步 post/ 文件夹 (可选，默认 false)
+  sync_twikoo: false              # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)
 ```
 
-| 变量名 | 说明 |
-|--------|------|
-| `PRIVATE_POSTS_REPO_URL` | 私有内容备份仓库的 Git 地址（SSH） |
+2. 一键运行备份脚本
 
-配置后运行 `npm run backup`，脚本会将 `post/` 和 `twikoo_template/` 同步至该私有仓库。需本机已配置 SSH Key 并有推送权限。
+```bash
+npm run backup
+```
 
 ## 部署
 

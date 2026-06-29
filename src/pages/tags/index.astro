@@ -5,13 +5,16 @@ import { isArticlePost } from '../../utils/config';
 
 const posts = await getCollection('post', isArticlePost);
 
-const allTags = posts.reduce((acc, post) => {
-  const tags = post.data.tags || [];
-  tags.forEach(tag => {
-    acc[tag] = (acc[tag] || 0) + 1;
-  });
-  return acc;
-}, {} as Record<string, number>);
+const allTags = posts.reduce(
+  (acc, post) => {
+    const tags = post.data.tags || [];
+    tags.forEach((tag) => {
+      acc[tag] = (acc[tag] || 0) + 1;
+    });
+    return acc;
+  },
+  {} as Record<string, number>
+);
 
 const sortedTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]);
 ---
@@ -21,19 +24,21 @@ const sortedTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]);
     <div class="max-w-3xl mx-auto">
       <h1 class="text-4xl font-bold text-text-light dark:text-text-dark mb-8 text-center">全部标签</h1>
       <div class="flex flex-wrap gap-3 justify-center">
-        {sortedTags.map(([tag, count]) => (
-          <a
-            href={`/tags/${tag}`}
-            class="group relative inline-flex items-center rounded-full overflow-hidden hover:scale-105 transition-transform duration-200 will-change-transform"
-          >
-            <span class="px-5 py-3 bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark text-base font-medium">
-              {tag}
-            </span>
-            <span class="px-4 py-3 bg-divider-light text-text-light dark:bg-hover-dark dark:text-text-dark text-base font-medium opacity-60">
-              {count}
-            </span>
-          </a>
-        ))}
+        {
+          sortedTags.map(([tag, count]) => (
+            <a
+              href={`/tags/${tag}`}
+              class="group relative inline-flex items-center rounded-full overflow-hidden hover:scale-105 transition-transform duration-200 will-change-transform"
+            >
+              <span class="px-5 py-3 bg-badge-light text-text-light dark:bg-badge-dark dark:text-text-dark text-base font-medium">
+                {tag}
+              </span>
+              <span class="px-4 py-3 bg-divider-light text-text-light dark:bg-hover-dark dark:text-text-dark text-base font-medium opacity-60">
+                {count}
+              </span>
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>

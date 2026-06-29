@@ -144,8 +144,8 @@ html.dark .tk-row.actions .tk-preview:hover {
 .tk-comments-title {
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important; 
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important; 
+  justify-content: space-between !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
   padding-bottom: 14px !important;
   margin-bottom: 24px !important;
   gap: 12px;
@@ -162,10 +162,10 @@ html.dark .tk-row.actions .tk-preview:hover {
 .tk-comments-count {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important; 
+  gap: 8px !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  color: rgba(0, 0, 0, 0.6) !important; 
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 .dark .tk-comments-count {
   color: rgba(255, 255, 255, 0.5) !important;
@@ -181,9 +181,9 @@ html.dark .tk-row.actions .tk-preview:hover {
   font-size: 11px !important;
   font-weight: 600 !important;
   line-height: 1 !important;
-  color: #000000 !important; 
-  background: rgba(0, 0, 0, 0.05) !important; 
-  border-radius: 5px !important; 
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 5px !important;
   border: 1px solid rgba(0, 0, 0, 0.03) !important;
 }
 .dark .tk-comments-count span:first-child {
@@ -202,7 +202,7 @@ html.dark .tk-row.actions .tk-preview:hover {
 .tk-comments-actions {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important; 
+  gap: 12px !important;
 }
 
 .tk-comments-sort {
@@ -218,7 +218,7 @@ html.dark .tk-row.actions .tk-preview:hover {
   padding: 6px 10px !important;
   font-size: 13px !important;
   font-weight: 400 !important;
-  border-radius: 6px !important; 
+  border-radius: 6px !important;
   color: rgba(0, 0, 0, 0.45) !important;
   transition: all 0.15s ease !important;
 }
@@ -362,7 +362,7 @@ html.dark .tk-row.actions .tk-preview:hover {
 }
 
 /* 媒体与图片表情规范 */
-.tk-content img, 
+.tk-content img,
 .tk-preview-container img {
   display: inline;
   vertical-align: bottom !important;
@@ -392,8 +392,8 @@ html.dark .OwO-body span {
 }
 
 /* OwO 区域定制滚动条 */
-.OwO-body ::-webkit-scrollbar { 
-  width: 12px; 
+.OwO-body ::-webkit-scrollbar {
+  width: 12px;
 }
 
 .OwO-body ::-webkit-scrollbar-track {
@@ -450,11 +450,16 @@ html.dark .OwO-body span {
 }
 
 /* 隐藏无关按钮节点 */
-.twikoo > div.tk-comments > div.tk-submit.tk-fade-in > div.tk-row.actions > div.tk-row-actions-start > div:nth-child(2) {
+.twikoo
+  > div.tk-comments
+  > div.tk-submit.tk-fade-in
+  > div.tk-row.actions
+  > div.tk-row-actions-start
+  > div:nth-child(2) {
   display: none !important;
 }
 
 /* --- 用户名链接悬停颜色 --- */
 .tk-nick-link:hover {
-  color: var(--tk-accent)!important;
+  color: var(--tk-accent) !important;
 }

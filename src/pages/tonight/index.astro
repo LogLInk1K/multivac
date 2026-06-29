@@ -31,13 +31,14 @@ try {
     watchingList = watchingData.data.watching as WatchingItem[];
   }
 } catch (error) {
-  console.log('Using empty watching data');
+  console.error('追剧数据加载异常:', error);
 }
 
 const idxParam = Astro.url.searchParams.get('idx');
-const urlIdx = idxParam !== null && !isNaN(Number(idxParam)) && Number(idxParam) >= 0 && Number(idxParam) < watchingList.length
-  ? Number(idxParam)
-  : null;
+const urlIdx =
+  idxParam !== null && !isNaN(Number(idxParam)) && Number(idxParam) >= 0 && Number(idxParam) < watchingList.length
+    ? Number(idxParam)
+    : null;
 
 const startIdx = urlIdx !== null ? urlIdx : Math.floor(Math.random() * Math.max(1, watchingList.length));
 const initialItem = watchingList[startIdx] || null;
@@ -63,130 +64,208 @@ import Icon from '../../components/Icon.astro';
 <MainLayout title="今晚看这部" description="随机穿梭，发现一部值得观看的作品">
   <section class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-12 antialiased mt-6">
     <div id="tonight-root" data-list={JSON.stringify(watchingList)} data-initial-idx={startIdx}>
-        
-        {/* 主舞台卡片：优化为现代 Bento 与卡片融合质感 */}
-        <div class="tonight-hero relative rounded-[28px] overflow-hidden border border-zinc-200/60 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-500 min-h-[540px] flex items-center">
-          
-          {/* 高级朦胧背景层 */}
-          <div 
-            class="tonight-backdrop absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 select-none pointer-events-none" 
-            id="tonight-bg"
-            style={{ 
-              backgroundImage: initialItem ? `url(${initialItem.cover})` : 'none',
-              opacity: initialItem ? 0.08 : 0
-            }}
-          ></div>
-          {/* 细腻环境遮罩 */}
-          <div class="absolute inset-0 bg-linear-to-b md:bg-linear-to-r from-zinc-50/90 via-zinc-50/40 to-transparent dark:from-zinc-950/90 dark:via-zinc-950/40"></div>
+      {/* 主舞台卡片：优化为现代 Bento 与卡片融合质感 */}
+      <div
+        class="tonight-hero relative rounded-[28px] overflow-hidden border border-zinc-200/60 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-500 min-h-[540px] flex items-center"
+      >
+        {/* 高级朦胧背景层 */}
+        <div
+          class="tonight-backdrop absolute inset-0 bg-cover bg-center scale-105 transition-all duration-700 select-none pointer-events-none"
+          id="tonight-bg"
+          style={{
+            backgroundImage: initialItem ? `url(${initialItem.cover})` : 'none',
+            opacity: initialItem ? 0.08 : 0,
+          }}
+        >
+        </div>
+        {/* 细腻环境遮罩 */}
+        <div
+          class="absolute inset-0 bg-linear-to-b md:bg-linear-to-r from-zinc-50/90 via-zinc-50/40 to-transparent dark:from-zinc-950/90 dark:via-zinc-950/40"
+        >
+        </div>
 
-          {/* 核心内容区 */}
-          <div class="relative flex flex-col md:flex-row items-center gap-8 lg:gap-12 p-6 md:p-10 lg:p-14 w-full z-10">
-            
-            {/* 左侧海报：现代悬浮杂志质感 */}
-            <div class="shrink-0 w-44 md:w-56 lg:w-64 relative" id="tonight-poster-wrap">
-              <div class="aspect-3/4 rounded-2xl overflow-hidden shadow-[0_16px_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] border border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-100 dark:bg-zinc-900 transition-all duration-500">
-                <img 
-                  id="tonight-poster" 
-                  src={initialItem?.cover || ''} 
-                  alt={initialItem?.title || ''} 
-                  class="w-full h-full object-cover transition-opacity duration-300" 
-                />
-              </div>
+        {/* 核心内容区 */}
+        <div class="relative flex flex-col md:flex-row items-center gap-8 lg:gap-12 p-6 md:p-10 lg:p-14 w-full z-10">
+          {/* 左侧海报：现代悬浮杂志质感 */}
+          <div class="shrink-0 w-44 md:w-56 lg:w-64 relative" id="tonight-poster-wrap">
+            <div
+              class="aspect-3/4 rounded-2xl overflow-hidden shadow-[0_16px_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] border border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-100 dark:bg-zinc-900 transition-all duration-500"
+            >
+              <img
+                id="tonight-poster"
+                src={initialItem?.cover || ''}
+                alt={initialItem?.title || ''}
+                class="w-full h-full object-cover transition-opacity duration-300"
+              />
+            </div>
+          </div>
+
+          {/* 右侧文本：去工业流水线味，注重排版对比 */}
+          <div class="flex-1 min-w-0 w-full text-center md:text-left pt-2">
+            <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+              <span
+                class="text-[10px] tracking-widest uppercase font-mono font-bold text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 rounded"
+                >Watch Tonight</span
+              >
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
 
-            {/* 右侧文本：去工业流水线味，注重排版对比 */}
-            <div class="flex-1 min-w-0 w-full text-center md:text-left pt-2">
-              <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
-                <span class="text-[10px] tracking-widest uppercase font-mono font-bold text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 rounded">Watch Tonight</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              </div>
+            <h1
+              id="tonight-title"
+              class="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3 leading-tight"
+            >
+              {initialItem?.title || '加载中...'}
+            </h1>
 
-              <h1 id="tonight-title" class="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight mb-3 leading-tight">
-                {initialItem?.title || '加载中...'}
-              </h1>
+            {/* 信息去胶囊化，采用点状串联，只给评分独立高级色彩 */}
+            <div
+              class="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6 font-medium"
+              id="tonight-meta"
+            >
+              {initialItem?.type && <span>{initialItem.type}</span>}
+              {(initialItem?.country || initialItem?.year) && <span class="text-zinc-300 dark:text-zinc-700">·</span>}
+              {initialItem?.country && <span>{initialItem.country}</span>}
+              {initialItem?.year && <span class="text-zinc-300 dark:text-zinc-700">·</span>}
+              {initialItem?.year && <span class="font-mono">{initialItem.year}</span>}
 
-              {/* 信息去胶囊化，采用点状串联，只给评分独立高级色彩 */}
-              <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6 font-medium" id="tonight-meta">
-                {initialItem?.type && <span>{initialItem.type}</span>}
-                {(initialItem?.country || initialItem?.year) && <span class="text-zinc-300 dark:text-zinc-700">·</span>}
-                {initialItem?.country && <span>{initialItem.country}</span>}
-                {initialItem?.year && <span class="text-zinc-300 dark:text-zinc-700">·</span>}
-                {initialItem?.year && <span class="font-mono">{initialItem.year}</span>}
-                
-                {/* 评分独立渲染 */}
-                {initialItem?.ratings?.map(r => (
-                  <span class={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-bold ml-1 font-mono ${
-                    r.source === 'douban' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
-                  }`}>
+              {/* 评分独立渲染 */}
+              {
+                initialItem?.ratings?.map((r) => (
+                  <span
+                    class={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-bold ml-1 font-mono ${
+                      r.source === 'douban'
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                        : 'bg-pink-500/10 text-pink-600 dark:text-pink-400'
+                    }`}
+                  >
                     {r.score.toFixed(1)}
                   </span>
-                ))}
-              </div>
+                ))
+              }
+            </div>
 
-              {/* 评论文本区 */}
-              <div class="relative mb-8 max-w-2xl">
-                <p id="tonight-comment" class="text-zinc-600 dark:text-zinc-300 text-base md:text-lg leading-relaxed font-normal">
-                  “ {initialItem?.comment || ''} ”
-                </p>
-              </div>
+            {/* 评论文本区 */}
+            <div class="relative mb-8 max-w-2xl">
+              <p
+                id="tonight-comment"
+                class="text-zinc-600 dark:text-zinc-300 text-base md:text-lg leading-relaxed font-normal"
+              >
+                “ {initialItem?.comment || ''} ”
+              </p>
+            </div>
 
-              {/* 外链按钮组：扁平化、细腻化 */}
-              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5" id="tonight-links">
-                {initialItem?.links?.map(l => (
-                  <a href={l.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-xs font-medium transition-all duration-300 shadow-sm">
+            {/* 外链按钮组：扁平化、细腻化 */}
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5" id="tonight-links">
+              {
+                initialItem?.links?.map((l) => (
+                  <a
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-xs font-medium transition-all duration-300 shadow-sm"
+                  >
                     <img src={ratingIcons[l.source] || ''} alt="" class="w-3.5 h-3.5 opacity-80" />
                     {ratingLabels[l.source] || l.source}
-                    <svg class="w-3 h-3 opacity-40 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"></path></svg>
+                    <svg
+                      class="w-3 h-3 opacity-40 ml-0.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                    </svg>
                   </a>
-                ))}
-              </div>
+                ))
+              }
             </div>
           </div>
         </div>
-
-        {/* 核心控制区域 */}
-        <div class="mt-8 flex items-center justify-center gap-3">
-          <button id="tonight-reroll" class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 transition-all duration-300 text-sm font-semibold shadow-md shadow-zinc-950/10 dark:shadow-none">
-            <Icon name="reroll" class="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
-            换一部作品
-          </button>
-          <a href="/watching" class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700 dark:text-zinc-300 transition-all duration-300 text-sm font-semibold shadow-sm">
-            前往漫游
-          </a>
-        </div>
-
-        {/* 下方推荐网格 */}
-        <div class="mt-14">
-            <div class="flex items-center gap-2 mb-4 border-b border-zinc-100 dark:border-zinc-900 pb-3">
-              <span class="text-sm font-bold text-zinc-800 dark:text-zinc-200 tracking-wide">或者是这部</span>
-              <span class="text-xs font-mono text-zinc-400">Alternative</span>
-            </div>
-            
-            <div id="tonight-more" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
-              {initialPicks.map(ri => {
-                const m = watchingList[ri];
-                return (
-                  <a href="javascript:void(0)" data-idx={ri} class="tonight-pick group block relative aspect-3/4 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm fluid-card" style="transition-duration: 500ms;">
-                    <img src={m.cover} alt={m.title} class="w-full h-full object-cover grayscale-20 group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
-                    <div class="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <p class="text-white text-xs font-bold truncate tracking-wide">{m.title}</p>
-                      <p class="text-zinc-300 text-[10px] mt-0.5 font-mono">{m.year}</p>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
       </div>
-    </section>
+
+      {/* 核心控制区域 */}
+      <div class="mt-8 flex items-center justify-center gap-3">
+        <button
+          id="tonight-reroll"
+          class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 transition-all duration-300 text-sm font-semibold shadow-md shadow-zinc-950/10 dark:shadow-none"
+        >
+          <Icon name="reroll" class="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
+          换一部作品
+        </button>
+        <a
+          href="/watching"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700 dark:text-zinc-300 transition-all duration-300 text-sm font-semibold shadow-sm"
+        >
+          前往漫游
+        </a>
+      </div>
+
+      {/* 下方推荐网格 */}
+      <div class="mt-14">
+        <div class="flex items-center gap-2 mb-4 border-b border-zinc-100 dark:border-zinc-900 pb-3">
+          <span class="text-sm font-bold text-zinc-800 dark:text-zinc-200 tracking-wide">或者是这部</span>
+          <span class="text-xs font-mono text-zinc-400">Alternative</span>
+        </div>
+
+        <div id="tonight-more" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
+          {
+            initialPicks.map((ri) => {
+              const m = watchingList[ri];
+              return (
+                <a
+                  href="javascript:void(0)"
+                  data-idx={ri}
+                  class="tonight-pick group block relative aspect-3/4 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm fluid-card"
+                  style="transition-duration: 500ms;"
+                >
+                  <img
+                    src={m.cover}
+                    alt={m.title}
+                    class="w-full h-full object-cover grayscale-20 group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div class="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <p class="text-white text-xs font-bold truncate tracking-wide">{m.title}</p>
+                    <p class="text-zinc-300 text-[10px] mt-0.5 font-mono">{m.year}</p>
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+  </section>
 </MainLayout>
 
 <script>
+  interface Rating {
+    source: string;
+    score: number;
+  }
+  interface Link {
+    source: string;
+    url: string;
+  }
+  interface WatchingItem {
+    title: string;
+    year: number;
+    cover: string;
+    comment: string;
+    type: string;
+    country?: string;
+    ratings?: Rating[];
+    links?: Link[];
+  }
+
   const ratingIcons: Record<string, string> = { douban: '/img/douban.ico', bangumi: '/img/bangumi.ico' };
   const ratingLabels: Record<string, string> = { douban: '豆瓣', bangumi: 'Bangumi' };
 
-  let list: any[] = [];
+  let list: WatchingItem[] = [];
   let currentIdx = -1;
 
   function pick(exclude?: number) {
@@ -222,58 +301,69 @@ import Icon from '../../components/Icon.astro';
       hero.style.transform = 'scale(0.995)';
     }
 
-    setTimeout(() => {
-      if (bg) {
-        bg.style.backgroundImage = `url(${item.cover})`;
-      }
-
-      if (poster) {
-        poster.src = item.cover;
-        poster.alt = item.title;
-      }
-
-      if (title) title.textContent = item.title;
-      if (comment) comment.textContent = `“ ${item.comment} ”`;
-
-      if (meta) {
-        const parts: string[] = [];
-        if (item.type) parts.push(`<span>${item.type}</span>`);
-        if (item.country) parts.push(`<span>${item.country}</span>`);
-        if (item.year) parts.push(`<span class="font-mono">${item.year}</span>`);
-        
-        let html = parts.join('<span class="text-zinc-300 dark:text-zinc-700">·</span>');
-        
-        if (item.ratings) {
-          item.ratings.forEach((r: any) => {
-            const colorClass = r.source === 'douban' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-pink-500/10 text-pink-600 dark:text-pink-400';
-            html += `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-bold ml-1 font-mono ${colorClass}">${r.score.toFixed(1)}</span>`;
-          });
+    setTimeout(
+      () => {
+        if (bg) {
+          bg.style.backgroundImage = `url(${item.cover})`;
         }
-        meta.innerHTML = html;
-      }
 
-      if (links) {
-        links.innerHTML = (item.links || []).map((l: any) => `
+        if (poster) {
+          poster.src = item.cover;
+          poster.alt = item.title;
+        }
+
+        if (title) title.textContent = item.title;
+        if (comment) comment.textContent = `“ ${item.comment} ”`;
+
+        if (meta) {
+          const parts: string[] = [];
+          if (item.type) parts.push(`<span>${item.type}</span>`);
+          if (item.country) parts.push(`<span>${item.country}</span>`);
+          if (item.year) parts.push(`<span class="font-mono">${item.year}</span>`);
+
+          let html = parts.join('<span class="text-zinc-300 dark:text-zinc-700">·</span>');
+
+          if (item.ratings) {
+            item.ratings.forEach((r) => {
+              const colorClass =
+                r.source === 'douban'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-pink-500/10 text-pink-600 dark:text-pink-400';
+              html += `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-bold ml-1 font-mono ${colorClass}">${r.score.toFixed(1)}</span>`;
+            });
+          }
+          meta.innerHTML = html;
+        }
+
+        if (links) {
+          links.innerHTML = (item.links || [])
+            .map(
+              (l) => `
           <a href="${l.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-xs font-medium transition-all duration-300 shadow-sm">
             <img src="${ratingIcons[l.source] || ''}" alt="" class="w-3.5 h-3.5 opacity-80" />
             ${ratingLabels[l.source] || l.source}
             <svg class="w-3 h-3 opacity-40 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"></path></svg>
           </a>
-        `).join('');
-      }
-
-      if (more) {
-        const shown = new Set<number>([idx]);
-        const pks: number[] = [];
-        for (let i = 0; i < Math.min(15, list.length - 1); i++) {
-          let ri: number;
-          do { ri = Math.floor(Math.random() * list.length); } while (shown.has(ri));
-          shown.add(ri);
-          pks.push(ri);
+        `
+            )
+            .join('');
         }
-        more.innerHTML = pks.map((ri) => {
-          const m = list[ri];
-          return `
+
+        if (more) {
+          const shown = new Set<number>([idx]);
+          const pks: number[] = [];
+          for (let i = 0; i < Math.min(15, list.length - 1); i++) {
+            let ri: number;
+            do {
+              ri = Math.floor(Math.random() * list.length);
+            } while (shown.has(ri));
+            shown.add(ri);
+            pks.push(ri);
+          }
+          more.innerHTML = pks
+            .map((ri) => {
+              const m = list[ri];
+              return `
             <a href="javascript:void(0)" data-idx="${ri}" class="tonight-pick group block relative aspect-[3/4] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 cursor-pointer border border-zinc-200/40 dark:border-zinc-800/40 shadow-sm fluid-card" style="transition-duration: 500ms;">
               <img src="${m.cover}" alt="${m.title}" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
               <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -283,25 +373,28 @@ import Icon from '../../components/Icon.astro';
               </div>
             </a>
           `;
-        }).join('');
+            })
+            .join('');
 
-        more.querySelectorAll('.tonight-pick').forEach((el) => {
-          el.addEventListener('click', () => {
-            const targetIdx = parseInt((el as HTMLElement).dataset.idx || '0');
-            render(targetIdx);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+          more.querySelectorAll('.tonight-pick').forEach((el) => {
+            el.addEventListener('click', () => {
+              const targetIdx = parseInt((el as HTMLElement).dataset.idx || '0');
+              render(targetIdx);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
           });
-        });
-      }
+        }
 
-      if (animate && hero) {
-        requestAnimationFrame(() => {
-          hero.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-          hero.style.opacity = '1';
-          hero.style.transform = 'scale(1)';
-        });
-      }
-    }, animate ? 120 : 0);
+        if (animate && hero) {
+          requestAnimationFrame(() => {
+            hero.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            hero.style.opacity = '1';
+            hero.style.transform = 'scale(1)';
+          });
+        }
+      },
+      animate ? 120 : 0
+    );
   }
 
   function init() {
@@ -311,7 +404,11 @@ import Icon from '../../components/Icon.astro';
     const raw = root.getAttribute('data-list');
     if (!raw) return;
 
-    try { list = JSON.parse(raw); } catch { return; }
+    try {
+      list = JSON.parse(raw);
+    } catch {
+      return;
+    }
     if (list.length === 0) return;
 
     const initialIdxStr = root.getAttribute('data-initial-idx');
@@ -320,9 +417,10 @@ import Icon from '../../components/Icon.astro';
 
     const params = new URLSearchParams(window.location.search);
     const idxParam = params.get('idx');
-    const targetIdx = idxParam !== null && !isNaN(Number(idxParam)) && Number(idxParam) >= 0 && Number(idxParam) < list.length
-      ? Number(idxParam)
-      : null;
+    const targetIdx =
+      idxParam !== null && !isNaN(Number(idxParam)) && Number(idxParam) >= 0 && Number(idxParam) < list.length
+        ? Number(idxParam)
+        : null;
 
     if (targetIdx !== null && targetIdx !== currentIdx) {
       render(targetIdx, false);

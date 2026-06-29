@@ -1,12 +1,15 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "@tailwindcss/typography";
-@import "../styles/markdown.css";
-@import "../styles/twikoo.css";
+@import '../styles/markdown.css';
+@import '../styles/twikoo.css';
 
 /* --- Tailwind CSS v4 主题配置 --- */
 @theme {
   /* 字体 */
-  --font-sans: 'Inter Variable', 'SF Pro Display', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-sans:
+    'Inter Variable', 'SF Pro Display', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'PingFang SC',
+    'HarmonyOS Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Open Sans', 'Helvetica Neue', sans-serif;
   --font-plus-jakarta: 'Plus Jakarta Sans', 'Inter Variable', sans-serif;
 
   /* 自定义字重 */
@@ -14,17 +17,17 @@
   --font-weight-590: 590;
 
   /* 自定义字号 */
-  --text-display-xl: 4.50rem;
-  --text-display-lg: 4.00rem;
-  --text-display: 3.00rem;
-  --text-h1: 2.00rem;
-  --text-h2: 1.50rem;
+  --text-display-xl: 4.5rem;
+  --text-display-lg: 4rem;
+  --text-display: 3rem;
+  --text-h1: 2rem;
+  --text-h2: 1.5rem;
   --text-h3: 1.25rem;
   --text-body-lg: 1.13rem;
   --text-body-emphasis: 1.06rem;
-  --text-body: 1.00rem;
-  --text-body-medium: 1.00rem;
-  --text-body-semibold: 1.00rem;
+  --text-body: 1rem;
+  --text-body-medium: 1rem;
+  --text-body-semibold: 1rem;
   --text-small: 0.94rem;
   --text-small-medium: 0.94rem;
   --text-small-semibold: 0.94rem;
@@ -40,18 +43,18 @@
   --color-primary-dark: #ffc848;
   --color-background-light: #f7f9fe;
   --color-background-dark: #000000;
-  --color-text-light: #1F2937;
-  --color-text-dark: #FFFFFF;
+  --color-text-light: #1f2937;
+  --color-text-dark: #ffffff;
   --color-card-light: rgba(255, 255, 255, 0.55);
   --color-card-dark: rgba(255, 255, 255, 0.04);
   --color-border-light: rgba(0, 0, 0, 0.06);
   --color-border-dark: rgba(255, 255, 255, 0.08);
-  --color-hover-light: #F1F5F9;
-  --color-hover-dark: #2A2A2A;
-  --color-hero-light: #F1F5F9;
-  --color-hero-dark: #1A1A1A;
-  --color-tag-light: #F1F5F9;
-  --color-tag-dark: #1E3A8A;
+  --color-hover-light: #f1f5f9;
+  --color-hover-dark: #2a2a2a;
+  --color-hero-light: #f1f5f9;
+  --color-hero-dark: #1a1a1a;
+  --color-tag-light: #f1f5f9;
+  --color-tag-dark: #1e3a8a;
   --color-badge-light: #f2f2f7;
   --color-badge-dark: #2c2c2e;
   --color-divider-light: #d1d1d6;
@@ -78,9 +81,10 @@ html.dark {
   --tooltip-bg: rgba(30, 30, 30, 0.95);
 }
 
-html, body {
-  overflow-x: hidden; 
-  touch-action: manipulate; 
+html,
+body {
+  overflow-x: hidden;
+  touch-action: manipulate;
 }
 
 html {
@@ -89,8 +93,8 @@ html {
 
 /* --- Inter Variable 全局 OpenType 特性 --- */
 html {
-  font-feature-settings: "cv01", "ss03";
-  -webkit-font-feature-settings: "cv01", "ss03";
+  font-feature-settings: 'cv01', 'ss03';
+  -webkit-font-feature-settings: 'cv01', 'ss03';
   font-kerning: none;
 }
 
@@ -132,7 +136,12 @@ html.dark .bg-glow::before {
   top: -25%;
   left: -15%;
   filter: blur(50px);
-  background: radial-gradient(ellipse at 30% 40%, rgba(59,130,246,0.10) 0%, rgba(99,102,241,0.04) 40%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 30% 40%,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(99, 102, 241, 0.04) 40%,
+    transparent 70%
+  );
 }
 
 .bg-glow__orb--2 {
@@ -141,7 +150,12 @@ html.dark .bg-glow::before {
   bottom: -30%;
   right: -20%;
   filter: blur(55px);
-  background: radial-gradient(ellipse at 70% 60%, rgba(99,102,241,0.09) 0%, rgba(59,130,246,0.03) 40%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 70% 60%,
+    rgba(99, 102, 241, 0.09) 0%,
+    rgba(59, 130, 246, 0.03) 40%,
+    transparent 70%
+  );
 }
 
 .bg-glow__orb--3 {
@@ -150,20 +164,40 @@ html.dark .bg-glow::before {
   top: 20%;
   left: 35%;
   filter: blur(60px);
-  background: radial-gradient(ellipse at 50% 50%, rgba(14,165,233,0.08) 0%, rgba(59,130,246,0.03) 50%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(14, 165, 233, 0.08) 0%,
+    rgba(59, 130, 246, 0.03) 50%,
+    transparent 70%
+  );
 }
 
 /* 暗色主题 - 紫色光晕 */
 html.dark .bg-glow__orb--1 {
-  background: radial-gradient(ellipse at 30% 40%, rgba(139,92,246,0.14) 0%, rgba(94,106,210,0.05) 40%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 30% 40%,
+    rgba(139, 92, 246, 0.14) 0%,
+    rgba(94, 106, 210, 0.05) 40%,
+    transparent 70%
+  );
 }
 
 html.dark .bg-glow__orb--2 {
-  background: radial-gradient(ellipse at 70% 60%, rgba(168,85,247,0.12) 0%, rgba(113,112,255,0.04) 40%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 70% 60%,
+    rgba(168, 85, 247, 0.12) 0%,
+    rgba(113, 112, 255, 0.04) 40%,
+    transparent 70%
+  );
 }
 
 html.dark .bg-glow__orb--3 {
-  background: radial-gradient(ellipse at 50% 50%, rgba(192,132,252,0.10) 0%, rgba(139,92,246,0.04) 50%, transparent 70%);
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(192, 132, 252, 0.1) 0%,
+    rgba(139, 92, 246, 0.04) 50%,
+    transparent 70%
+  );
 }
 
 /* --- 毛玻璃卡片 --- */
@@ -241,10 +275,18 @@ html.dark .bg-glow__orb--3 {
 }
 
 /* --- 4. 圆形扩散层级 --- */
-::view-transition-old(root) { z-index: 999; }
-::view-transition-new(root) { z-index: 1; }
-.dark::view-transition-new(root) { z-index: 999; }
-.dark::view-transition-old(root) { z-index: 1; }
+::view-transition-old(root) {
+  z-index: 999;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+.dark::view-transition-new(root) {
+  z-index: 999;
+}
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
 
 /* --- 5. 公共动效库（Tailwind v4 @utility） --- */
 
@@ -255,7 +297,9 @@ html.dark .bg-glow__orb--3 {
   transition-timing-function: var(--ease-gentle);
   &:hover {
     translate: 0 -0.25rem;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    box-shadow:
+      0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 }
 
@@ -267,7 +311,9 @@ html.dark .bg-glow__orb--3 {
   transition-timing-function: var(--ease-gentle);
   &:hover {
     scale: 1.1;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    box-shadow:
+      0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 }
 
@@ -316,7 +362,9 @@ html.dark .bg-glow__orb--3 {
   transition-timing-function: var(--ease-gentle);
   &:hover {
     translate: 0 -0.25rem;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    box-shadow:
+      0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
     border-color: var(--glass-border-hover);
   }
 }
@@ -386,23 +434,31 @@ html.dark .bg-glow__orb--3 {
   max-width: 0;
   overflow: hidden;
   /* 收缩时延迟 180ms，等内容先消失再收轨道 */
-  transition: grid-template-columns 300ms cubic-bezier(0.25, 1, 0.5, 1) 180ms, max-width 300ms cubic-bezier(0.25, 1, 0.5, 1) 180ms;
+  transition:
+    grid-template-columns 300ms cubic-bezier(0.25, 1, 0.5, 1) 180ms,
+    max-width 300ms cubic-bezier(0.25, 1, 0.5, 1) 180ms;
   &.is-scrolled {
     grid-template-columns: 1fr;
     max-width: 5rem;
     /* 展开时无延迟，立即撑开 */
-    transition: grid-template-columns 300ms cubic-bezier(0.25, 1, 0.5, 1), max-width 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    transition:
+      grid-template-columns 300ms cubic-bezier(0.25, 1, 0.5, 1),
+      max-width 300ms cubic-bezier(0.25, 1, 0.5, 1);
   }
   /* 计数器本体：scale + opacity 动画 */
   & #scroll-counter {
     scale: 0;
     opacity: 0;
-    transition: scale 180ms ease-in, opacity 150ms ease-in;
+    transition:
+      scale 180ms ease-in,
+      opacity 150ms ease-in;
   }
   &.is-scrolled #scroll-counter {
     scale: 1;
     opacity: 1;
-    transition: scale 300ms cubic-bezier(0.34, 1.2, 0.64, 1), opacity 200ms ease 80ms;
+    transition:
+      scale 300ms cubic-bezier(0.34, 1.2, 0.64, 1),
+      opacity 200ms ease 80ms;
   }
 }
 
@@ -497,9 +553,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   background-color: #666;
 }
 
-
-
-
 /* 代码块折叠功能 */
 .prose pre {
   transition: all 0.3s ease;
@@ -516,7 +569,8 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 /* 音频波形动画 */
 @keyframes wave-stretch {
-  0%, 100% {
+  0%,
+  100% {
     transform: scaleY(var(--min-scale, 0.5));
   }
   50% {
@@ -567,12 +621,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
       transparent 250deg,
       transparent 360deg
     ),
-    repeating-radial-gradient(
-      circle at center,
-      #0d0d11 0px,
-      #181820 1px,
-      #0d0d11 2px
-    );
+    repeating-radial-gradient(circle at center, #0d0d11 0px, #181820 1px, #0d0d11 2px);
   pointer-events: none;
   z-index: 1;
 }
@@ -590,8 +639,12 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 /* 黑胶旋转动画 */
 @keyframes vinyl-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .vinyl-record.playing {
@@ -621,8 +674,9 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   height: 2.5rem;
   border: 1px solid transparent;
   border-radius: 9999px;
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.3s;
+  transition:
+    width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s;
   cursor: pointer;
 }
 .page-ellipsis-jump__dot {
@@ -667,7 +721,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   opacity: 1;
   pointer-events: auto;
 }
-.page-ellipsis-jump input[type="number"] {
+.page-ellipsis-jump input[type='number'] {
   width: 2.5rem;
   background: transparent;
   border: none;
@@ -678,15 +732,15 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   padding: 0;
   line-height: 2.5rem;
 }
-:is(.dark .page-ellipsis-jump input[type="number"]) {
+:is(.dark .page-ellipsis-jump input[type='number']) {
   color: var(--color-text-dark);
 }
-.page-ellipsis-jump input[type="number"]::-webkit-inner-spin-button,
-.page-ellipsis-jump input[type="number"]::-webkit-outer-spin-button {
+.page-ellipsis-jump input[type='number']::-webkit-inner-spin-button,
+.page-ellipsis-jump input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.page-ellipsis-jump input[type="number"] {
+.page-ellipsis-jump input[type='number'] {
   -moz-appearance: textfield;
 }
 .page-ellipsis-jump__arrow {
@@ -698,7 +752,9 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   height: 1.25rem;
   color: var(--color-text-light-70, #999);
   cursor: pointer;
-  transition: color 0.15s, transform 0.15s;
+  transition:
+    color 0.15s,
+    transform 0.15s;
 }
 :is(.dark .page-ellipsis-jump__arrow) {
   color: var(--color-text-dark-70, #666);

@@ -17,7 +17,6 @@ const siteConfig = await getSiteConfig();
 const defaultCover = siteConfig.assets.defaultCover;
 import { ClientRouter } from 'astro:transitions';
 
-
 type Props = Partial<CollectionEntry<'post'>['data']> & {
   title: string;
   description: string;
@@ -32,7 +31,21 @@ type Props = Partial<CollectionEntry<'post'>['data']> & {
   rawContentForStats?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, heroImageWidth, showDate = true, showComments = true, id, tags, category, encryptedPayload, rawContentForStats } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  heroImageWidth,
+  showDate = true,
+  showComments = true,
+  id,
+  tags,
+  category,
+  encryptedPayload,
+  rawContentForStats,
+} = Astro.props;
 const displayImage = heroImage || defaultCover;
 
 const content = rawContentForStats || (Astro.slots.has('default') ? await Astro.slots.render('default') : '');
@@ -42,189 +55,233 @@ import Icon from '../components/Icon.astro';
 ---
 
 <html lang={siteConfig.site.lang}>
-	<head>
-		<BaseHead title={title} description={description} image={displayImage} pubDate={pubDate} updatedDate={updatedDate} article={true} />
-		<ClientRouter />
-		<style is:global>
-			/* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
-			html:not(.content-ready) #main-content {
-				opacity: 0;
-			}
-		</style>
-		<script is:inline>
-			(function() {
-				const theme = localStorage.getItem('theme') ||
-					(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-				document.documentElement.classList.toggle('dark', theme === 'dark');
-				if (sessionStorage.getItem('hasVisited')) {
-					document.documentElement.classList.add('content-ready');
-				}
-			})();
-		</script>
-	</head>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      image={displayImage}
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      article={true}
+    />
+    <ClientRouter />
+    <style is:global>
+      /* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
+      html:not(.content-ready) #main-content {
+        opacity: 0;
+      }
+    </style>
+    <script is:inline>
+      (function () {
+        const theme =
+          localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        if (sessionStorage.getItem('hasVisited')) {
+          document.documentElement.classList.add('content-ready');
+        }
+      })();
+    </script>
+  </head>
 
-	<body class="min-h-screen flex flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark">
-		{category && (
-			<div id="category-watermark" class="hidden md:block fixed bottom-1 right-20 text-[150px] font-black italic tracking-tighter text-text-light/2 dark:text-text-dark/2 select-none pointer-events-none font-sans z-0 transition-all duration-500 ease-out opacity-0" aria-hidden="true">
-				{category}
-			</div>
-		)}
-		<div class="bg-glow" aria-hidden="true">
-			<div class="bg-glow__orb bg-glow__orb--1"></div>
-			<div class="bg-glow__orb bg-glow__orb--2"></div>
-			<div class="bg-glow__orb bg-glow__orb--3"></div>
-		</div>
-		<WelcomeAnimation />
-		<div id="main-content" class="flex flex-col min-h-screen transition-opacity duration-300">
-			<Header />
-			<TableOfContents />
-			<SidebarOfContents />
-			<main class="flex-1 pt-2 page-transition">
-			{encryptedPayload && (
-				<div data-encrypted-payload style="display:none" aria-hidden="true">{encryptedPayload}</div>
-			)}
-			<div class="max-w-[1340px] mx-auto">
-				<div class="xl:grid xl:grid-cols-[223px_1fr_223px] xl:gap-8">
-					<div class="hidden xl:block"></div>
-					<article id="article-content" class="article-content max-w-2xl xl:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-						<div class={heroImageWidth ? "mt-12 mb-6 mx-auto overflow-hidden rounded-full shadow-lg bg-hero-light dark:bg-hero-dark transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-110 cursor-pointer" : "mb-6 overflow-hidden rounded-3xl shadow-lg bg-hero-light dark:bg-hero-dark transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 cursor-pointer"} style={heroImageWidth ? `width: ${heroImageWidth}px; aspect-ratio: 1/1;` : 'aspect-ratio: 2/1;'}>
-							<div
-								class="w-full h-full bg-cover bg-center"
-								style={`background-image: url('${displayImage}');`}
-								aria-label="文章封面"
-							></div>
-						</div>
-						<div class="text-center -mb-4">
-							<h1 data-article-title class="text-4xl font-bold text-text-light dark:text-text-dark mb-4">{title}</h1>
-							{showDate && (
-								<div id="article-badges" class="flex flex-wrap items-center justify-center gap-3 mb-4">
-									<div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
-										<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-											文章字数统计
-										</div>
-										<Icon name="doc" class="w-4 h-4" />
-										<span>{(wordCount / 1000).toFixed(1)}K 字</span>
-									</div>
-									<div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
-										<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-											预计阅读时间
-										</div>
-										<Icon name="clock" class="w-4 h-4" />
-										<span>{readingTime} 分钟</span>
-									</div>
-									<div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
-										<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-											文章发布日期
-										</div>
-										<Icon name="calendar" class="w-4 h-4" />
-										<span class="xl:hidden">发布于 </span><FormattedDate date={pubDate} />
-									</div>
-									{updatedDate && (
-										<div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
-											<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-												文章更新日期
-											</div>
-											<Icon name="refresh" class="w-4 h-4" />
-											<span class="xl:hidden">更新于 </span><FormattedDate date={updatedDate} />
-										</div>
-									)}
-									{category && (
-										<a
-											href={`/categories/${category}`}
-											class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark hover:bg-gray-200/80 xl:hover:bg-white dark:hover:bg-gray-700/80 xl:dark:hover:bg-badge-dark/90 transition-colors"
-										>
-											<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-												查看 {category} 分类下的所有文章
-											</div>
-											<Icon name="folder" class="w-4 h-4" />
-											<span>{category}</span>
-										</a>
-									)}
-								</div>
-							)}
-						</div>
-						<div data-encrypted-body class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark">
-							<slot />
-						</div>
-						{showComments && (
-							<>
-								<div class="my-4 flex items-center justify-between">
-									<div class="flex items-center gap-2 flex-1">
-										{tags && tags.length > 0 && (
-											<div class="flex items-center gap-2 flex-wrap ml-2">
-												{tags.map((tag) => (
-													<a
-														href={`/tags/${tag}`}
-														class="group relative px-2 py-1 text-xs font-medium bg-gray-100/80 dark:bg-white/80 xl:dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-full hover:bg-gray-200/80 dark:hover:bg-gray-700/80 xl:dark:hover:bg-white/20 transition-colors"
-													>
-														<div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
-															查看 {tag} 标签下的所有文章
-														</div>
-														# {tag}
-													</a>
-												))}
-											</div>
-										)}
-									</div>
-									<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100/80 dark:bg-white/10 shrink-0 mr-2">
-										<Icon name="check" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
-										<span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap">文章结束</span>
-									</div>
-								</div>
+  <body
+    class="min-h-screen flex flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark"
+  >
+    {
+      category && (
+        <div
+          id="category-watermark"
+          class="hidden md:block fixed bottom-1 right-20 text-[150px] font-black italic tracking-tighter text-text-light/2 dark:text-text-dark/2 select-none pointer-events-none font-sans z-0 transition-all duration-500 ease-out opacity-0"
+          aria-hidden="true"
+        >
+          {category}
+        </div>
+      )
+    }
+    <div class="bg-glow" aria-hidden="true">
+      <div class="bg-glow__orb bg-glow__orb--1"></div>
+      <div class="bg-glow__orb bg-glow__orb--2"></div>
+      <div class="bg-glow__orb bg-glow__orb--3"></div>
+    </div>
+    <WelcomeAnimation />
+    <div id="main-content" class="flex flex-col min-h-screen transition-opacity duration-300">
+      <Header />
+      <TableOfContents />
+      <SidebarOfContents />
+      <main class="flex-1 pt-2 page-transition">
+        {
+          encryptedPayload && (
+            <div data-encrypted-payload style="display:none" aria-hidden="true">
+              {encryptedPayload}
+            </div>
+          )
+        }
+        <div class="max-w-[1340px] mx-auto">
+          <div class="xl:grid xl:grid-cols-[223px_1fr_223px] xl:gap-8">
+            <div class="hidden xl:block"></div>
+            <article
+              id="article-content"
+              class="article-content max-w-2xl xl:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+            >
+              <div
+                class={heroImageWidth
+                  ? 'mt-12 mb-6 mx-auto overflow-hidden rounded-full shadow-lg bg-hero-light dark:bg-hero-dark transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-110 cursor-pointer'
+                  : 'mb-6 overflow-hidden rounded-3xl shadow-lg bg-hero-light dark:bg-hero-dark transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:scale-105 cursor-pointer'}
+                style={heroImageWidth ? `width: ${heroImageWidth}px; aspect-ratio: 1/1;` : 'aspect-ratio: 2/1;'}
+              >
+                <div
+                  class="w-full h-full bg-cover bg-center"
+                  style={`background-image: url('${displayImage}');`}
+                  aria-label="文章封面"
+                >
+                </div>
+              </div>
+              <div class="text-center -mb-4">
+                <h1 data-article-title class="text-4xl font-bold text-text-light dark:text-text-dark mb-4">{title}</h1>
+                {
+                  showDate && (
+                    <div id="article-badges" class="flex flex-wrap items-center justify-center gap-3 mb-4">
+                      <div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                          文章字数统计
+                        </div>
+                        <Icon name="doc" class="w-4 h-4" />
+                        <span>{(wordCount / 1000).toFixed(1)}K 字</span>
+                      </div>
+                      <div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                          预计阅读时间
+                        </div>
+                        <Icon name="clock" class="w-4 h-4" />
+                        <span>{readingTime} 分钟</span>
+                      </div>
+                      <div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                          文章发布日期
+                        </div>
+                        <Icon name="calendar" class="w-4 h-4" />
+                        <>
+                          <span class="xl:hidden">发布于 </span>
+                          <FormattedDate date={pubDate} />
+                        </>
+                      </div>
+                      {updatedDate && (
+                        <div class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark">
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                            文章更新日期
+                          </div>
+                          <Icon name="refresh" class="w-4 h-4" />
+                          <span class="xl:hidden">更新于 </span>
+                          <FormattedDate date={updatedDate} />
+                        </div>
+                      )}
+                      {category && (
+                        <a
+                          href={`/categories/${category}`}
+                          class="group relative flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/50 dark:bg-badge-dark/60 text-sm text-text-light dark:text-text-dark hover:bg-gray-200/80 xl:hover:bg-white dark:hover:bg-gray-700/80 xl:dark:hover:bg-badge-dark/90 transition-colors"
+                        >
+                          <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                            查看 {category} 分类下的所有文章
+                          </div>
+                          <Icon name="folder" class="w-4 h-4" />
+                          <span>{category}</span>
+                        </a>
+                      )}
+                    </div>
+                  )
+                }
+              </div>
+              <div
+                data-encrypted-body
+                class="prose prose-lg max-w-none text-text-light dark:prose-invert dark:text-text-dark prose-headings:font-bold prose-a:text-primary-light dark:prose-a:text-primary-dark prose-blockquote:border-l-primary-light dark:prose-blockquote:border-l-primary-dark"
+              >
+                <slot />
+              </div>
+              {
+                showComments && (
+                  <>
+                    <div class="my-4 flex items-center justify-between">
+                      <div class="flex items-center gap-2 flex-1">
+                        {tags && tags.length > 0 && (
+                          <div class="flex items-center gap-2 flex-wrap ml-2">
+                            {tags.map((tag) => (
+                              <a
+                                href={`/tags/${tag}`}
+                                class="group relative px-2 py-1 text-xs font-medium bg-gray-100/80 dark:bg-white/80 xl:dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-full hover:bg-gray-200/80 dark:hover:bg-gray-700/80 xl:dark:hover:bg-white/20 transition-colors"
+                              >
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 whitespace-nowrap px-3 py-2 bg-card-light dark:bg-card-dark tooltip-solid text-text-light dark:text-text-dark text-sm rounded-xl tooltip [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:visible [@media(hover:hover)]:group-hover:scale-100 origin-bottom">
+                                  查看 {tag} 标签下的所有文章
+                                </div>
+                                # {tag}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100/80 dark:bg-white/10 shrink-0 mr-2">
+                        <Icon name="check" class="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                        <span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                          文章结束
+                        </span>
+                      </div>
+                    </div>
 
-								<ArticleMetaCard
-									title={title}
-									url={Astro.url?.href || ''}
-									pubDate={pubDate}
-									updatedDate={updatedDate}
-								/>
+                    <ArticleMetaCard
+                      title={title}
+                      url={Astro.url?.href || ''}
+                      pubDate={pubDate}
+                      updatedDate={updatedDate}
+                    />
 
-								<RecentPosts currentPostId={id || ''} />
-								{/* 评论区分隔区域 */}
-								<div id="comments-section" class="mt-16 mb-8 flex flex-col items-center gap-4">
-									<div class="flex items-center gap-3">
-										<div class="h-px w-12 sm:w-32 bg-linear-to-r from-transparent to-text-light/20 dark:to-text-dark/40"></div>
-										<div class="flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/40 dark:bg-badge-dark/60 shrink-0">
-											<Icon name="comment" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
-											<span class="text-sm font-medium text-text-light dark:text-text-dark whitespace-nowrap">评论区</span>
-										</div>
-										<div class="h-px w-12 sm:w-32 bg-linear-to-l from-transparent to-text-light/20 dark:to-text-dark/40"></div>
-									</div>
-								</div>
-								<Twikoo />
-							</>
-						)}
-					</article>
-					<div class="hidden xl:block"></div>
-				</div>
-			</div>
-		</main>
-		<Footer />
-	</div>
-		<script>
-			import { Lightbox } from '../scripts/lightbox';
+                    <RecentPosts currentPostId={id || ''} />
+                    {/* 评论区分隔区域 */}
+                    <div id="comments-section" class="mt-16 mb-8 flex flex-col items-center gap-4">
+                      <div class="flex items-center gap-3">
+                        <div class="h-px w-12 sm:w-32 bg-linear-to-r from-transparent to-text-light/20 dark:to-text-dark/40" />
+                        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light xl:bg-white/40 dark:bg-badge-dark/60 shrink-0">
+                          <Icon name="comment" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
+                          <span class="text-sm font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                            评论区
+                          </span>
+                        </div>
+                        <div class="h-px w-12 sm:w-32 bg-linear-to-l from-transparent to-text-light/20 dark:to-text-dark/40" />
+                      </div>
+                    </div>
+                    <Twikoo />
+                  </>
+                )
+              }
+            </article>
+            <div class="hidden xl:block"></div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+    <script>
+      import { Lightbox } from '../scripts/lightbox';
 
-			function bindLightbox() {
-				Lightbox.close();
+      function bindLightbox() {
+        Lightbox.close();
 
-				Lightbox.bind("[data-lightbox]", {
-					Hash: false,
-					hideScrollbar: false,
-				});
-			}
+        Lightbox.bind('[data-lightbox]', {
+          Hash: false,
+          hideScrollbar: false,
+        });
+      }
 
-			document.addEventListener('astro:page-load', () => {
-				const preElements = document.querySelectorAll('.prose pre');
-				preElements.forEach((pre) => {
-					const code = pre.querySelector('code');
-					if (!code) return;
-					
-					const langAttr = pre.getAttribute('data-language') || code.getAttribute('data-language');
-					const lang = langAttr ? langAttr.charAt(0).toUpperCase() + langAttr.slice(1) : 'Code';
-					
-					const header = document.createElement('div');
-					header.className = 'code-header';
-					header.innerHTML = `
+      document.addEventListener('astro:page-load', () => {
+        const preElements = document.querySelectorAll('.prose pre');
+        preElements.forEach((pre) => {
+          const code = pre.querySelector('code');
+          if (!code) return;
+
+          const langAttr = pre.getAttribute('data-language') || code.getAttribute('data-language');
+          const lang = langAttr ? langAttr.charAt(0).toUpperCase() + langAttr.slice(1) : 'Code';
+
+          const header = document.createElement('div');
+          header.className = 'code-header';
+          header.innerHTML = `
 						<div class="code-title">
 							<svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M19 9l-7 7-7-7"></path></svg>
 							<span>${lang}</span>
@@ -233,301 +290,305 @@ import Icon from '../components/Icon.astro';
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
 						</button>
 					`;
-					
-					pre.insertBefore(header, code);
-					pre.classList.add('collapsed');
-					
-					header.addEventListener('click', (e) => {
-						const target = e.target as HTMLElement;
-						if (target.closest('.copy-btn')) {
-							e.stopPropagation();
-							navigator.clipboard.writeText(code.textContent || '').then(() => {
-								const btn = header.querySelector('.copy-btn');
-								if (btn) {
-									btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>`;
-									pre.classList.add('copied');
-									setTimeout(() => {
-										btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
-										pre.classList.remove('copied');
-									}, 2000);
-								}
-							});
-						} else {
-							pre.classList.toggle('collapsed');
-						}
-					});
-				});
 
-				const links = document.querySelectorAll('.prose a');
-				links.forEach((link) => {
-					const href = link.getAttribute('href');
-					if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
-						link.setAttribute('target', '_blank');
-						link.setAttribute('rel', 'noopener noreferrer');
-					}
-				});
+          pre.insertBefore(header, code);
+          pre.classList.add('collapsed');
 
-				const images = document.querySelectorAll('.prose img');
-				
-				const seenImages = new Set();
-				images.forEach((img) => {
-					const src = img.getAttribute('src');
-					
-					if (src && !src.startsWith('data:')) {
-						if (seenImages.has(src)) {
-							return;
-						}
-						seenImages.add(src);
-						img.setAttribute('data-lightbox', 'gallery');
-						img.setAttribute('data-src', src);
-						img.setAttribute('data-caption', img.getAttribute('alt') || '');
-						img.classList.add('cursor-pointer', 'hover:scale-105', 'transition-transform', 'duration-300');
-					}
-				});
+          header.addEventListener('click', (e) => {
+            const target = e.target as HTMLElement;
+            if (target.closest('.copy-btn')) {
+              e.stopPropagation();
+              navigator.clipboard.writeText(code.textContent || '').then(() => {
+                const btn = header.querySelector('.copy-btn');
+                if (btn) {
+                  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>`;
+                  pre.classList.add('copied');
+                  setTimeout(() => {
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                    pre.classList.remove('copied');
+                  }, 2000);
+                }
+              });
+            } else {
+              pre.classList.toggle('collapsed');
+            }
+          });
+        });
 
-				// 分类水印：徽章滚出视口时渐入，footer 渐入时渐出上移
-				const watermark = document.getElementById('category-watermark');
-				const badges = document.getElementById('article-badges');
-				const footer = document.querySelector('footer');
-				if (watermark) {
-					let badgeRatio = 1;
-					let footerRatio = 0;
+        const links = document.querySelectorAll('.prose a');
+        links.forEach((link) => {
+          const href = link.getAttribute('href');
+          if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+          }
+        });
 
-					const update = () => {
-						const badgeFade = 1 - badgeRatio; // 徽章越少 → 值越大
-						const footerFade = 1 - footerRatio; // footer 越少 → 值越大
-						const opacity = Math.min(badgeFade, footerFade);
-						const yOffset = -footerRatio * 20;
-						const yBadge = (1 - badgeFade) * 16;
-						watermark.style.opacity = `${opacity}`;
-						watermark.style.transform = `translateY(${yOffset - yBadge}px)`;
-					};
+        const images = document.querySelectorAll('.prose img');
 
-					if (badges) {
-						new IntersectionObserver(
-							([entry]) => {
-								badgeRatio = entry.intersectionRatio;
-								update();
-							},
-							{ threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
-						).observe(badges);
-					} else {
-						badgeRatio = 0;
-					}
+        const seenImages = new Set();
+        images.forEach((img) => {
+          const src = img.getAttribute('src');
 
-					if (footer) {
-						new IntersectionObserver(
-							([entry]) => {
-								footerRatio = entry.intersectionRatio;
-								update();
-							},
-							{ threshold: Array.from({ length: 11 }, (_, i) => i / 10) }
-						).observe(footer);
-					}
+          if (src && !src.startsWith('data:')) {
+            if (seenImages.has(src)) {
+              return;
+            }
+            seenImages.add(src);
+            img.setAttribute('data-lightbox', 'gallery');
+            img.setAttribute('data-src', src);
+            img.setAttribute('data-caption', img.getAttribute('alt') || '');
+            img.classList.add('cursor-pointer', 'hover:scale-105', 'transition-transform', 'duration-300');
+          }
+        });
 
-					update();
-				}
+        // 分类水印：徽章滚出视口时渐入，footer 渐入时渐出上移
+        const watermark = document.getElementById('category-watermark');
+        const badges = document.getElementById('article-badges');
+        const footer = document.querySelector('footer');
+        if (watermark) {
+          let badgeRatio = 1;
+          let footerRatio = 0;
 
-				bindLightbox();
-			});
-		</script>
+          const update = () => {
+            const badgeFade = 1 - badgeRatio; // 徽章越少 → 值越大
+            const footerFade = 1 - footerRatio; // footer 越少 → 值越大
+            const opacity = Math.min(badgeFade, footerFade);
+            const yOffset = -footerRatio * 20;
+            const yBadge = (1 - badgeFade) * 16;
+            watermark.style.opacity = `${opacity}`;
+            watermark.style.transform = `translateY(${yOffset - yBadge}px)`;
+          };
 
-		<script>
-		import { decryptContent } from '../scripts/crypto';
+          if (badges) {
+            new IntersectionObserver(
+              ([entry]) => {
+                badgeRatio = entry.intersectionRatio;
+                update();
+              },
+              { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
+            ).observe(badges);
+          } else {
+            badgeRatio = 0;
+          }
 
-		function initPasswordProtection() {
-			const payloadEl = document.querySelector('[data-encrypted-payload]');
-			if (!payloadEl) return;
+          if (footer) {
+            new IntersectionObserver(
+              ([entry]) => {
+                footerRatio = entry.intersectionRatio;
+                update();
+              },
+              { threshold: Array.from({ length: 11 }, (_, i) => i / 10) }
+            ).observe(footer);
+          }
 
-			const encryptedData = payloadEl.textContent ?? '';
-			if (!encryptedData) return;
+          update();
+        }
 
-			// 非 HTTPS 环境下 crypto.subtle 不可用
-			if (!crypto?.subtle) {
-				document.querySelectorAll('[data-error-message]').forEach((el) => {
-					el.textContent = '当前环境不支持解密，请使用 HTTPS 访问';
-					el.classList.remove('hidden');
-				});
-				return;
-			}
+        bindLightbox();
+      });
+    </script>
 
-			const bodyNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-encrypted-body]'));
-			if (bodyNodes.length === 0) return;
+    <script>
+      import { decryptContent } from '../scripts/crypto';
 
-			// 避免重复初始化
-			if (document.querySelector('[data-password-container][data-initialized]')) return;
-			document.querySelectorAll('[data-password-container]').forEach((el) => {
-				(el as HTMLElement).dataset.initialized = 'true';
-			});
+      function initPasswordProtection() {
+        const payloadEl = document.querySelector('[data-encrypted-payload]');
+        if (!payloadEl) return;
 
-			let decrypting = false;
+        const encryptedData = payloadEl.textContent ?? '';
+        if (!encryptedData) return;
 
-			const slug = window.location.pathname;
-			const cacheKey = `pwd:${slug}`;
+        // 非 HTTPS 环境下 crypto.subtle 不可用
+        if (!crypto?.subtle) {
+          document.querySelectorAll('[data-error-message]').forEach((el) => {
+            el.textContent = '当前环境不支持解密，请使用 HTTPS 访问';
+            el.classList.remove('hidden');
+          });
+          return;
+        }
 
-			const forms = document.querySelectorAll<HTMLFormElement>('[data-password-form]');
+        const bodyNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-encrypted-body]'));
+        if (bodyNodes.length === 0) return;
 
-			forms.forEach((form) => {
-				const passwordInput = form.querySelector<HTMLInputElement>('[data-password-input]');
-				const errorMessage = form.querySelector<HTMLDivElement>('[data-error-message]');
-				const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-				const toggleBtn = form.querySelector<HTMLButtonElement>('[data-toggle-password]');
+        // 避免重复初始化
+        if (document.querySelector('[data-password-container][data-initialized]')) return;
+        document.querySelectorAll('[data-password-container]').forEach((el) => {
+          (el as HTMLElement).dataset.initialized = 'true';
+        });
 
-				if (!passwordInput || !submitButton) return;
+        let decrypting = false;
 
-				// 密码可见性切换（同步所有表单）
-				if (toggleBtn) {
-					toggleBtn.addEventListener('click', () => {
-						const isActive = toggleBtn.classList.toggle('active');
-						document.querySelectorAll<HTMLButtonElement>('[data-toggle-password]').forEach((btn) => {
-							btn.classList.toggle('active', isActive);
-						});
-						document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
-							input.classList.toggle('revealed', isActive);
-						});
-					});
-				}
+        const slug = window.location.pathname;
+        const cacheKey = `pwd:${slug}`;
 
-				form.addEventListener('submit', async (e) => {
-					e.preventDefault();
-					e.stopPropagation();
+        const forms = document.querySelectorAll<HTMLFormElement>('[data-password-form]');
 
-					if (decrypting) return;
+        forms.forEach((form) => {
+          const passwordInput = form.querySelector<HTMLInputElement>('[data-password-input]');
+          const errorMessage = form.querySelector<HTMLDivElement>('[data-error-message]');
+          const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+          const toggleBtn = form.querySelector<HTMLButtonElement>('[data-toggle-password]');
 
-					const password = passwordInput.value.trim();
-					if (!password) {
-						if (errorMessage) {
-							errorMessage.textContent = '请输入密码';
-							errorMessage.classList.remove('hidden');
-						}
-						return;
-					}
+          if (!passwordInput || !submitButton) return;
 
-					decrypting = true;
-					document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
-						btn.disabled = true;
-						btn.style.opacity = '0.5';
-						btn.style.pointerEvents = 'none';
-					});
-					document.querySelectorAll('[data-error-message]').forEach((el) => el.classList.add('hidden'));
+          // 密码可见性切换（同步所有表单）
+          if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+              const isActive = toggleBtn.classList.toggle('active');
+              document.querySelectorAll<HTMLButtonElement>('[data-toggle-password]').forEach((btn) => {
+                btn.classList.toggle('active', isActive);
+              });
+              document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+                input.classList.toggle('revealed', isActive);
+              });
+            });
+          }
 
-					const success = await attemptDecrypt(password, false);
-					decrypting = false;
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-					if (!success) {
-						document.querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]').forEach((btn) => {
-							btn.disabled = false;
-							btn.style.opacity = '';
-							btn.style.pointerEvents = '';
-						});
-						document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
-							input.value = '';
-							input.focus();
-						});
-					}
-				});
-			});
+            if (decrypting) return;
 
-			async function attemptDecrypt(password: string, isAuto: boolean): Promise<boolean> {
-				try {
-					const decryptedHtml = await decryptContent(encryptedData, password);
+            const password = passwordInput.value.trim();
+            if (!password) {
+              if (errorMessage) {
+                errorMessage.textContent = '请输入密码';
+                errorMessage.classList.remove('hidden');
+              }
+              return;
+            }
 
-					bodyNodes.forEach((node) => {
-						node.innerHTML = decryptedHtml;
-					});
+            decrypting = true;
+            document
+              .querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]')
+              .forEach((btn) => {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+              });
+            document.querySelectorAll('[data-error-message]').forEach((el) => el.classList.add('hidden'));
 
-					// 隐藏所有密码卡片
-					document.querySelectorAll<HTMLElement>('[data-password-container]').forEach((el) => {
-						el.classList.add('hidden');
-					});
+            const success = await attemptDecrypt(password, false);
+            decrypting = false;
 
-					sessionStorage.setItem(cacheKey, password);
+            if (!success) {
+              document
+                .querySelectorAll<HTMLButtonElement>('[data-password-form] button[type="submit"]')
+                .forEach((btn) => {
+                  btn.disabled = false;
+                  btn.style.opacity = '';
+                  btn.style.pointerEvents = '';
+                });
+              document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+                input.value = '';
+                input.focus();
+              });
+            }
+          });
+        });
 
-					document.dispatchEvent(new CustomEvent('article:decrypted'));
+        async function attemptDecrypt(password: string, isAuto: boolean): Promise<boolean> {
+          try {
+            const decryptedHtml = await decryptContent(encryptedData, password);
 
-					return true;
-				} catch {
-					if (!isAuto) {
-						document.querySelectorAll('[data-error-message]').forEach((el) => {
-							el.textContent = '密码错误，请重试';
-							el.classList.remove('hidden');
-						});
-					} else {
-						sessionStorage.removeItem(cacheKey);
-					}
-					return false;
-				}
-			}
+            bodyNodes.forEach((node) => {
+              node.innerHTML = decryptedHtml;
+            });
 
-			// 自动解锁
-			const savedPassword = sessionStorage.getItem(cacheKey);
-			if (savedPassword) {
-				document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
-					input.value = savedPassword;
-				});
-				attemptDecrypt(savedPassword, true);
-			}
-		}
+            // 隐藏所有密码卡片
+            document.querySelectorAll<HTMLElement>('[data-password-container]').forEach((el) => {
+              el.classList.add('hidden');
+            });
 
-		initPasswordProtection();
-		document.addEventListener('astro:page-load', initPasswordProtection);
-		</script>
+            sessionStorage.setItem(cacheKey, password);
 
-		<script>
-		function runBlogWelcome() {
-			if (sessionStorage.getItem('hasVisited')) {
-				document.documentElement.classList.add('content-ready');
-				return;
-			}
+            document.dispatchEvent(new CustomEvent('article:decrypted'));
 
-			sessionStorage.setItem('hasVisited', 'true');
+            return true;
+          } catch {
+            if (!isAuto) {
+              document.querySelectorAll('[data-error-message]').forEach((el) => {
+                el.textContent = '密码错误，请重试';
+                el.classList.remove('hidden');
+              });
+            } else {
+              sessionStorage.removeItem(cacheKey);
+            }
+            return false;
+          }
+        }
 
-			const overlay = document.getElementById('welcome-overlay');
-			const avatar = document.getElementById('welcome-avatar');
-			const logo = document.getElementById('welcome-logo');
-			const tagline = document.getElementById('welcome-tagline');
-			const greeting = document.getElementById('welcome-greeting');
-			const greetingInner = document.getElementById('welcome-greeting-inner');
+        // 自动解锁
+        const savedPassword = sessionStorage.getItem(cacheKey);
+        if (savedPassword) {
+          document.querySelectorAll<HTMLInputElement>('[data-password-input]').forEach((input) => {
+            input.value = savedPassword;
+          });
+          attemptDecrypt(savedPassword, true);
+        }
+      }
 
-			if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
-				document.documentElement.classList.add('content-ready');
-				return;
-			}
+      initPasswordProtection();
+      document.addEventListener('astro:page-load', initPasswordProtection);
+    </script>
 
-			const hour = new Date().getHours();
-			let greetText = '你见过凌晨四点的洛杉矶吗?';
-			if (hour >= 5 && hour < 12) greetText = '早上好，夜之城!';
-			else if (hour >= 12 && hour < 14) greetText = '真香!';
-			else if (hour >= 14 && hour < 18) greetText = '三点几哩，饮茶先啦!';
-			else if (hour >= 18 && hour < 22) greetText = '打工是不可能打工的!';
+    <script>
+      function runBlogWelcome() {
+        if (sessionStorage.getItem('hasVisited')) {
+          document.documentElement.classList.add('content-ready');
+          return;
+        }
 
-			greetingInner.textContent = greetText;
-			overlay.classList.add('active');
+        sessionStorage.setItem('hasVisited', 'true');
 
-			setTimeout(() => avatar.classList.add('animate'), 100);
-			setTimeout(() => logo.classList.add('animate'), 300);
-			setTimeout(() => tagline.classList.add('animate'), 500);
-			setTimeout(() => greeting.classList.add('animate'), 700);
-			setTimeout(() => {
-				overlay.classList.add('fade-out');
-				document.documentElement.classList.add('content-ready');
-				setTimeout(() => {
-					overlay.classList.remove('active');
-					overlay.style.display = 'none';
-				}, 500);
-			}, 2500);
-		}
+        const overlay = document.getElementById('welcome-overlay');
+        const avatar = document.getElementById('welcome-avatar');
+        const logo = document.getElementById('welcome-logo');
+        const tagline = document.getElementById('welcome-tagline');
+        const greeting = document.getElementById('welcome-greeting');
+        const greetingInner = document.getElementById('welcome-greeting-inner');
 
-		if (!sessionStorage.getItem('hasVisited')) {
-			runBlogWelcome();
-		}
-		document.addEventListener('astro:page-load', () => {
-			if (!sessionStorage.getItem('hasVisited')) {
-				runBlogWelcome();
-			} else {
-				document.documentElement.classList.add('content-ready');
-			}
-		});
-		</script>
-	</body>
+        if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
+          document.documentElement.classList.add('content-ready');
+          return;
+        }
+
+        const hour = new Date().getHours();
+        let greetText = '你见过凌晨四点的洛杉矶吗?';
+        if (hour >= 5 && hour < 12) greetText = '早上好，夜之城!';
+        else if (hour >= 12 && hour < 14) greetText = '真香!';
+        else if (hour >= 14 && hour < 18) greetText = '三点几哩，饮茶先啦!';
+        else if (hour >= 18 && hour < 22) greetText = '打工是不可能打工的!';
+
+        greetingInner.textContent = greetText;
+        overlay.classList.add('active');
+
+        setTimeout(() => avatar.classList.add('animate'), 100);
+        setTimeout(() => logo.classList.add('animate'), 300);
+        setTimeout(() => tagline.classList.add('animate'), 500);
+        setTimeout(() => greeting.classList.add('animate'), 700);
+        setTimeout(() => {
+          overlay.classList.add('fade-out');
+          document.documentElement.classList.add('content-ready');
+          setTimeout(() => {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+          }, 500);
+        }, 2500);
+      }
+
+      if (!sessionStorage.getItem('hasVisited')) {
+        runBlogWelcome();
+      }
+      document.addEventListener('astro:page-load', () => {
+        if (!sessionStorage.getItem('hasVisited')) {
+          runBlogWelcome();
+        } else {
+          document.documentElement.classList.add('content-ready');
+        }
+      });
+    </script>
+  </body>
 </html>

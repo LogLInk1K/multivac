@@ -24,14 +24,18 @@ const readingTime = calculateReadingTime(post.body || '');
   {/* 中大屏幕：水平布局 */}
   <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
     {/* 可选的封面图片 */}
-    <a href={`/p/${originalFileName}`} class="md:w-40 w-full h-[140px] bg-hero-light dark:bg-hero-dark rounded-3xl overflow-hidden shrink-0 mx-auto md:mx-2 block">
+    <a
+      href={`/p/${originalFileName}`}
+      class="md:w-40 w-full h-[140px] bg-hero-light dark:bg-hero-dark rounded-3xl overflow-hidden shrink-0 mx-auto md:mx-2 block"
+    >
       <div
         class="w-full h-full bg-cover bg-center"
         style={`background-image: url('${displayImage}');`}
         aria-label={title}
-      ></div>
+      >
+      </div>
     </a>
-    
+
     {/* 内容区域 */}
     <div class="flex-1 min-w-0 w-full">
       <h3 class="text-lg font-bold mb-2">
@@ -39,31 +43,39 @@ const readingTime = calculateReadingTime(post.body || '');
           {title}
         </a>
       </h3>
-      
+
       {/* 显示完整摘要，不截断 */}
       <p class="text-sm text-text-light dark:text-text-dark opacity-90 mb-3 line-clamp-2">
         {description}
       </p>
-      
+
       {/* 分类和标签 */}
       <div class="flex flex-wrap items-center gap-2 mb-3">
-        {category && (
-          <span class="px-2 py-1 text-xs font-medium bg-primary-light/10 text-primary-light dark:bg-primary-dark/10 dark:text-primary-dark rounded-full">
-            {category}
-          </span>
-        )}
-        {tags && tags.length > 0 && tags.slice(0, 3).map((tag) => (
-          <span class="px-2 py-1 text-xs text-text-light dark:text-text-dark bg-hover-light dark:bg-hover-dark rounded-full">
-            {tag}
-          </span>
-        ))}
-        {tags && tags.length > 3 && (
-          <span class="px-2 py-1 text-xs text-text-light dark:text-text-dark opacity-60">
-            +{tags.length - 3}
-          </span>
-        )}
+        {
+          category && (
+            <span class="px-2 py-1 text-xs font-medium bg-primary-light/10 text-primary-light dark:bg-primary-dark/10 dark:text-primary-dark rounded-full">
+              {category}
+            </span>
+          )
+        }
+        {
+          tags &&
+            tags.length > 0 &&
+            tags
+              .slice(0, 3)
+              .map((tag) => (
+                <span class="px-2 py-1 text-xs text-text-light dark:text-text-dark bg-hover-light dark:bg-hover-dark rounded-full">
+                  {tag}
+                </span>
+              ))
+        }
+        {
+          tags && tags.length > 3 && (
+            <span class="px-2 py-1 text-xs text-text-light dark:text-text-dark opacity-60">+{tags.length - 3}</span>
+          )
+        }
       </div>
-      
+
       {/* 元数据 */}
       <div class="flex flex-row items-center gap-2 text-xs text-text-light dark:text-text-dark opacity-60">
         <time>

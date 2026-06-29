@@ -370,15 +370,19 @@ class Lightbox {
       }
     });
 
-    this.imgContainer.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      if (this.animating) return;
-      const delta = e.deltaY > 0 ? -0.15 : 0.15;
-      const newScale = Math.max(1, Math.min(8, this.scale + delta));
-      if (newScale !== this.scale) {
-        this.zoomTo(newScale, e.clientX, e.clientY);
-      }
-    }, { passive: false });
+    this.imgContainer.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        if (this.animating) return;
+        const delta = e.deltaY > 0 ? -0.15 : 0.15;
+        const newScale = Math.max(1, Math.min(8, this.scale + delta));
+        if (newScale !== this.scale) {
+          this.zoomTo(newScale, e.clientX, e.clientY);
+        }
+      },
+      { passive: false }
+    );
 
     this.imgContainer.addEventListener('mousedown', (e) => {
       if (this.scale <= 1 || this.animating) return;
@@ -405,41 +409,53 @@ class Lightbox {
       this.applyTransform(false);
     });
 
-    this.imgContainer.addEventListener('touchstart', (e) => {
-      if (this.animating) return;
-      if (e.touches.length === 1 && this.scale > 1) {
-        this.isDragging = true;
-        this.dragStartX = e.touches[0].clientX;
-        this.dragStartY = e.touches[0].clientY;
-        this.dragStartTX = this.translateX;
-        this.dragStartTY = this.translateY;
-      } else if (e.touches.length === 2) {
+    this.imgContainer.addEventListener(
+      'touchstart',
+      (e) => {
+        if (this.animating) return;
+        if (e.touches.length === 1 && this.scale > 1) {
+          this.isDragging = true;
+          this.dragStartX = e.touches[0].clientX;
+          this.dragStartY = e.touches[0].clientY;
+          this.dragStartTX = this.translateX;
+          this.dragStartTY = this.translateY;
+        } else if (e.touches.length === 2) {
+          this.isDragging = false;
+          this.lastTouchDist = this.getTouchDist(e.touches);
+        }
+      },
+      { passive: true }
+    );
+
+    this.imgContainer.addEventListener(
+      'touchmove',
+      (e) => {
+        if (e.touches.length === 1 && this.isDragging) {
+          e.preventDefault();
+          this.translateX = this.dragStartTX + (e.touches[0].clientX - this.dragStartX);
+          this.translateY = this.dragStartTY + (e.touches[0].clientY - this.dragStartY);
+          this.applyTransform(true);
+        } else if (e.touches.length === 2) {
+          e.preventDefault();
+          const dist = this.getTouchDist(e.touches);
+          const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+          const scaleFactor = dist / this.lastTouchDist;
+          const newScale = Math.max(1, Math.min(8, this.scale * scaleFactor));
+          this.zoomTo(newScale, cx, cy);
+          this.lastTouchDist = dist;
+        }
+      },
+      { passive: false }
+    );
+
+    this.imgContainer.addEventListener(
+      'touchend',
+      () => {
         this.isDragging = false;
-        this.lastTouchDist = this.getTouchDist(e.touches);
-      }
-    }, { passive: true });
-
-    this.imgContainer.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && this.isDragging) {
-        e.preventDefault();
-        this.translateX = this.dragStartTX + (e.touches[0].clientX - this.dragStartX);
-        this.translateY = this.dragStartTY + (e.touches[0].clientY - this.dragStartY);
-        this.applyTransform(true);
-      } else if (e.touches.length === 2) {
-        e.preventDefault();
-        const dist = this.getTouchDist(e.touches);
-        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        const scaleFactor = dist / this.lastTouchDist;
-        const newScale = Math.max(1, Math.min(8, this.scale * scaleFactor));
-        this.zoomTo(newScale, cx, cy);
-        this.lastTouchDist = dist;
-      }
-    }, { passive: false });
-
-    this.imgContainer.addEventListener('touchend', () => {
-      this.isDragging = false;
-    }, { passive: true });
+      },
+      { passive: true }
+    );
 
     this.img.addEventListener('load', () => {
       this.resetZoom();
@@ -468,8 +484,8 @@ class Lightbox {
       this.translateX = cx - (cx - cssLeft - oldTX) * ratio - cssLeft;
       this.translateY = cy - (cy - cssTop - oldTY) * ratio - cssTop;
     } else {
-      const imgCX = cssLeft + oldTX + this.img.clientWidth / 2 * oldScale;
-      const imgCY = cssTop + oldTY + this.img.clientHeight / 2 * oldScale;
+      const imgCX = cssLeft + oldTX + (this.img.clientWidth / 2) * oldScale;
+      const imgCY = cssTop + oldTY + (this.img.clientHeight / 2) * oldScale;
       this.translateX = imgCX - (imgCX - cssLeft - oldTX) * ratio - cssLeft;
       this.translateY = imgCY - (imgCY - cssTop - oldTY) * ratio - cssTop;
     }
@@ -537,14 +553,18 @@ class Lightbox {
     if (!Lightbox.delegated) {
       Lightbox.delegated = true;
 
-      document.addEventListener('click', (e: MouseEvent) => {
-        const target = Lightbox.closestDataLightbox(e.target as Element);
-        if (!target) return;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        lb.recover();
-        lb.openFrom(target);
-      }, true);
+      document.addEventListener(
+        'click',
+        (e: MouseEvent) => {
+          const target = Lightbox.closestDataLightbox(e.target as Element);
+          if (!target) return;
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          lb.recover();
+          lb.openFrom(target);
+        },
+        true
+      );
     }
   }
 
@@ -583,7 +603,8 @@ class Lightbox {
     if (galleryName) {
       this.gallery = [];
       document.querySelectorAll<HTMLElement>(`[data-lightbox="${galleryName}"]`).forEach((item) => {
-        const itemSrc = item.getAttribute('data-src') || item.getAttribute('href') || (item as HTMLImageElement).src || '';
+        const itemSrc =
+          item.getAttribute('data-src') || item.getAttribute('href') || (item as HTMLImageElement).src || '';
         if (itemSrc) {
           this.gallery.push({
             src: itemSrc,
@@ -613,7 +634,7 @@ class Lightbox {
     this.img.style.transform = '';
 
     // 清除之前可能遗留的替代渲染元素
-    this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+    this.imgContainer.querySelectorAll('.lb-alt-media').forEach((n) => n.remove());
 
     const srcLower = item.src.split('?')[0].split('#')[0].toLowerCase();
     const isSvg = srcLower.endsWith('.svg');
@@ -665,7 +686,7 @@ class Lightbox {
       this.img.style.transform = '';
       this.img.src = '';
       this.img.style.display = '';
-      this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+      this.imgContainer.querySelectorAll('.lb-alt-media').forEach((n) => n.remove());
     });
   }
 
@@ -710,10 +731,13 @@ class Lightbox {
 
       this.currentIndex = newIndex;
       const item = this.gallery[this.currentIndex];
-      if (!item) { this.animating = false; return; }
+      if (!item) {
+        this.animating = false;
+        return;
+      }
 
       // 更新内容
-      this.imgContainer.querySelectorAll('.lb-alt-media').forEach(n => n.remove());
+      this.imgContainer.querySelectorAll('.lb-alt-media').forEach((n) => n.remove());
       const srcLower = item.src.split('?')[0].split('#')[0].toLowerCase();
       const isSvg = srcLower.endsWith('.svg');
 

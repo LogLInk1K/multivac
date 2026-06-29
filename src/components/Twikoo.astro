@@ -23,16 +23,8 @@ const pageKey = (() => {
 const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'root'}`;
 ---
 
-<div 
-  id={elId} 
-  class="twikoo" 
-  data-twikoo-env-id={envId}
-  data-version={TWIKOO_VERSION}
->
-
-  <div class="twikoo-loading text-sm text-neutral-400 text-center py-8">
-    正在加载评论区...
-  </div>
+<div id={elId} class="twikoo" data-twikoo-env-id={envId} data-version={TWIKOO_VERSION}>
+  <div class="twikoo-loading text-sm text-neutral-400 text-center py-8">正在加载评论区...</div>
 </div>
 
 <script>
@@ -63,10 +55,10 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
   function getUrls() {
     const mount = document.querySelector('.twikoo[data-version]');
     const version = mount?.getAttribute('data-version') || '1.7.13';
-    
+
     return {
       js: `https://registry.npmmirror.com/twikoo/${version}/files/dist/twikoo.nocss.js`,
-      css: `https://registry.npmmirror.com/twikoo/${version}/files/dist/twikoo.css`
+      css: `https://registry.npmmirror.com/twikoo/${version}/files/dist/twikoo.css`,
     };
   }
 
@@ -129,9 +121,9 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
     if (!envId || !mountEl.id) return;
 
     const loader = mountEl.querySelector('.twikoo-loading');
-      if (loader) {
-        loader.remove();
-      }
+    if (loader) {
+      loader.remove();
+    }
 
     window.twikoo.init({
       envId,
@@ -146,7 +138,7 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
     if (!mounts.length) return;
 
     const initializedMounts = new Set<string>();
-    document.querySelectorAll('.twikoo[data-twikoo-env-id]').forEach(el => {
+    document.querySelectorAll('.twikoo[data-twikoo-env-id]').forEach((el) => {
       if (el.querySelector('.tk-comments')) {
         initializedMounts.add(el.id);
       }
@@ -162,7 +154,7 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
                   initTwikooForMount(m);
                 }
               }
-            }),
+            })
           );
         })
         .catch(() => {});

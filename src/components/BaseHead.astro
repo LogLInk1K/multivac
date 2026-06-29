@@ -8,26 +8,33 @@ import { getSiteConfig } from '../utils/config';
 const siteConfig = await getSiteConfig();
 
 interface Props {
-	title: string;
-	description: string;
-	image?: string | ImageMetadata;
-	pubDate?: Date;
-	updatedDate?: Date;
-	article?: boolean;
+  title: string;
+  description: string;
+  image?: string | ImageMetadata;
+  pubDate?: Date;
+  updatedDate?: Date;
+  article?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = siteConfig.assets.defaultAbout, pubDate, updatedDate, article = false } = Astro.props;
+const {
+  title,
+  description,
+  image = siteConfig.assets.defaultAbout,
+  pubDate,
+  updatedDate,
+  article = false,
+} = Astro.props;
 const imageUrl = typeof image === 'string' ? image : image.src;
 const authorName = siteConfig.author.name;
 const fullTitle = title.startsWith(`${authorName} - `) ? title : `${title} | ${authorName}`;
 
 const toISOWithTimezone = (date: Date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}T00:00:00+08:00`;
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}T00:00:00+08:00`;
 };
 
 const emojiFiles = siteConfig.assets.emojiFiles;
@@ -38,12 +45,7 @@ const emojiFiles = siteConfig.assets.emojiFiles;
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="sitemap" href="/sitemap-index.xml" />
-<link
-	rel="alternate"
-	type="application/rss+xml"
-	title={siteConfig.site.title}
-	href={new URL('rss.xml', Astro.site)}
-/>
+<link rel="alternate" type="application/rss+xml" title={siteConfig.site.title} href={new URL('rss.xml', Astro.site)} />
 <meta name="generator" content={Astro.generator} />
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
@@ -55,15 +57,17 @@ const emojiFiles = siteConfig.assets.emojiFiles;
 <!-- Avatar preload -->
 <link rel="preload" href={siteConfig.author.avatar} as="image" crossorigin="anonymous" />
 
-{emojiFiles.map(file => (
-  <link rel="preload" href={`/img/emoji/${file}.webp`} as="image" type="image/webp" />
-))}
+{emojiFiles.map((file) => <link rel="preload" href={`/img/emoji/${file}.webp`} as="image" type="image/webp" />)}
 
 <!-- Preconnect to third-party origins for faster loading -->
-{siteConfig.preconnect.map((origin) => (
-  <link rel="preconnect" href={origin} />
-  <link rel="dns-prefetch" href={origin} />
-))}
+{
+  siteConfig.preconnect.map((origin) => (
+    <>
+      <link rel="preconnect" href={origin} />
+      <link rel="dns-prefetch" href={origin} />
+    </>
+  ))
+}
 
 <!-- APlayer styles: async load (below-fold, non-render-blocking) -->
 <link rel="preload" href="/libs/aplayer/APlayer.min.css" as="style" />
@@ -99,33 +103,39 @@ const emojiFiles = siteConfig.assets.emojiFiles;
 <meta property="twitter:image" content={new URL(imageUrl, Astro.url)} />
 
 <!-- JSON-LD Structured Data -->
-{article && pubDate && (
-<script type="application/ld+json" is:inline set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": title,
-    "description": description,
-    "image": new URL(imageUrl, Astro.url).toString(),
-    "datePublished": toISOWithTimezone(pubDate),
-    "dateModified": toISOWithTimezone(updatedDate || pubDate),
-    "author": {
-        "@type": "Person",
-        "name": authorName,
-        "url": new URL('/about', Astro.site).toString(),
-        "description": siteConfig.author.description
-    },
-    "publisher": {
-        "@type": "Person",
-        "name": authorName,
-        "url": Astro.site?.toString(),
-        "logo": {
-            "@type": "ImageObject",
-            "url": new URL('/favicon.svg', Astro.site).toString()
-        }
-    },
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": canonicalURL.toString()
-    }
-})} />
-)}
+{
+  article && pubDate && (
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description: description,
+        image: new URL(imageUrl, Astro.url).toString(),
+        datePublished: toISOWithTimezone(pubDate),
+        dateModified: toISOWithTimezone(updatedDate || pubDate),
+        author: {
+          '@type': 'Person',
+          name: authorName,
+          url: new URL('/about', Astro.site).toString(),
+          description: siteConfig.author.description,
+        },
+        publisher: {
+          '@type': 'Person',
+          name: authorName,
+          url: Astro.site?.toString(),
+          logo: {
+            '@type': 'ImageObject',
+            url: new URL('/favicon.svg', Astro.site).toString(),
+          },
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalURL.toString(),
+        },
+      })}
+    />
+  )
+}

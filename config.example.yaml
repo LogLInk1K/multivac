@@ -1,147 +1,146 @@
 # Multivac 配置文件
 # 使用方式：复制此文件 → 重命名为 config.multivac.yaml → 填入实际值
-# 数据结构由 Zod Schema 强校验，类型错误会在构建时报错        
-
+# 数据结构由 Zod Schema 强校验，类型错误会在构建时报错
 
 # ── 站点基础信息 ──────────────────────────────────────────────
 site:
-  url: "https://example.com"    # 站点 URL，影响 RSS、Sitemap 等绝对 URL 生成
-  title: "你的站点标题"         # 浏览器标签页标题、RSS 标题
-  description: "你的站点描述"   # SEO 描述、RSS 描述
-  logo: "LOG"                   # 顶部导航栏品牌文字
-  lang: "zh-CN"                 # HTML lang 属性，影响日期格式化
-  startYear: 2021               # 站点创建年份，用于页脚版权区间
-  startDate: "2021-01-02"       # 站点创建日期，用于运行时长计算
-  postsPerPage: 4               # 首页每页文章数
-  archivesPerPage: 13           # 归档页每页文章数
+  url: 'https://example.com' # 站点 URL，影响 RSS、Sitemap 等绝对 URL 生成
+  title: '你的站点标题' # 浏览器标签页标题、RSS 标题
+  description: '你的站点描述' # SEO 描述、RSS 描述
+  logo: 'LOG' # 顶部导航栏品牌文字
+  lang: 'zh-CN' # HTML lang 属性，影响日期格式化
+  startYear: 2021 # 站点创建年份，用于页脚版权区间
+  startDate: '2021-01-02' # 站点创建日期，用于运行时长计算
+  postsPerPage: 4 # 首页每页文章数
+  archivesPerPage: 13 # 归档页每页文章数
 
 # ── 作者信息 ──────────────────────────────────────────────────
 author:
-  name: "你的名字"              # 显示名称、文章作者、版权归属
-  subName: "副昵称"             # 可选，矩阵动画 name 行交替文字
-  avatar: "/img/avatar.webp"    # 头像路径，侧栏/文章卡片/欢迎动画使用
-  slogan: "你的标语"            # 主标语，侧栏横幅/欢迎动画
-  desc: "矩阵描述行"            # 矩阵动画 desc 行主文字
-  subDesc: "矩阵描述行副文字"   # 可选，矩阵动画 desc 行交替文字
-  description: "你的个人简介"   # 简介，文章海报绘制
+  name: '你的名字' # 显示名称、文章作者、版权归属
+  subName: '副昵称' # 可选，矩阵动画 name 行交替文字
+  avatar: '/img/avatar.webp' # 头像路径，侧栏/文章卡片/欢迎动画使用
+  slogan: '你的标语' # 主标语，侧栏横幅/欢迎动画
+  desc: '矩阵描述行' # 矩阵动画 desc 行主文字
+  subDesc: '矩阵描述行副文字' # 可选，矩阵动画 desc 行交替文字
+  description: '你的个人简介' # 简介，文章海报绘制
 
 # ── 导航链接 ──────────────────────────────────────────────────
 nav:
-  headerLinks:                  # 顶部导航栏链接
-    - label: "文稿"
-      href: "/archives"
-    - label: "友链"
-      href: "/friends"
-    - label: "漫游"
-      href: "/watching"
-    - label: "关于"
-      href: "/about"
-  menuLinks:                    # 汉堡菜单链接（移动端）
-    - label: "主页"
-      href: "/"
-      icon: "home"              
-      external: true            # 是否外部链接（新标签页打开）
-    - label: "博客"
-      href: "/"
-      icon: "blog"
-    - label: "文稿"
-      href: "/archives"
-      icon: "archive"
-    - label: "友链"
-      href: "/friends"
-      icon: "friends"
-    - label: "动态"
-      href: "/moments"
-      icon: "moments"
-    - label: "漫游"
-      href: "/watching"
-      icon: "watching"
-      iconScale: 0.88           # 可选，图标缩放比例
-    - label: "关于"
-      href: "/about"
-      icon: "about"
+  headerLinks: # 顶部导航栏链接
+    - label: '文稿'
+      href: '/archives'
+    - label: '友链'
+      href: '/friends'
+    - label: '漫游'
+      href: '/watching'
+    - label: '关于'
+      href: '/about'
+  menuLinks: # 汉堡菜单链接（移动端）
+    - label: '主页'
+      href: '/'
+      icon: 'home'
+      external: true # 是否外部链接（新标签页打开）
+    - label: '博客'
+      href: '/'
+      icon: 'blog'
+    - label: '文稿'
+      href: '/archives'
+      icon: 'archive'
+    - label: '友链'
+      href: '/friends'
+      icon: 'friends'
+    - label: '动态'
+      href: '/moments'
+      icon: 'moments'
+    - label: '漫游'
+      href: '/watching'
+      icon: 'watching'
+      iconScale: 0.88 # 可选，图标缩放比例
+    - label: '关于'
+      href: '/about'
+      icon: 'about'
 
 # ── 社交链接 ──────────────────────────────────────────────────
-social:                         # 侧栏社交图标按钮
-  - name: "GitHub"              # 无障碍标签
-    url: "https://github.com/your-username"
-    icon: "github"              
-  - name: "Bilibili"
-    url: "https://space.bilibili.com/your-uid"
-    icon: "bilibili"
+social: # 侧栏社交图标按钮
+  - name: 'GitHub' # 无障碍标签
+    url: 'https://github.com/your-username'
+    icon: 'github'
+  - name: 'Bilibili'
+    url: 'https://space.bilibili.com/your-uid'
+    icon: 'bilibili'
 
 # ── 音乐播放器 ────────────────────────────────────────────────
 music:
-  playlistUrl: "https://music.163.com/playlist?id=YOUR_PLAYLIST_ID"  # 歌单链接（仅展示用）
-  apiEndpoints:                 # Meting API 端点列表，按优先级排列
-    - "https://api.injahow.cn/meting/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50"
-    - "https://meting.jinghuashang.cn/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50"
-    - "https://metingapi.mo-app.cn/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50"
+  playlistUrl: 'https://music.163.com/playlist?id=YOUR_PLAYLIST_ID' # 歌单链接（仅展示用）
+  apiEndpoints: # Meting API 端点列表，按优先级排列
+    - 'https://api.injahow.cn/meting/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50'
+    - 'https://meting.jinghuashang.cn/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50'
+    - 'https://metingapi.mo-app.cn/?type=playlist&id=YOUR_PLAYLIST_ID&server=netease&limit=50'
 
 # ── 评论系统 ──────────────────────────────────────────────────
 comment:
   twikoo:
-    envId: "https://your-twikoo-env.vercel.app"   # Twikoo 云函数地址
-    version: "1.7.13"                             # Twikoo JS/CSS 版本号
+    envId: 'https://your-twikoo-env.vercel.app' # Twikoo 云函数地址
+    version: '1.7.13' # Twikoo JS/CSS 版本号
 
 # ── 静态资源路径 ──────────────────────────────────────────────
 assets:
-  defaultCover: "/img/df-cover.webp"       # 文章默认封面图
-  defaultAbout: "/img/df-about.webp"       # OG 元数据/关于页/侧栏回退图
-  wechatQr: "/img/wechatGood.webp"         # 微信赞赏码
-  alipayQr: "/img/alipayGood.webp"         # 支付宝赞赏码
-  emojiFiles:                              # 需预加载的 emoji SVG 文件名
-    - "cool"
-    - "cat"
-    - "yummy"
-    - "cry"
-    - "nerd"
-    - "laugh"
-  tenYearPledgeLogo: "/img/logo_en_default.png"  # 十年之约 Logo
+  defaultCover: '/img/df-cover.webp' # 文章默认封面图
+  defaultAbout: '/img/df-about.webp' # OG 元数据/关于页/侧栏回退图
+  wechatQr: '/img/wechatGood.webp' # 微信赞赏码
+  alipayQr: '/img/alipayGood.webp' # 支付宝赞赏码
+  emojiFiles: # 需预加载的 emoji SVG 文件名
+    - 'cool'
+    - 'cat'
+    - 'yummy'
+    - 'cry'
+    - 'nerd'
+    - 'laugh'
+  tenYearPledgeLogo: '/img/logo_en_default.png' # 十年之约 Logo
 
 # ── 页脚信息 ──────────────────────────────────────────────────
 footer:
-  homeUrl: "https://your-domain.com"                      # 主页链接
-  license: "CC BY-NC-ND 4.0"                              # 许可证名称
-  licenseUrl: "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-hans"
-  icpNumber: "萌ICP备XXXXXXXX号"                          # ICP 备案号
-  icpUrl: "https://icp.gov.moe/?keyword=XXXXXXXX"         # ICP 链接
+  homeUrl: 'https://your-domain.com' # 主页链接
+  license: 'CC BY-NC-ND 4.0' # 许可证名称
+  licenseUrl: 'https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-hans'
+  icpNumber: '萌ICP备XXXXXXXX号' # ICP 备案号
+  icpUrl: 'https://icp.gov.moe/?keyword=XXXXXXXX' # ICP 链接
 
 # ── 问候语（按时段切换）──────────────────────────────────────
 # hourStart 包含，hourEnd 不包含；hourEnd 可大于 24 表示次日
 greetings:
   - hourStart: 5
     hourEnd: 12
-    text: "早上好!"
+    text: '早上好!'
   - hourStart: 12
     hourEnd: 14
-    text: "中午好!"
+    text: '中午好!'
   - hourStart: 14
     hourEnd: 18
-    text: "下午好!"
+    text: '下午好!'
   - hourStart: 18
     hourEnd: 22
-    text: "晚上好!"
+    text: '晚上好!'
   - hourStart: 22
     hourEnd: 29
-    text: "夜深了，注意休息!"
+    text: '夜深了，注意休息!'
 
 # ── 预连接域名 ────────────────────────────────────────────────
-preconnect:                      # <link rel="preconnect"> 提前建立连接
-  - "https://cdn.example.com"
+preconnect: # <link rel="preconnect"> 提前建立连接
+  - 'https://cdn.example.com'
 
 # ── 十年之约 ──────────────────────────────────────────────────
 tenYearPledge:
-  url: "https://www.foreverblog.cn"              # 十年之约主页
-  wormholeUrl: "https://www.foreverblog.cn/go.html"  # 虫洞随机跳转
+  url: 'https://www.foreverblog.cn' # 十年之约主页
+  wormholeUrl: 'https://www.foreverblog.cn/go.html' # 虫洞随机跳转
 
 # ── 文章密码提示 ──────────────────────────────────────────────
-passwordHint: "提示：密码由文章作者设置"  # 密码保护文章的默认提示语
+passwordHint: '提示：密码由文章作者设置' # 密码保护文章的默认提示语
 
 # ── 自动化备份 ──────────────────────────────────────────────
 backup:
-  enabled: false                  # 自动化备份总开关 (true/false)
-  repo_url: "git@github.com:your_username/your_private_repo.git" # 私有备份仓 Git 地址 (推荐 SSH)
-  sync_config: false              # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
-  sync_post: false                # 是否同步 post/ 文件夹 (可选，默认 false)
-  sync_twikoo: false              # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)
+  enabled: false # 自动化备份总开关 (true/false)
+  repo_url: 'git@github.com:your_username/your_private_repo.git' # 私有备份仓 Git 地址 (推荐 SSH)
+  sync_config: false # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
+  sync_post: false # 是否同步 post/ 文件夹 (可选，默认 false)
+  sync_twikoo: false # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)

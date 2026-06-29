@@ -5,9 +5,8 @@ import BlogPost from '../../layouts/BlogPost.astro';
 
 const siteConfig = await getSiteConfig();
 const entries = await getCollection('post');
-const about = entries.find(e => e.id === 'about/about');
+const about = entries.find((e) => e.id === 'about/about');
 
-let Content: any;
 let title: string;
 let description: string;
 let pubDate: Date;
@@ -15,40 +14,45 @@ let heroImage: string | undefined;
 let heroImageWidth: string | undefined;
 let showDate: boolean;
 
+const rendered = about ? await render(about) : undefined;
 if (about) {
-	const rendered = await render(about);
-	Content = rendered.Content;
-	title = about.data.title;
-	description = about.data.description;
-	pubDate = about.data.pubDate;
-	heroImage = about.data.heroImage;
-	heroImageWidth = about.data.heroImageWidth;
-	showDate = about.data.showDate;
+  title = about.data.title;
+  description = about.data.description;
+  pubDate = about.data.pubDate;
+  heroImage = about.data.heroImage;
+  heroImageWidth = about.data.heroImageWidth;
+  showDate = about.data.showDate;
 } else {
-	title = '关于我';
-	description = siteConfig.author.description;
-	pubDate = new Date();
-	heroImage = siteConfig.author.avatar;
-	heroImageWidth = '160';
-	showDate = false;
+  title = '关于我';
+  description = siteConfig.author.description;
+  pubDate = new Date();
+  heroImage = siteConfig.author.avatar;
+  heroImageWidth = '160';
+  showDate = false;
 }
+
+const Content = rendered?.Content;
 ---
 
 <BlogPost
-	title={title}
-	description={description}
-	pubDate={pubDate}
-	heroImage={heroImage}
-	heroImageWidth={heroImageWidth}
-	showDate={showDate}
+  title={title}
+  description={description}
+  pubDate={pubDate}
+  heroImage={heroImage}
+  heroImageWidth={heroImageWidth}
+  showDate={showDate}
 >
-	{about ? (
-		<Content />
-	) : (
-		<div class="prose prose-lg dark:prose-invert max-w-none">
-			<h1>关于 {siteConfig.author.name}</h1>
-			<p>{siteConfig.author.description}</p>
-			<p>在 <code>post/about/about.md</code> 中创建关于页面内容。</p>
-		</div>
-	)}
+  {
+    Content ? (
+      <Content />
+    ) : (
+      <div class="prose prose-lg dark:prose-invert max-w-none">
+        <h1>关于 {siteConfig.author.name}</h1>
+        <p>{siteConfig.author.description}</p>
+        <p>
+          在 <code>post/about/about.md</code> 中创建关于页面内容。
+        </p>
+      </div>
+    )
+  }
 </BlogPost>

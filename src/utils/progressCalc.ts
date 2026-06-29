@@ -24,7 +24,8 @@ const WEEKDAY_NAMES = ['日', '一', '二', '三', '四', '五', '六'];
 // 图标 SVG path
 const ICONS = {
   year: 'M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm3 5H5v6h6V5z',
-  quarter: 'M8 1.5a2.5 2.5 0 0 0-2.5 2.5c0 1.5 2.5 3.5 2.5 3.5s2.5-2 2.5-3.5A2.5 2.5 0 0 0 8 1.5zm0 13a2.5 2.5 0 0 1-2.5-2.5c0-1.5 2.5-3.5 2.5-3.5s2.5 2 2.5 3.5A2.5 2.5 0 0 1 8 14.5zM1.5 8a2.5 2.5 0 0 1 2.5-2.5c1.5 0 3.5 2.5 3.5 2.5s-2 2.5-3.5 2.5A2.5 2.5 0 0 1 1.5 8zm13 0a2.5 2.5 0 0 0-2.5-2.5c-1.5 0-3.5 2.5-3.5 2.5s2 2.5 3.5 2.5A2.5 2.5 0 0 0 14.5 8z',
+  quarter:
+    'M8 1.5a2.5 2.5 0 0 0-2.5 2.5c0 1.5 2.5 3.5 2.5 3.5s2.5-2 2.5-3.5A2.5 2.5 0 0 0 8 1.5zm0 13a2.5 2.5 0 0 1-2.5-2.5c0-1.5 2.5-3.5 2.5-3.5s2.5 2 2.5 3.5A2.5 2.5 0 0 1 8 14.5zM1.5 8a2.5 2.5 0 0 1 2.5-2.5c1.5 0 3.5 2.5 3.5 2.5s-2 2.5-3.5 2.5A2.5 2.5 0 0 1 1.5 8zm13 0a2.5 2.5 0 0 0-2.5-2.5c-1.5 0-3.5 2.5-3.5 2.5s2 2.5 3.5 2.5A2.5 2.5 0 0 0 14.5 8z',
   month: 'M14.53 10.53a7 7 0 0 1-9.06-9.06 7 7 0 1 0 9.06 9.06z',
   week: 'M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1.5A6.5 6.5 0 1 1 8 14.5a3.25 3.25 0 0 1 0-6.5 3.25 3.25 0 0 0 0-6.5zM8 3.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z',
   day: 'M4 6a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm11 9H1l5.5-8 3 4.5L12 9l3 6z',
@@ -36,7 +37,9 @@ export function calcYearProgress(): YearProgressData {
   const currentYear = now.getFullYear();
   const startOfYear = new Date(currentYear, 0, 1);
   const endOfYear = new Date(currentYear + 1, 0, 1);
-  const yearProgress = Math.floor(((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100);
+  const yearProgress = Math.floor(
+    ((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100
+  );
   const daysLeft = Math.ceil((endOfYear.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   return { yearProgress, daysLeft, currentYear };
 }
@@ -51,7 +54,9 @@ export function calcAllProgress(): ProgressItem[] {
   // 年
   const startOfYear = new Date(currentYear, 0, 1);
   const endOfYear = new Date(currentYear + 1, 0, 1);
-  const yearProgress = Math.floor(((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100);
+  const yearProgress = Math.floor(
+    ((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100
+  );
   const daysPassed = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
   const daysLeft = Math.ceil((endOfYear.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -59,14 +64,18 @@ export function calcAllProgress(): ProgressItem[] {
   const currentQuarter = Math.floor(currentMonth / 3);
   const startOfQuarter = new Date(currentYear, currentQuarter * 3, 1);
   const endOfQuarter = new Date(currentYear, (currentQuarter + 1) * 3, 1);
-  const quarterProgress = Math.floor(((now.getTime() - startOfQuarter.getTime()) / (endOfQuarter.getTime() - startOfQuarter.getTime())) * 100);
+  const quarterProgress = Math.floor(
+    ((now.getTime() - startOfQuarter.getTime()) / (endOfQuarter.getTime() - startOfQuarter.getTime())) * 100
+  );
   const quarterDaysPassed = Math.floor((now.getTime() - startOfQuarter.getTime()) / (1000 * 60 * 60 * 24));
   const quarterDaysLeft = Math.ceil((endOfQuarter.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   // 月
   const startOfMonth = new Date(currentYear, currentMonth, 1);
   const endOfMonth = new Date(currentYear, currentMonth + 1, 1);
-  const monthProgress = Math.floor(((now.getTime() - startOfMonth.getTime()) / (endOfMonth.getTime() - startOfMonth.getTime())) * 100);
+  const monthProgress = Math.floor(
+    ((now.getTime() - startOfMonth.getTime()) / (endOfMonth.getTime() - startOfMonth.getTime())) * 100
+  );
   const monthDaysPassed = now.getDate();
   const monthDaysLeft = new Date(currentYear, currentMonth + 1, 0).getDate() - monthDaysPassed;
 

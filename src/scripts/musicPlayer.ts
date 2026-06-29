@@ -94,8 +94,8 @@ function startPeriodicUpdate() {
   const state = ensureState();
   if (state.updateTimer) clearInterval(state.updateTimer);
   state.updateTimer = setInterval(() => {
-    state.uiUpdaters.forEach(fn => fn());
-    state.progressUpdaters.forEach(fn => fn());
+    state.uiUpdaters.forEach((fn) => fn());
+    state.progressUpdaters.forEach((fn) => fn());
   }, 100);
 }
 
@@ -113,7 +113,9 @@ export async function initPlayerCore(containerId: string): Promise<boolean> {
     let apiEndpoints: string[] = [];
     try {
       apiEndpoints = JSON.parse(raw);
-    } catch {}
+    } catch (error) {
+      console.error('音乐播放器 API 端点解析异常:', error);
+    }
     if (!apiEndpoints.length) {
       console.warn('Music Player: No API endpoints configured.');
       return false;
@@ -170,9 +172,9 @@ export async function initPlayerCore(containerId: string): Promise<boolean> {
     state.songsData = data;
     state.isInitialized = true;
 
-    ap.on('play', () => state.uiUpdaters.forEach(fn => fn()));
-    ap.on('pause', () => state.uiUpdaters.forEach(fn => fn()));
-    ap.on('timeupdate', () => state.progressUpdaters.forEach(fn => fn()));
+    ap.on('play', () => state.uiUpdaters.forEach((fn) => fn()));
+    ap.on('pause', () => state.uiUpdaters.forEach((fn) => fn()));
+    ap.on('timeupdate', () => state.progressUpdaters.forEach((fn) => fn()));
 
     registerGlobalControls();
     startPeriodicUpdate();
@@ -201,11 +203,7 @@ export function registerGlobalControls() {
     window.playPrev = function () {
       const currentAp = ensureState().ap;
       if (!currentAp || !currentAp.list.audios.length) return;
-      currentAp.list.switch(
-        currentAp.list.index - 1 < 0
-          ? currentAp.list.audios.length - 1
-          : currentAp.list.index - 1
-      );
+      currentAp.list.switch(currentAp.list.index - 1 < 0 ? currentAp.list.audios.length - 1 : currentAp.list.index - 1);
       currentAp.play();
     };
   }
@@ -213,11 +211,7 @@ export function registerGlobalControls() {
     window.playNext = function () {
       const currentAp = ensureState().ap;
       if (!currentAp || !currentAp.list.audios.length) return;
-      currentAp.list.switch(
-        currentAp.list.index + 1 >= currentAp.list.audios.length
-          ? 0
-          : currentAp.list.index + 1
-      );
+      currentAp.list.switch(currentAp.list.index + 1 >= currentAp.list.audios.length ? 0 : currentAp.list.index + 1);
       currentAp.play();
     };
   }

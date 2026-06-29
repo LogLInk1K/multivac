@@ -1,4 +1,7 @@
-<div id="table-of-contents-wrapper" class="hidden xl:block fixed top-1/2 -translate-y-1/2 right-[max(4rem,calc((100vw-1340px)/2-6rem))] w-[180px] opacity-0 transition-opacity duration-500 z-40">
+<div
+  id="table-of-contents-wrapper"
+  class="hidden xl:block fixed top-1/2 -translate-y-1/2 right-[max(4rem,calc((100vw-1340px)/2-6rem))] w-[180px] opacity-0 transition-opacity duration-500 z-40"
+>
   <div id="toc-list" class="overflow-y-auto group">
     <!-- 目录内容由 JavaScript 生成 -->
   </div>
@@ -51,7 +54,7 @@
 
       let parentH1Id: string | null = null;
       if (currentActiveId) {
-        const currentHeading = Array.from(headings).find(h => h.id === currentActiveId);
+        const currentHeading = Array.from(headings).find((h) => h.id === currentActiveId);
         if (currentHeading && currentHeading.tagName === 'H2') {
           for (let i = 0; i < headings.length; i++) {
             if (headings[i].id === currentActiveId) {
@@ -80,7 +83,12 @@
           (link as HTMLElement).style.visibility = 'visible';
           (link as HTMLElement).style.opacity = '1';
           (link as HTMLElement).style.transform = 'translateX(0)';
-          link.classList.remove('text-text-light', 'dark:text-text-dark', 'text-text-light/80', 'dark:text-text-dark/80');
+          link.classList.remove(
+            'text-text-light',
+            'dark:text-text-dark',
+            'text-text-light/80',
+            'dark:text-text-dark/80'
+          );
           link.classList.add('text-text-light/70', 'dark:text-text-dark/70');
           bar.classList.remove('bg-text-light/50', 'dark:bg-text-dark/50', 'bg-primary-light', 'dark:bg-primary-dark');
           bar.classList.add('bg-text-light/30', 'dark:bg-text-dark/30');
@@ -88,7 +96,12 @@
           (link as HTMLElement).style.visibility = 'visible';
           (link as HTMLElement).style.opacity = '1';
           (link as HTMLElement).style.transform = 'translateX(0)';
-          link.classList.remove('text-text-light', 'dark:text-text-dark', 'text-text-light/70', 'dark:text-text-dark/70');
+          link.classList.remove(
+            'text-text-light',
+            'dark:text-text-dark',
+            'text-text-light/70',
+            'dark:text-text-dark/70'
+          );
           link.classList.add('text-text-light/80', 'dark:text-text-dark/80', 'font-bold');
           bar.classList.remove('bg-text-light/30', 'dark:bg-text-dark/30');
           bar.classList.add('bg-text-light/50', 'dark:bg-text-dark/50');
@@ -100,7 +113,13 @@
               (link as HTMLElement).style.visibility = 'hidden';
             }
           }, 300);
-          link.classList.remove('text-text-light/70', 'dark:text-text-dark/70', 'text-text-light/80', 'dark:text-text-dark/80', 'font-bold');
+          link.classList.remove(
+            'text-text-light/70',
+            'dark:text-text-dark/70',
+            'text-text-light/80',
+            'dark:text-text-dark/80',
+            'font-bold'
+          );
           link.classList.add('text-text-light/70', 'dark:text-text-dark/70');
           bar.classList.remove('bg-text-light/50', 'dark:bg-text-dark/50', 'bg-primary-light', 'dark:bg-primary-dark');
           bar.classList.add('bg-text-light/30', 'dark:bg-text-dark/30');
@@ -175,10 +194,14 @@
     }
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
-    window.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateVisibleHeadings, 100);
-    }, { passive: true });
+    window.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateVisibleHeadings, 100);
+      },
+      { passive: true }
+    );
 
     document.querySelectorAll('#toc-list a').forEach((anchor) => {
       anchor.addEventListener('click', (e) => {

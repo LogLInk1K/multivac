@@ -7,45 +7,45 @@ import Twikoo from '../../components/Twikoo.astro';
 import { getEntry } from 'astro:content';
 
 type Friend = {
-	name: string;
-	url: string;
-	avatar: string;
-	description: string;
+  name: string;
+  url: string;
+  avatar: string;
+  description: string;
 };
 
 type FriendGroup = {
-	title: string;
-	description?: string;
-	friends: Friend[];
+  title: string;
+  description?: string;
+  friends: Friend[];
 };
 
 type ContentSection = {
-	title: string;
-	content: string;
+  title: string;
+  content: string;
 };
 
 // 默认友链数据
 const defaultFriends: Friend[] = [
-	{
-		name: '示例友链1',
-		url: 'https://example.com',
-		avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-		description: '这是一个示例友链描述',
-	},
-	{
-		name: '示例友链2',
-		url: 'https://example.com',
-		avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
-		description: '这是另一个示例友链描述',
-	},
+  {
+    name: '示例友链1',
+    url: 'https://example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+    description: '这是一个示例友链描述',
+  },
+  {
+    name: '示例友链2',
+    url: 'https://example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+    description: '这是另一个示例友链描述',
+  },
 ];
 
 const defaultFriendGroups: FriendGroup[] = [
-	{
-		title: '友链',
-		description: '',
-		friends: defaultFriends,
-	},
+  {
+    title: '友链',
+    description: '',
+    friends: defaultFriends,
+  },
 ];
 
 // 默认说明文本
@@ -64,137 +64,147 @@ let pageTitle = '友情链接';
 let pageDescription = '我的朋友们';
 
 try {
-	const friendsData = await getEntry('post', 'friends');
-	if (friendsData) {
-		pageTitle = friendsData.data.title || pageTitle;
-		pageDescription = friendsData.data.description || pageDescription;
-		// sections (recommended): [{ title, content }]
-		if (Array.isArray(friendsData.data.sections) && friendsData.data.sections.length) {
-			sections = friendsData.data.sections;
-		} else {
-			// backward-compatible single content
-			let singleContent = defaultContent;
-			// yml: 用 data.content；md: 用 body
-			if (friendsData.data.content) singleContent = friendsData.data.content;
-			else if (friendsData.body) singleContent = friendsData.body;
-			sections = [{ title: '申请友链', content: singleContent }];
-		}
+  const friendsData = await getEntry('post', 'friends');
+  if (friendsData) {
+    pageTitle = friendsData.data.title || pageTitle;
+    pageDescription = friendsData.data.description || pageDescription;
+    // sections (recommended): [{ title, content }]
+    if (Array.isArray(friendsData.data.sections) && friendsData.data.sections.length) {
+      sections = friendsData.data.sections;
+    } else {
+      // backward-compatible single content
+      let singleContent = defaultContent;
+      // yml: 用 data.content；md: 用 body
+      if (friendsData.data.content) singleContent = friendsData.data.content;
+      else if (friendsData.body) singleContent = friendsData.body;
+      sections = [{ title: '申请友链', content: singleContent }];
+    }
 
-		if (friendsData.data.friendGroups?.length) {
-			friendGroups = friendsData.data.friendGroups;
-		} else if (friendsData.data.friends?.length) {
-			friendGroups = [
-				{ title: '友链', description: '', friends: friendsData.data.friends },
-			];
-		}
-	}
+    if (friendsData.data.friendGroups?.length) {
+      friendGroups = friendsData.data.friendGroups;
+    } else if (friendsData.data.friends?.length) {
+      friendGroups = [{ title: '友链', description: '', friends: friendsData.data.friends }];
+    }
+  }
 } catch (error) {
-	// 文件不存在，使用默认数据
-	console.log('Using default friends data');
+  // 文件不存在，使用默认数据
+  console.error('友链数据加载异常:', error);
 }
 import Icon from '../../components/Icon.astro';
 ---
 
 <MainLayout title={pageTitle} description={pageDescription}>
-	<section class="section-container py-16">
-		<div transition:persist="moments-ticker" class="mb-6">
-			<MomentsTicker />
-		</div>
-		<div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
-			<!-- 左侧边栏 -->
-			<div class="hidden md:block">
-				<div class="space-y-6">
-					<LeftSidebar />
-					<div class="md:block">
-						<RightSidebar />
-					</div>
-				</div>
-			</div>
+  <section class="section-container py-16">
+    <div transition:persist="moments-ticker" class="mb-6">
+      <MomentsTicker />
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
+      <!-- 左侧边栏 -->
+      <div class="hidden md:block">
+        <div class="space-y-6">
+          <LeftSidebar />
+          <div class="md:block">
+            <RightSidebar />
+          </div>
+        </div>
+      </div>
 
-			<!-- 主内容区 -->
-			<div>
-				<div class="p-8 glass-card glass-card-dark mb-6">
-					<h1 class="text-3xl font-bold text-text-light dark:text-text-dark mb-6">{pageTitle}</h1>
-					<p class="text-text-light/70 dark:text-text-dark/70 mb-8">
-						{pageDescription}
-					</p>
+      <!-- 主内容区 -->
+      <div>
+        <div class="p-8 glass-card glass-card-dark mb-6">
+          <h1 class="text-3xl font-bold text-text-light dark:text-text-dark mb-6">{pageTitle}</h1>
+          <p class="text-text-light/70 dark:text-text-dark/70 mb-8">
+            {pageDescription}
+          </p>
 
-					{friendGroups.map((group) => (
-						<div class="mb-10 last:mb-0">
-							<div class="mb-4">
-								<h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{group.title}</h2>
-								{group.description && (
-									<p class="text-text-light/70 dark:text-text-dark/70 mt-1">
-										{group.description}
-									</p>
-								)}
-							</div>
+          {
+            friendGroups.map((group) => (
+              <div class="mb-10 last:mb-0">
+                <div class="mb-4">
+                  <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{group.title}</h2>
+                  {group.description && (
+                    <p class="text-text-light/70 dark:text-text-dark/70 mt-1">{group.description}</p>
+                  )}
+                </div>
 
-							<!-- 友链卡片网格 -->
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								{group.friends.map((friend) => (
-									<a
-										href={friend.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="group flex items-center gap-4 p-4 bg-background-light dark:bg-background-dark rounded-2xl hover:bg-hover-light dark:hover:bg-hover-dark fluid-card hover:shadow-lg"
-									>
-										<img
-											src={friend.avatar}
-											alt={friend.name}
-											class="w-16 h-16 rounded-full bg-hero-light dark:bg-hero-dark"
-										/>
-										<div class="flex-1 min-w-0">
-											<h3 class="text-lg font-bold text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors truncate">
-												{friend.name}
-											</h3>
-											<p class="text-sm text-text-light/70 dark:text-text-dark/70 line-clamp-2">
-												{friend.description}
-											</p>
-										</div>
-										<Icon name="external-link" class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors shrink-0" />
-									</a>
-								))}
-							</div>
-						</div>
-					))}
+                {/* 友链卡片网格 */}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {group.friends.map((friend) => (
+                    <a
+                      href={friend.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="group flex items-center gap-4 p-4 bg-background-light dark:bg-background-dark rounded-2xl hover:bg-hover-light dark:hover:bg-hover-dark fluid-card hover:shadow-lg"
+                    >
+                      <img
+                        src={friend.avatar}
+                        alt={friend.name}
+                        class="w-16 h-16 rounded-full bg-hero-light dark:bg-hero-dark"
+                      />
+                      <div class="flex-1 min-w-0">
+                        <h3 class="text-lg font-bold text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors truncate">
+                          {friend.name}
+                        </h3>
+                        <p class="text-sm text-text-light/70 dark:text-text-dark/70 line-clamp-2">
+                          {friend.description}
+                        </p>
+                      </div>
+                      <Icon
+                        name="external-link"
+                        class="w-5 h-5 text-text-light/70 dark:text-text-dark/70 group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors shrink-0"
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
 
-					{sections.length > 0 && (
-						<div class="mt-8 space-y-6">
-							{sections.map((section) => (
-								<div class="p-6 bg-badge-light dark:bg-badge-dark rounded-2xl">
-									<h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{section.title}</h2>
-									{/* 1. 改为 whitespace-normal，避免与手动 <br> 冲突 */}
-									<div class="text-text-light/70 dark:text-text-dark/70 whitespace-normal leading-relaxed">
-										{/* 2. 使用 .trim() 去掉字符串首尾可能的干扰换行 */}
-										{section.content.trim().split('\n').map((line, index, array) => (
-											<Fragment>
-												{line}
-												{/* 3. 只有不是最后一行时才加 <br /> */}
-												{index < array.length - 1 && <br />}
-											</Fragment>
-										))}
-									</div>
-								</div>
-							))}
-						</div>
-					)}
-					<!-- 评论区 -->
-					<div class="mt-12">
-						<div class="mb-8 flex flex-col items-center gap-4">
-							<div class="flex items-center gap-3">
-								<div class="h-px w-12 sm:w-32 bg-linear-to-r from-transparent to-text-light/20 dark:to-text-dark/40"></div>
-								<div class="flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light dark:bg-badge-dark/60 shrink-0">
-									<Icon name="comment" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
-									<span class="text-sm font-medium text-text-light dark:text-text-dark whitespace-nowrap">评论区</span>
-								</div>
-								<div class="h-px w-12 sm:w-32 bg-linear-to-l from-transparent to-text-light/20 dark:to-text-dark/40"></div>
-							</div>
-						</div>
-						<Twikoo />
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+          {
+            sections.length > 0 && (
+              <div class="mt-8 space-y-6">
+                {sections.map((section) => (
+                  <div class="p-6 bg-badge-light dark:bg-badge-dark rounded-2xl">
+                    <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{section.title}</h2>
+                    {/* 1. 改为 whitespace-normal，避免与手动 <br> 冲突 */}
+                    <div class="text-text-light/70 dark:text-text-dark/70 whitespace-normal leading-relaxed">
+                      {/* 2. 使用 .trim() 去掉字符串首尾可能的干扰换行 */}
+                      {section.content
+                        .trim()
+                        .split('\n')
+                        .map((line, index, array) => (
+                          <Fragment>
+                            {line}
+                            {/* 3. 只有不是最后一行时才加 <br /> */}
+                            {index < array.length - 1 && <br />}
+                          </Fragment>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          }
+          <!-- 评论区 -->
+          <div class="mt-12">
+            <div class="mb-8 flex flex-col items-center gap-4">
+              <div class="flex items-center gap-3">
+                <div class="h-px w-12 sm:w-32 bg-linear-to-r from-transparent to-text-light/20 dark:to-text-dark/40">
+                </div>
+                <div
+                  class="flex items-center gap-2 px-4 py-2 rounded-full bg-badge-light dark:bg-badge-dark/60 shrink-0"
+                >
+                  <Icon name="comment" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
+                  <span class="text-sm font-medium text-text-light dark:text-text-dark whitespace-nowrap">评论区</span>
+                </div>
+                <div class="h-px w-12 sm:w-32 bg-linear-to-l from-transparent to-text-light/20 dark:to-text-dark/40">
+                </div>
+              </div>
+            </div>
+            <Twikoo />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </MainLayout>

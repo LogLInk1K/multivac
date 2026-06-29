@@ -20,153 +20,163 @@ const { title, description, image } = Astro.props;
 
 <!doctype html>
 <html lang={siteConfig.site.lang}>
-    <head>
-        <BaseHead title={title} description={description} image={image} />
+  <head>
+    <BaseHead title={title} description={description} image={image} />
 
-        <ClientRouter />
+    <ClientRouter />
 
-        <style is:global>
-            @view-transition {
-                navigation: auto;
+    <style is:global>
+      @view-transition {
+        navigation: auto;
+      }
+
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.2s;
+      }
+
+      /* 页面切换动画 */
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      ::view-transition-new(root) {
+        animation: fade-in 0.2s ease-out;
+      }
+
+      /* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
+      html:not(.content-ready) #main-content {
+        opacity: 0;
+      }
+    </style>
+
+    <script is:inline>
+      (function () {
+        const theme =
+          localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        if (sessionStorage.getItem('hasVisited')) {
+          document.documentElement.classList.add('content-ready');
+        }
+      })();
+    </script>
+  </head>
+  <body
+    class="min-h-screen flex flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark"
+    data-greetings={JSON.stringify(siteConfig.greetings)}
+  >
+    <div transition:persist="bg-glow" class="bg-glow" aria-hidden="true">
+      <div class="bg-glow__orb bg-glow__orb--1"></div>
+      <div class="bg-glow__orb bg-glow__orb--2"></div>
+      <div class="bg-glow__orb bg-glow__orb--3"></div>
+    </div>
+    <WelcomeAnimation />
+    <script is:inline>
+      document.addEventListener('astro:after-swap', () => {
+        requestAnimationFrame(() => window.scrollTo(0, 0));
+      });
+    </script>
+    <div id="main-content" class="relative z-10 flex flex-col min-h-screen transition-opacity duration-300">
+      <Header />
+      <main class="flex-1 pt-2 page-transition">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script>
+      interface GreetingRule {
+        hourStart: number;
+        hourEnd: number;
+        text: string;
+      }
+
+      function getGreeting(): string {
+        const hour = new Date().getHours();
+        const raw = document.body.getAttribute('data-greetings');
+        if (raw) {
+          try {
+            const greetings: GreetingRule[] = JSON.parse(raw);
+            for (const g of greetings) {
+              if (hour >= g.hourStart && hour < g.hourEnd) {
+                return g.text;
+              }
             }
-
-            ::view-transition-old(root),
-            ::view-transition-new(root) {
-                animation-duration: 0.2s;
-            }
-
-            /* 页面切换动画 */
-            @keyframes fade-in {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-
-            ::view-transition-new(root) {
-                animation: fade-in 0.2s ease-out;
-            }
-
-            /* 首次访问时隐藏主内容，由欢迎动画完成后移除该类 */
-            html:not(.content-ready) #main-content {
-                opacity: 0;
-            }
-        </style>
-
-        <script is:inline>
-          (function() {
-            const theme = localStorage.getItem('theme') ||
-                         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            document.documentElement.classList.toggle('dark', theme === 'dark');
-            if (sessionStorage.getItem('hasVisited')) {
-              document.documentElement.classList.add('content-ready');
-            }
-          })();
-        </script>
-    </head>
-    <body class="min-h-screen flex flex-col bg-background-light text-text-light dark:bg-background-dark dark:text-text-dark" data-greetings={JSON.stringify(siteConfig.greetings)}>
-        <div transition:persist="bg-glow" class="bg-glow" aria-hidden="true">
-            <div class="bg-glow__orb bg-glow__orb--1"></div>
-            <div class="bg-glow__orb bg-glow__orb--2"></div>
-            <div class="bg-glow__orb bg-glow__orb--3"></div>
-        </div>
-        <WelcomeAnimation />
-        <script is:inline>
-          document.addEventListener('astro:after-swap', () => {
-            requestAnimationFrame(() => window.scrollTo(0, 0));
-          });
-        </script>
-        <div id="main-content" class="relative z-10 flex flex-col min-h-screen transition-opacity duration-300">
-            <Header />
-            <main class="flex-1 pt-2 page-transition">
-                <slot />
-            </main>
-            <Footer />
-        </div>
-
-        <script>
-          interface GreetingRule {
-            hourStart: number;
-            hourEnd: number;
-            text: string;
+          } catch (error) {
+            console.error('问候语数据解析异常:', error);
           }
+        }
+        return '你好!';
+      }
 
-          function getGreeting(): string {
-            const hour = new Date().getHours();
-            const raw = document.body.getAttribute('data-greetings');
-            if (raw) {
-              try {
-                const greetings: GreetingRule[] = JSON.parse(raw);
-                for (const g of greetings) {
-                  if (hour >= g.hourStart && hour < g.hourEnd) {
-                    return g.text;
-                  }
-                }
-              } catch {}
-            }
-            return '你好!';
-          }
+      function runWelcomeAnimation() {
+        if (sessionStorage.getItem('hasVisited')) return;
 
-          function runWelcomeAnimation() {
-            if (sessionStorage.getItem('hasVisited')) return;
+        sessionStorage.setItem('hasVisited', 'true');
 
-            sessionStorage.setItem('hasVisited', 'true');
+        const overlay = document.getElementById('welcome-overlay');
+        const avatar = document.getElementById('welcome-avatar');
+        const logo = document.getElementById('welcome-logo');
+        const tagline = document.getElementById('welcome-tagline');
+        const greeting = document.getElementById('welcome-greeting');
+        const greetingInner = document.getElementById('welcome-greeting-inner');
 
-            const overlay = document.getElementById('welcome-overlay');
-            const avatar = document.getElementById('welcome-avatar');
-            const logo = document.getElementById('welcome-logo');
-            const tagline = document.getElementById('welcome-tagline');
-            const greeting = document.getElementById('welcome-greeting');
-            const greetingInner = document.getElementById('welcome-greeting-inner');
+        if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
+          // 欢迎动画 DOM 不存在，直接显示内容
+          document.documentElement.classList.add('content-ready');
+          return;
+        }
 
-            if (!overlay || !avatar || !logo || !tagline || !greeting || !greetingInner) {
-              // 欢迎动画 DOM 不存在，直接显示内容
-              document.documentElement.classList.add('content-ready');
-              return;
-            }
+        greetingInner.textContent = getGreeting();
 
-            greetingInner.textContent = getGreeting();
+        overlay.classList.add('active');
 
-            overlay.classList.add('active');
+        setTimeout(() => {
+          avatar.classList.add('animate');
+        }, 100);
 
-            setTimeout(() => {
-              avatar.classList.add('animate');
-            }, 100);
+        setTimeout(() => {
+          logo.classList.add('animate');
+        }, 300);
 
-            setTimeout(() => {
-              logo.classList.add('animate');
-            }, 300);
+        setTimeout(() => {
+          tagline.classList.add('animate');
+        }, 500);
 
-            setTimeout(() => {
-              tagline.classList.add('animate');
-            }, 500);
+        setTimeout(() => {
+          greeting.classList.add('animate');
+        }, 700);
 
-            setTimeout(() => {
-              greeting.classList.add('animate');
-            }, 700);
+        setTimeout(() => {
+          overlay.classList.add('fade-out');
 
-            setTimeout(() => {
-              overlay.classList.add('fade-out');
+          document.documentElement.classList.add('content-ready');
 
-              document.documentElement.classList.add('content-ready');
+          setTimeout(() => {
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+          }, 500);
+        }, 2500);
+      }
 
-              setTimeout(() => {
-                overlay.classList.remove('active');
-                overlay.style.display = 'none';
-              }, 500);
-            }, 2500);
-          }
-
-          // 首次访问时执行欢迎动画
-          if (!sessionStorage.getItem('hasVisited')) {
-            runWelcomeAnimation();
-          }
-          // 路由切换时也检查
-          document.addEventListener('astro:page-load', () => {
-            if (!sessionStorage.getItem('hasVisited')) {
-              runWelcomeAnimation();
-            } else {
-              document.documentElement.classList.add('content-ready');
-            }
-          });
-        </script>
-    </body>
+      // 首次访问时执行欢迎动画
+      if (!sessionStorage.getItem('hasVisited')) {
+        runWelcomeAnimation();
+      }
+      // 路由切换时也检查
+      document.addEventListener('astro:page-load', () => {
+        if (!sessionStorage.getItem('hasVisited')) {
+          runWelcomeAnimation();
+        } else {
+          document.documentElement.classList.add('content-ready');
+        }
+      });
+    </script>
+  </body>
 </html>

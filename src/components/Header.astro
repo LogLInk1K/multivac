@@ -9,399 +9,493 @@ const siteConfig = await getSiteConfig();
 ---
 
 <header
-    id="main-header"
-    transition:persist
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out py-0"
+  id="main-header"
+  transition:persist
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out py-0"
 >
-    <nav 
-        id="nav-container"
-        class="relative max-w-[calc(100%-40px)] md:max-w-[calc(100%-40px)] xl:max-w-[1340px] mx-auto flex items-center transition-all duration-500 ease-in-out border-b border-transparent px-4 sm:px-6 lg:px-8 py-4"
-    >
-		<div
-			id="nav-bg"
-			class="absolute z-[-1] transition-all duration-500 ease-in-out
+  <nav
+    id="nav-container"
+    class="relative max-w-[calc(100%-40px)] md:max-w-[calc(100%-40px)] xl:max-w-[1340px] mx-auto flex items-center transition-all duration-500 ease-in-out border-b border-transparent px-4 sm:px-6 lg:px-8 py-4"
+  >
+    <div
+      id="nav-bg"
+      class="absolute z-[-1] transition-all duration-500 ease-in-out
           		 bg-white/80 dark:bg-black/70 opacity-0
           		   rounded-full shadow-lg backdrop-blur-sm ring-1 ring-white/20
            		   top-2 bottom-2 left-0 right-0"
-		></div>
-        <div class="flex-1 shrink-0 flex items-center">
-            <button
-                id="menu-trigger-btn"
-                onclick="window.toggleMenuPanel()"
-                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none border-none bg-transparent mr-4"
-                aria-label="菜单"
+    >
+    </div>
+    <div class="flex-1 shrink-0 flex items-center">
+      <button
+        id="menu-trigger-btn"
+        onclick="window.toggleMenuPanel()"
+        class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none border-none bg-transparent mr-4"
+        aria-label="菜单"
+      >
+        <Icon name="grid" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
+        <div
+          class="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95"
+        >
+          <div
+            class="bg-primary-light dark:bg-primary-dark rounded-full px-1 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20"
+          >
+            <Icon
+              name="grid"
+              class="w-6 h-6 text-white dark:text-black transition-all duration-300 group-hover:scale-90 group-active:scale-95"
+            />
+          </div>
+        </div>
+      </button>
+      <h2 class="text-[22px] font-plus-jakarta font-extrabold tracking-wide whitespace-nowrap">
+        <a href="/" class="group relative text-text-light dark:text-text-dark transition-all duration-300 inline-block">
+          <span
+            class="inline-block transition-all duration-300 group-hover:opacity-0 group-hover:scale-90 group-active:scale-95"
+            >{siteConfig.site.logo}</span
+          >
+          <div
+            class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95"
+          >
+            <div
+              class="bg-primary-light dark:bg-primary-dark rounded-full px-4 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20"
             >
-                <Icon name="grid" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95">
-                    <div class="bg-primary-light dark:bg-primary-dark rounded-full px-1 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20">
-                        <Icon name="grid" class="w-6 h-6 text-white dark:text-black transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
-                    </div>
-                </div>
-            </button>
-            <h2 class="text-[22px] font-plus-jakarta font-extrabold tracking-wide whitespace-nowrap">
-                <a href="/" class="group relative text-text-light dark:text-text-dark transition-all duration-300 inline-block">
-                    <span class="inline-block transition-all duration-300 group-hover:opacity-0 group-hover:scale-90 group-active:scale-95">{siteConfig.site.logo}</span>
-                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95">
-                        <div class="bg-primary-light dark:bg-primary-dark rounded-full px-4 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20">
-                                <Icon name="home" class="w-6 h-6 text-white dark:text-black transition-all duration-300 shrink-0" />
-                        </div>
-                    </div>
-                </a>
-            </h2>
-        </div>
-
-        <div class="hidden md:flex items-center px-4 relative">
-            <div id="nav-links" class="flex items-center space-x-8 transition-all duration-300 translate-y-0">
-                {siteConfig.nav.headerLinks.map((link) => (
-                  <HeaderLink href={link.href}>{link.label}</HeaderLink>
-                ))}
+              <Icon name="home" class="w-6 h-6 text-white dark:text-black transition-all duration-300 shrink-0" />
             </div>
-            <h1 id="page-title" class="absolute left-1/2 -translate-x-1/2 text-lg font-bold text-text-light dark:text-text-dark opacity-0 transition-all duration-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] translate-y-2 cursor-pointer accent-hover" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"></h1>
-        </div>
+          </div>
+        </a>
+      </h2>
+    </div>
 
-        <div class="flex-1 flex justify-end items-center shrink-0">
-            <button 
-                onclick="window.openSearchModal()" 
-                class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-1"
-                aria-label="搜索"
+    <div class="hidden md:flex items-center px-4 relative">
+      <div id="nav-links" class="flex items-center space-x-8 transition-all duration-300 translate-y-0">
+        {siteConfig.nav.headerLinks.map((link) => <HeaderLink href={link.href}>{link.label}</HeaderLink>)}
+      </div>
+      <h1
+        id="page-title"
+        class="absolute left-1/2 -translate-x-1/2 text-lg font-bold text-text-light dark:text-text-dark opacity-0 transition-all duration-300 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] translate-y-2 cursor-pointer accent-hover"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      >
+      </h1>
+    </div>
+
+    <div class="flex-1 flex justify-end items-center shrink-0">
+      <button
+        onclick="window.openSearchModal()"
+        class="group relative text-text-light dark:text-text-dark transition-all duration-300 focus:outline-none mr-1"
+        aria-label="搜索"
+      >
+        <Icon name="search" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
+
+        <div
+          class="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95"
+        >
+          <div
+            class="bg-primary-light dark:bg-primary-dark rounded-full px-1 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20"
+          >
+            <Icon name="search" class="w-6 h-6 text-white dark:text-black" />
+          </div>
+        </div>
+      </button>
+      <div id="theme-toggle-container" class="flex items-center">
+        <ThemeToggle />
+      </div>
+      <div id="scroll-counter-wrap" class="grid-counter-flow">
+        <div class="min-w-0 ml-3">
+          <div
+            id="scroll-counter"
+            class="relative grid place-items-center h-7 w-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 overflow-hidden whitespace-nowrap"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+          >
+            <span
+              id="scroll-value"
+              class="absolute inset-0 flex items-center justify-center will-change-[transform,opacity]">0</span
             >
-                <Icon name="search" class="w-6 h-6 transition-all duration-300 group-hover:scale-90 group-active:scale-95" />
-
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-active:scale-95">
-                    <div class="bg-primary-light dark:bg-primary-dark rounded-full px-1 py-1 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20">
-                        <Icon name="search" class="w-6 h-6 text-white dark:text-black" />
-                    </div>
-                </div>
-            </button>
-            <div id="theme-toggle-container" class="flex items-center">
-                <ThemeToggle />
-            </div>
-            <div id="scroll-counter-wrap" class="grid-counter-flow">
-                <div class="min-w-0 ml-3">
-                    <div
-                        id="scroll-counter"
-                        class="relative grid place-items-center h-7 w-7 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-mono transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer hover:scale-105 active:scale-95 overflow-hidden whitespace-nowrap"
-                        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    >
-                        <span id="scroll-value" class="absolute inset-0 flex items-center justify-center will-change-[transform,opacity]">0</span>
-                        <span
-                            id="scroll-arrow"
-                            class="absolute inset-0 flex items-center justify-center opacity-0 will-change-[transform,opacity]"
-                        >
-                            <Icon name="chevron-up" class="w-4 h-4" />
-                        </span>
-                    </div>
-                </div>
-            </div>
+            <span
+              id="scroll-arrow"
+              class="absolute inset-0 flex items-center justify-center opacity-0 will-change-[transform,opacity]"
+            >
+              <Icon name="chevron-up" class="w-4 h-4" />
+            </span>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div id="menu-panel" class="absolute top-0 w-[320px] p-2 rounded-xl bg-white/80 dark:bg-black/70 backdrop-blur-sm border border-white/20 dark:border-white/10 tooltip origin-top" style="margin-top: 5.5rem;">
-            <div class="grid grid-cols-2 gap-2">
-                {siteConfig.nav.menuLinks.map((link) => (
-                  <a href={link.href} {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="relative flex items-center gap-3 px-4 py-3 rounded-lg group/item overflow-hidden">
-                    <Icon name={link.icon as any} class:list={['w-6 h-6 text-text-light dark:text-text-dark transition-all duration-300 group-hover/item:scale-90 group-hover/item:opacity-0 group-active/item:scale-95 shrink-0', link.iconScale && `scale-[${link.iconScale}] origin-center`]} />
-                    <span class="text-base font-medium text-text-light dark:text-text-dark transition-all duration-300 group-hover/item:opacity-0 group-active/item:scale-95">{link.label}</span>
-                    <div class="absolute inset-0 opacity-0 scale-90 transition-all duration-300 group-hover/item:opacity-100 group-hover/item:scale-100 group-active/item:scale-95 pointer-events-none">
-                      <div class="bg-primary-light dark:bg-primary-dark rounded-lg absolute inset-0 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20"></div>
-                      <div class="absolute inset-0 flex items-center gap-3 px-4 py-3">
-                        <Icon name={link.icon as any} class:list={['w-6 h-6 text-white dark:text-black transition-all duration-300 shrink-0', link.iconScale && `scale-[${link.iconScale}] origin-center`]} />
-                        <span class="text-base font-medium text-white dark:text-black transition-all duration-300">{link.label}</span>
-                      </div>
-                    </div>
-                  </a>
-                ))}
-            </div>
-        </div>
-    </nav>
+    <div
+      id="menu-panel"
+      class="absolute top-0 w-[320px] p-2 rounded-xl bg-white/80 dark:bg-black/70 backdrop-blur-sm border border-white/20 dark:border-white/10 tooltip origin-top"
+      style="margin-top: 5.5rem;"
+    >
+      <div class="grid grid-cols-2 gap-2">
+        {
+          siteConfig.nav.menuLinks.map((link) => (
+            <a
+              href={link.href}
+              {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              class="relative flex items-center gap-3 px-4 py-3 rounded-lg group/item overflow-hidden"
+            >
+              <Icon
+                name={link.icon}
+                class:list={[
+                  'w-6 h-6 text-text-light dark:text-text-dark transition-all duration-300 group-hover/item:scale-90 group-hover/item:opacity-0 group-active/item:scale-95 shrink-0',
+                  link.iconScale && `scale-[${link.iconScale}] origin-center`,
+                ]}
+              />
+              <span class="text-base font-medium text-text-light dark:text-text-dark transition-all duration-300 group-hover/item:opacity-0 group-active/item:scale-95">
+                {link.label}
+              </span>
+              <div class="absolute inset-0 opacity-0 scale-90 transition-all duration-300 group-hover/item:opacity-100 group-hover/item:scale-100 group-active/item:scale-95 pointer-events-none">
+                <div class="bg-primary-light dark:bg-primary-dark rounded-lg absolute inset-0 shadow-lg shadow-primary-light/20 dark:shadow-primary-dark/20" />
+                <div class="absolute inset-0 flex items-center gap-3 px-4 py-3">
+                  <Icon
+                    name={link.icon}
+                    class:list={[
+                      'w-6 h-6 text-white dark:text-black transition-all duration-300 shrink-0',
+                      link.iconScale && `scale-[${link.iconScale}] origin-center`,
+                    ]}
+                  />
+                  <span class="text-base font-medium text-white dark:text-black transition-all duration-300">
+                    {link.label}
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </nav>
 
-    <style>
-        /* 移除导航栏所有按钮和链接的焦点样式 */
-        #menu-trigger-btn:focus,
-        #menu-trigger-btn:focus-visible,
-        button[onclick*="openSearchModal"]:focus,
-        button[onclick*="openSearchModal"]:focus-visible,
-        #scroll-counter:focus,
-        #scroll-counter:focus-visible {
-            outline: none !important;
-            box-shadow: none !important;
-        }
+  <style>
+    /* 移除导航栏所有按钮和链接的焦点样式 */
+    #menu-trigger-btn:focus,
+    #menu-trigger-btn:focus-visible,
+    button[onclick*='openSearchModal']:focus,
+    button[onclick*='openSearchModal']:focus-visible,
+    #scroll-counter:focus,
+    #scroll-counter:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
 
-        /* 移除导航链接的焦点样式 */
-        a[href]:focus,
-        a[href]:focus-visible {
-            outline: none !important;
-            box-shadow: none !important;
-        }
+    /* 移除导航链接的焦点样式 */
+    a[href]:focus,
+    a[href]:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
 
-        /* 果冻弹入动画 */
-        @keyframes jelly-in {
-            0% { transform: scale(0) translateY(8px) rotate(45deg); opacity: 0; }
-            50% { transform: scale(1.25) translateY(-2px) rotate(-5deg); opacity: 1; }
-            70% { transform: scale(0.9) translateY(1px) rotate(2deg); opacity: 1; }
-            85% { transform: scale(1.08) translateY(-1px) rotate(-1deg); opacity: 1; }
-            100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
-        }
-        @keyframes jelly-out {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            100% { transform: scale(0.7) translateY(-4px); opacity: 0; }
-        }
-        #scroll-arrow.jelly-in {
-            animation: jelly-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        #scroll-value.jelly-out {
-            animation: jelly-out 120ms ease-in forwards;
-        }
+    /* 果冻弹入动画 */
+    @keyframes jelly-in {
+      0% {
+        transform: scale(0) translateY(8px) rotate(45deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.25) translateY(-2px) rotate(-5deg);
+        opacity: 1;
+      }
+      70% {
+        transform: scale(0.9) translateY(1px) rotate(2deg);
+        opacity: 1;
+      }
+      85% {
+        transform: scale(1.08) translateY(-1px) rotate(-1deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+    }
+    @keyframes jelly-out {
+      0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0.7) translateY(-4px);
+        opacity: 0;
+      }
+    }
+    #scroll-arrow.jelly-in {
+      animation: jelly-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    #scroll-value.jelly-out {
+      animation: jelly-out 120ms ease-in forwards;
+    }
 
-        /* 菜单按钮触摸屏点击状态 */
-        @media (hover: none) {
-            #menu-trigger-btn.touch-active > div {
-                opacity: 1 !important;
-                transform: scale(1) !important;
-            }
-            
-            #menu-trigger-btn.touch-active > svg {
-                transform: scale(0.95);
-            }
-        }
-    </style>
+    /* 菜单按钮触摸屏点击状态 */
+    @media (hover: none) {
+      #menu-trigger-btn.touch-active > div {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+      }
+
+      #menu-trigger-btn.touch-active > svg {
+        transform: scale(0.95);
+      }
+    }
+  </style>
 </header>
 
 <SearchModal />
 
 <script>
-    // 将所有逻辑封装在 init 函数中
-    function initHeader() {
-        const nav = document.getElementById('nav-container');
-        const navBg = document.getElementById('nav-bg');
-        const scrollCounterWrap = document.getElementById('scroll-counter-wrap');
-        const scrollCounter = document.getElementById('scroll-counter');
-        const scrollValue = document.getElementById('scroll-value');
-        const scrollArrow = document.getElementById('scroll-arrow');
-        const navLinks = document.getElementById('nav-links');
-        const pageTitle = document.getElementById('page-title');
-        const menuTriggerBtn = document.getElementById('menu-trigger-btn');
-        const menuPanel = document.getElementById('menu-panel');
+  declare global {
+    interface Window {
+      toggleMenuPanel?: () => void;
+    }
+  }
 
-        if (!nav) return; // 容错处理
+  // 将所有逻辑封装在 init 函数中
+  function initHeader() {
+    const nav = document.getElementById('nav-container');
+    const navBg = document.getElementById('nav-bg');
+    const scrollCounterWrap = document.getElementById('scroll-counter-wrap');
+    const scrollCounter = document.getElementById('scroll-counter');
+    const scrollValue = document.getElementById('scroll-value');
+    const scrollArrow = document.getElementById('scroll-arrow');
+    const navLinks = document.getElementById('nav-links');
+    const pageTitle = document.getElementById('page-title');
+    const menuTriggerBtn = document.getElementById('menu-trigger-btn');
+    const menuPanel = document.getElementById('menu-panel');
 
-        // 声明 hideMenu 的作用域，以便在离开页面时可以被调用
-        let hideMenuFn: (() => void) | undefined;
-        let isMenuOpen = false;
+    if (!nav) return; // 容错处理
 
-        // 菜单面板逻辑（基于设备交互能力：hover设备用hover触发，触控设备用点击触发）
-        if (menuTriggerBtn && menuPanel) {
-            let hideTimeout: ReturnType<typeof setTimeout> | undefined;
-            let touchActiveTimeout: ReturnType<typeof setTimeout> | undefined;
+    // 声明 hideMenu 的作用域，以便在离开页面时可以被调用
+    let hideMenuFn: (() => void) | undefined;
+    let isMenuOpen = false;
 
-            // 检测设备是否支持hover
-            const hasHover = window.matchMedia('(hover: hover)').matches;
+    // 菜单面板逻辑（基于设备交互能力：hover设备用hover触发，触控设备用点击触发）
+    if (menuTriggerBtn && menuPanel) {
+      let hideTimeout: ReturnType<typeof setTimeout> | undefined;
 
-            const showMenu = () => {
-                clearTimeout(hideTimeout);
-                const rect = menuTriggerBtn.getBoundingClientRect();
-                const navRect = nav.getBoundingClientRect();
+      // 检测设备是否支持hover
+      const hasHover = window.matchMedia('(hover: hover)').matches;
 
-                // 计算面板位置：相对于 nav-container
-                const leftPos = rect.left - navRect.left - 20;
-                menuPanel.style.left = `${leftPos}px`;
-                menuPanel.style.marginTop = '70px';
-                menuPanel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
-                menuPanel.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
-                isMenuOpen = true;
-                
-                // 清除圆形背景的内联样式，让CSS类重新生效
-                const bgDiv = menuTriggerBtn.querySelector('div');
-                if (bgDiv) {
-                    bgDiv.style.removeProperty('opacity');
-                    bgDiv.style.removeProperty('transform');
-                }
-            };
+      const showMenu = () => {
+        clearTimeout(hideTimeout);
+        const rect = menuTriggerBtn.getBoundingClientRect();
+        const navRect = nav.getBoundingClientRect();
 
-            const hideMenu = () => {
-                menuPanel.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
-                menuPanel.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
-                isMenuOpen = false;
-                
-                // 清除触摸激活定时器并移除触摸点击状态
-                clearTimeout(touchActiveTimeout);
-                menuTriggerBtn.classList.remove('touch-active');
-                
-                // 完全移除圆形背景的内联样式，让其恢复到CSS类控制的状态
-                const bgDiv = menuTriggerBtn.querySelector('div');
-                if (bgDiv) {
-                    bgDiv.style.removeProperty('opacity');
-                    bgDiv.style.removeProperty('transform');
-                }
-            };
+        // 计算面板位置：相对于 nav-container
+        const leftPos = rect.left - navRect.left - 20;
+        menuPanel.style.left = `${leftPos}px`;
+        menuPanel.style.marginTop = '70px';
+        menuPanel.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
+        menuPanel.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
+        isMenuOpen = true;
 
-            // 赋值给外层变量，供 astro:before-preparation 钩子使用
-            hideMenuFn = hideMenu;
-
-            // 始终定义 toggleMenuPanel，供 onclick 使用
-            (window as any).toggleMenuPanel = () => {
-                const bgDiv = menuTriggerBtn.querySelector('div');
-                
-                if (isMenuOpen) {
-                    hideMenu();
-                    // 确保移除触摸激活状态
-                    menuTriggerBtn.classList.remove('touch-active');
-                    // 强制隐藏圆形背景
-                    if (bgDiv) {
-                        bgDiv.style.setProperty('opacity', '0', 'important');
-                        bgDiv.style.setProperty('transform', 'scale(0.9)', 'important');
-                    }
-                } else {
-                    showMenu();
-                }
-            };
-
-            if (hasHover) {
-                // 鼠标设备：hover触发
-                menuTriggerBtn.addEventListener('mouseenter', showMenu);
-                menuPanel.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
-                menuTriggerBtn.addEventListener('mouseleave', () => {
-                    hideTimeout = setTimeout(hideMenu, 100);
-                });
-                menuPanel.addEventListener('mouseleave', hideMenu);
-            } else {
-                // 触控设备：点击触发（toggleMenuPanel 已在上面定义）
-
-                // 添加触摸屏点击状态
-                menuTriggerBtn.addEventListener('touchstart', () => {
-                    requestAnimationFrame(() => {
-                        if (!isMenuOpen) {
-                            menuTriggerBtn.classList.add('touch-active');
-                        }
-                    });
-                });
-                menuTriggerBtn.addEventListener('touchend', () => {
-                    // 立即移除，让菜单关闭时圆形背景立即消失
-                    menuTriggerBtn.classList.remove('touch-active');
-                });
-
-                // 点击外部关闭面板
-                document.addEventListener('click', (e) => {
-                    if (isMenuOpen) {
-                        if (!menuPanel.contains(e.target as Node) && !menuTriggerBtn.contains(e.target as Node)) {
-                            hideMenu();
-                        }
-                    }
-                });
-            }
+        // 清除圆形背景的内联样式，让CSS类重新生效
+        const bgDiv = menuTriggerBtn.querySelector('div');
+        if (bgDiv) {
+          bgDiv.style.removeProperty('opacity');
+          bgDiv.style.removeProperty('transform');
         }
+      };
 
-        let lastScrollY = window.scrollY;
-        let lastScrollDirection: 'up' | 'down' = 'up';
+      const hideMenu = () => {
+        menuPanel.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto', 'visible');
+        menuPanel.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'invisible');
+        isMenuOpen = false;
 
-        function updateHeader() {
-            const scrollY = window.scrollY;
-            const deltaY = scrollY - lastScrollY;
-            if (Math.abs(deltaY) >= 2) {
-                lastScrollDirection = deltaY > 0 ? 'down' : 'up';
-                lastScrollY = scrollY;
-            }
-            const scrollDirection = lastScrollDirection;
-            
-            if (scrollY > 20) {
-                nav?.classList.remove('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1340px]', 'px-4', 'sm:px-6', 'lg:px-8');
-                nav?.classList.add('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
-                navBg?.classList.replace('opacity-0', 'opacity-100');
-                
-                if (scrollDirection === 'down') {
-                    navLinks?.classList.add('opacity-0', 'pointer-events-none');
-                    navLinks?.classList.remove('-translate-y-2');
-                    navLinks?.classList.add('translate-y-0');
-                    pageTitle?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
-                    pageTitle?.classList.add('translate-y-0');
-                } else {
-                    navLinks?.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
-                    navLinks?.classList.add('translate-y-0');
-                    pageTitle?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
-                    pageTitle?.classList.remove('translate-y-0');
-                }
-            } else {
-                nav?.classList.add('max-w-[calc(100%-40px)]', 'md:max-w-[calc(100%-40px)]', 'xl:max-w-[1340px]', 'px-4', 'sm:px-6', 'lg:px-8');
-                nav?.classList.remove('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
-                navBg?.classList.replace('opacity-100', 'opacity-0');
-                navLinks?.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
-                navLinks?.classList.add('translate-y-0');
-                pageTitle?.classList.add('opacity-0', 'pointer-events-none');
-            }
+        // 移除触摸点击状态
+        menuTriggerBtn.classList.remove('touch-active');
 
-            if (scrollCounterWrap && scrollCounter && scrollValue && scrollArrow) {
-                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollPercent = scrollHeight > 0 ? Math.min(1, scrollY / scrollHeight) : 0;
-                const displayValue = Math.floor(scrollPercent * 99);
-
-                if (scrollY > 20) {
-                    // 展开计数器轨道
-                    scrollCounterWrap.classList.add('is-scrolled');
-
-                    if (displayValue >= 90) {
-                        if (!scrollValue.classList.contains('jelly-out')) {
-                            scrollValue.classList.add('jelly-out');
-                            scrollArrow.classList.remove('jelly-in');
-                            // 强制重排以重新触发动画
-                            void scrollArrow.offsetWidth;
-                            scrollArrow.classList.add('jelly-in');
-                        }
-                    } else {
-                        if (scrollValue.classList.contains('jelly-out')) {
-                            scrollValue.classList.remove('jelly-out');
-                            scrollArrow.classList.remove('jelly-in');
-                        }
-                        scrollValue.textContent = displayValue.toString();
-                    }
-                } else {
-                    // 收起计数器轨道
-                    scrollCounterWrap.classList.remove('is-scrolled');
-                    scrollValue.classList.remove('jelly-out');
-                    scrollArrow.classList.remove('jelly-in');
-                }
-            }
+        // 完全移除圆形背景的内联样式，让其恢复到CSS类控制的状态
+        const bgDiv = menuTriggerBtn.querySelector('div');
+        if (bgDiv) {
+          bgDiv.style.removeProperty('opacity');
+          bgDiv.style.removeProperty('transform');
         }
+      };
 
-        function setPageTitle() {
-            if (pageTitle) {
-                const fullTitle = document.title;
-                const separatorIndex = fullTitle.indexOf(' | ');
-                pageTitle.textContent = separatorIndex > 0 ? fullTitle.substring(0, separatorIndex) : fullTitle;
-            }
+      // 赋值给外层变量，供 astro:before-preparation 钩子使用
+      hideMenuFn = hideMenu;
+
+      // 始终定义 toggleMenuPanel，供 onclick 使用
+      window.toggleMenuPanel = () => {
+        const bgDiv = menuTriggerBtn.querySelector('div');
+
+        if (isMenuOpen) {
+          hideMenu();
+          // 确保移除触摸激活状态
+          menuTriggerBtn.classList.remove('touch-active');
+          // 强制隐藏圆形背景
+          if (bgDiv) {
+            bgDiv.style.setProperty('opacity', '0', 'important');
+            bgDiv.style.setProperty('transform', 'scale(0.9)', 'important');
+          }
+        } else {
+          showMenu();
         }
+      };
 
-        // 监听滚动 - 使用 rAF 节流
-        let ticking = false;
-        const handleScroll = () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    updateHeader();
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        
-        // 延迟初始化，确保 DOM 完全渲染
-        setTimeout(() => {
-            updateHeader();
-            setPageTitle();
-        }, 100);
+      if (hasHover) {
+        // 鼠标设备：hover触发
+        menuTriggerBtn.addEventListener('mouseenter', showMenu);
+        menuPanel.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+        menuTriggerBtn.addEventListener('mouseleave', () => {
+          hideTimeout = setTimeout(hideMenu, 100);
+        });
+        menuPanel.addEventListener('mouseleave', hideMenu);
+      } else {
+        // 触控设备：点击触发（toggleMenuPanel 已在上面定义）
 
-        // 在准备切换离开当前页面时做清理
-        document.addEventListener('astro:before-preparation', () => {
-            // 1. 移除滚动监听
-            window.removeEventListener('scroll', handleScroll);
-            // 2. 如果菜单面板是展开的，在切页前将其收回，解决 transition:persist 导致的状态残留
-            if (isMenuOpen && hideMenuFn) {
-                hideMenuFn();
+        // 添加触摸屏点击状态
+        menuTriggerBtn.addEventListener('touchstart', () => {
+          requestAnimationFrame(() => {
+            if (!isMenuOpen) {
+              menuTriggerBtn.classList.add('touch-active');
             }
-        }, { once: true });
+          });
+        });
+        menuTriggerBtn.addEventListener('touchend', () => {
+          // 立即移除，让菜单关闭时圆形背景立即消失
+          menuTriggerBtn.classList.remove('touch-active');
+        });
+
+        // 点击外部关闭面板
+        document.addEventListener('click', (e) => {
+          if (isMenuOpen) {
+            if (!menuPanel.contains(e.target as Node) && !menuTriggerBtn.contains(e.target as Node)) {
+              hideMenu();
+            }
+          }
+        });
+      }
     }
 
-    // 适配 ClientRouter：首次加载和后续每次跳转后都初始化
-    initHeader();
-    document.addEventListener('astro:page-load', () => {
-        setTimeout(initHeader, 100);
-    });
+    let lastScrollY = window.scrollY;
+    let lastScrollDirection: 'up' | 'down' = 'up';
+
+    function updateHeader() {
+      const scrollY = window.scrollY;
+      const deltaY = scrollY - lastScrollY;
+      if (Math.abs(deltaY) >= 2) {
+        lastScrollDirection = deltaY > 0 ? 'down' : 'up';
+        lastScrollY = scrollY;
+      }
+      const scrollDirection = lastScrollDirection;
+
+      if (scrollY > 20) {
+        nav?.classList.remove(
+          'max-w-[calc(100%-40px)]',
+          'md:max-w-[calc(100%-40px)]',
+          'xl:max-w-[1340px]',
+          'px-4',
+          'sm:px-6',
+          'lg:px-8'
+        );
+        nav?.classList.add('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
+        navBg?.classList.replace('opacity-0', 'opacity-100');
+
+        if (scrollDirection === 'down') {
+          navLinks?.classList.add('opacity-0', 'pointer-events-none');
+          navLinks?.classList.remove('-translate-y-2');
+          navLinks?.classList.add('translate-y-0');
+          pageTitle?.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+          pageTitle?.classList.add('translate-y-0');
+        } else {
+          navLinks?.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
+          navLinks?.classList.add('translate-y-0');
+          pageTitle?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+          pageTitle?.classList.remove('translate-y-0');
+        }
+      } else {
+        nav?.classList.add(
+          'max-w-[calc(100%-40px)]',
+          'md:max-w-[calc(100%-40px)]',
+          'xl:max-w-[1340px]',
+          'px-4',
+          'sm:px-6',
+          'lg:px-8'
+        );
+        nav?.classList.remove('max-w-[calc(100%-80px)]', 'md:max-w-[720px]', 'xl:max-w-[900px]', 'px-4');
+        navBg?.classList.replace('opacity-100', 'opacity-0');
+        navLinks?.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
+        navLinks?.classList.add('translate-y-0');
+        pageTitle?.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (scrollCounterWrap && scrollCounter && scrollValue && scrollArrow) {
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = scrollHeight > 0 ? Math.min(1, scrollY / scrollHeight) : 0;
+        const displayValue = Math.floor(scrollPercent * 99);
+
+        if (scrollY > 20) {
+          // 展开计数器轨道
+          scrollCounterWrap.classList.add('is-scrolled');
+
+          if (displayValue >= 90) {
+            if (!scrollValue.classList.contains('jelly-out')) {
+              scrollValue.classList.add('jelly-out');
+              scrollArrow.classList.remove('jelly-in');
+              // 强制重排以重新触发动画
+              void scrollArrow.offsetWidth;
+              scrollArrow.classList.add('jelly-in');
+            }
+          } else {
+            if (scrollValue.classList.contains('jelly-out')) {
+              scrollValue.classList.remove('jelly-out');
+              scrollArrow.classList.remove('jelly-in');
+            }
+            scrollValue.textContent = displayValue.toString();
+          }
+        } else {
+          // 收起计数器轨道
+          scrollCounterWrap.classList.remove('is-scrolled');
+          scrollValue.classList.remove('jelly-out');
+          scrollArrow.classList.remove('jelly-in');
+        }
+      }
+    }
+
+    function setPageTitle() {
+      if (pageTitle) {
+        const fullTitle = document.title;
+        const separatorIndex = fullTitle.indexOf(' | ');
+        pageTitle.textContent = separatorIndex > 0 ? fullTitle.substring(0, separatorIndex) : fullTitle;
+      }
+    }
+
+    // 监听滚动 - 使用 rAF 节流
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateHeader();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // 延迟初始化，确保 DOM 完全渲染
+    setTimeout(() => {
+      updateHeader();
+      setPageTitle();
+    }, 100);
+
+    // 在准备切换离开当前页面时做清理
+    document.addEventListener(
+      'astro:before-preparation',
+      () => {
+        // 1. 移除滚动监听
+        window.removeEventListener('scroll', handleScroll);
+        // 2. 如果菜单面板是展开的，在切页前将其收回，解决 transition:persist 导致的状态残留
+        if (isMenuOpen && hideMenuFn) {
+          hideMenuFn();
+        }
+      },
+      { once: true }
+    );
+  }
+
+  // 适配 ClientRouter：首次加载和后续每次跳转后都初始化
+  initHeader();
+  document.addEventListener('astro:page-load', () => {
+    setTimeout(initHeader, 100);
+  });
 </script>

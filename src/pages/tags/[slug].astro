@@ -12,53 +12,51 @@ const siteConfig = await getSiteConfig();
 export async function getStaticPaths() {
   const posts = await getCollection('post', isArticlePost);
   const tags = new Set();
-  
-  posts.forEach(post => {
+
+  posts.forEach((post) => {
     const postTags = post.data.tags || [];
-    postTags.forEach(tag => tags.add(tag));
+    postTags.forEach((tag) => tags.add(tag));
   });
-  
-  return Array.from(tags).map(tag => ({
+
+  return Array.from(tags).map((tag) => ({
     params: { slug: tag },
   }));
 }
 
 const { slug } = Astro.params;
 const allPosts = await getCollection('post', isArticlePost);
-const posts = allPosts.filter(post => {
-	const tags = post.data.tags as string[] | undefined;
-	return tags?.includes(slug as string);
-}).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = allPosts
+  .filter((post) => {
+    const tags = post.data.tags as string[] | undefined;
+    return tags?.includes(slug as string);
+  })
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <MainLayout title={`标签: ${slug}`} description={siteConfig.site.description}>
-	<section class="section-container py-16">
-			<div transition:persist="moments-ticker" class="mb-6">
-				<MomentsTicker />
-			</div>
-			<!-- 响应式布局：小屏幕单列，中等及大屏幕双栏 -->
-			<div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
-				<!-- 左侧边栏：中等及大屏幕显示 -->
-				<div class="hidden md:block">
-					<div class="space-y-6">
-						<LeftSidebar />
-						<!-- 中等及大屏幕：右侧边栏显示在左侧边栏下方 -->
-						<div class="md:block">
-							<RightSidebar />
-						</div>
-					</div>
-				</div>
+  <section class="section-container py-16">
+    <div transition:persist="moments-ticker" class="mb-6">
+      <MomentsTicker />
+    </div>
+    <!-- 响应式布局：小屏幕单列，中等及大屏幕双栏 -->
+    <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
+      <!-- 左侧边栏：中等及大屏幕显示 -->
+      <div class="hidden md:block">
+        <div class="space-y-6">
+          <LeftSidebar />
+          <!-- 中等及大屏幕：右侧边栏显示在左侧边栏下方 -->
+          <div class="md:block">
+            <RightSidebar />
+          </div>
+        </div>
+      </div>
 
-				<!-- 中间内容区：所有屏幕显示 -->
-				<div>
-					<div class="p-6 glass-card glass-card-dark">
-						{posts.map((post) => (
-							<ArchiveItem key={post.id} post={post} />
-						))}
-					</div>
-				</div>
-			</div>
-	</section>
+      <!-- 中间内容区：所有屏幕显示 -->
+      <div>
+        <div class="p-6 glass-card glass-card-dark">
+          {posts.map((post) => <ArchiveItem key={post.id} post={post} />)}
+        </div>
+      </div>
+    </div>
+  </section>
 </MainLayout>

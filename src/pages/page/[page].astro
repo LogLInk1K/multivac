@@ -15,8 +15,9 @@ export async function getStaticPaths() {
   const siteConfig = await getSiteConfig();
 
   // 获取所有文章并按时间倒序排序
-  const allPosts = (await getCollection('post', isArticlePost))
-    .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+  const allPosts = (await getCollection('post', isArticlePost)).sort(
+    (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+  );
 
   // 分页设置
   const postsPerPage = siteConfig.site.postsPerPage;
@@ -33,8 +34,9 @@ export async function getStaticPaths() {
 }
 
 // 获取所有文章并按时间倒序排序
-const allPosts = (await getCollection('post', isArticlePost))
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+const allPosts = (await getCollection('post', isArticlePost)).sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
 
 // 分页设置
 const postsPerPage = siteConfig.site.postsPerPage;
@@ -47,33 +49,31 @@ const posts = allPosts.slice(startIndex, startIndex + postsPerPage);
 ---
 
 <MainLayout title={`${siteConfig.site.title} - 第 ${currentPage} 页`} description={siteConfig.site.description}>
-	<section class="section-container py-16">
-			<div transition:persist="moments-ticker" class="mb-6">
-				<MomentsTicker />
-			</div>
-			<!-- 响应式布局：小屏幕单列，中等屏幕两栏，大屏幕三栏 -->
-			<div class="grid grid-cols-1 md:grid-cols-[272px_1fr] xl:grid-cols-[272px_1fr_272px] gap-6">
-				<!-- 左侧边栏：中等屏幕和大屏幕显示 -->
-				<div class="hidden md:block">
-					<LeftSidebar />
-				</div>
+  <section class="section-container py-16">
+    <div transition:persist="moments-ticker" class="mb-6">
+      <MomentsTicker />
+    </div>
+    <!-- 响应式布局：小屏幕单列，中等屏幕两栏，大屏幕三栏 -->
+    <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] xl:grid-cols-[272px_1fr_272px] gap-6">
+      <!-- 左侧边栏：中等屏幕和大屏幕显示 -->
+      <div class="hidden md:block">
+        <LeftSidebar />
+      </div>
 
-				<!-- 中间内容区：所有屏幕显示 -->
-				<div class="md:row-span-2 xl:row-span-1">
-					<div class="space-y-6">
-						{posts.map((post) => (
-							<BlogCard key={post.id} post={post} />
-						))}
-					</div>
+      <!-- 中间内容区：所有屏幕显示 -->
+      <div class="md:row-span-2 xl:row-span-1">
+        <div class="space-y-6">
+          {posts.map((post) => <BlogCard key={post.id} post={post} />)}
+        </div>
 
-					<!-- 分页控件 -->
-					<Pagination currentPage={currentPage} totalPages={totalPages} />
-				</div>
+        <!-- 分页控件 -->
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      </div>
 
-				<!-- 右侧边栏：中等屏幕显示在左栏下方，大屏幕独立右栏 -->
-				<div class="hidden md:block md:col-start-1 md:row-start-2 xl:col-start-3 xl:row-start-1">
-					<RightSidebar />
-				</div>
-			</div>
-	</section>
+      <!-- 右侧边栏：中等屏幕显示在左栏下方，大屏幕独立右栏 -->
+      <div class="hidden md:block md:col-start-1 md:row-start-2 xl:col-start-3 xl:row-start-1">
+        <RightSidebar />
+      </div>
+    </div>
+  </section>
 </MainLayout>

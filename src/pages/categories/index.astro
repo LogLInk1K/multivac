@@ -5,16 +5,19 @@ import { isArticlePost } from '../../utils/config';
 
 const posts = await getCollection('post', isArticlePost);
 
-const postsByCategory = posts.reduce((acc, post) => {
-  const category = post.data.category;
-  if (category) {
-    if (!acc[category]) {
-      acc[category] = [];
+const postsByCategory = posts.reduce(
+  (acc, post) => {
+    const category = post.data.category;
+    if (category) {
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(post);
     }
-    acc[category].push(post);
-  }
-  return acc;
-}, {} as Record<string, CollectionEntry<'post'>[]>);
+    return acc;
+  },
+  {} as Record<string, CollectionEntry<'post'>[]>
+);
 
 const categories = Object.keys(postsByCategory).sort((a, b) => postsByCategory[b].length - postsByCategory[a].length);
 import Icon from '../../components/Icon.astro';
@@ -25,23 +28,27 @@ import Icon from '../../components/Icon.astro';
     <div class="max-w-3xl mx-auto">
       <h1 class="text-4xl font-bold text-text-light dark:text-text-dark mb-8 text-center">全部分类</h1>
       <div class="flex flex-wrap gap-4 justify-center">
-        {categories.map(category => {
-          const categoryPosts = postsByCategory[category as string] || [];
-          return (
-            <a
-              href={`/categories/${category}`}
-              class="group relative inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-card-light dark:bg-card-dark fluid-card will-change-transform"
-            >
-              <div class="flex items-center gap-3">
-                <Icon name="folder" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
-                <span class="text-base font-medium text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">{category}</span>
-              </div>
-              <span class="px-3 py-1 bg-badge-light dark:bg-badge-dark text-text-light/70 dark:text-text-dark/70 text-sm font-medium rounded-full">
-                {categoryPosts.length}
-              </span>
-            </a>
-          );
-        })}
+        {
+          categories.map((category) => {
+            const categoryPosts = postsByCategory[category as string] || [];
+            return (
+              <a
+                href={`/categories/${category}`}
+                class="group relative inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-card-light dark:bg-card-dark fluid-card will-change-transform"
+              >
+                <div class="flex items-center gap-3">
+                  <Icon name="folder" class="w-5 h-5 text-primary-light dark:text-primary-dark" />
+                  <span class="text-base font-medium text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">
+                    {category}
+                  </span>
+                </div>
+                <span class="px-3 py-1 bg-badge-light dark:bg-badge-dark text-text-light/70 dark:text-text-dark/70 text-sm font-medium rounded-full">
+                  {categoryPosts.length}
+                </span>
+              </a>
+            );
+          })
+        }
       </div>
     </div>
   </section>

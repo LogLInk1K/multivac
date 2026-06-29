@@ -14,14 +14,16 @@ interface Props {
 
 const { currentPostId } = Astro.props;
 
-const otherPosts = allPosts.filter(post => post.id !== currentPostId);
-const recentPosts = otherPosts.sort((a, b) => {
-  const dateA = new Date(a.data.pubDate).getTime();
-  const dateB = new Date(b.data.pubDate).getTime();
-  return dateB - dateA;
-}).slice(0, 2);
+const otherPosts = allPosts.filter((post) => post.id !== currentPostId);
+const recentPosts = otherPosts
+  .sort((a, b) => {
+    const dateA = new Date(a.data.pubDate).getTime();
+    const dateB = new Date(b.data.pubDate).getTime();
+    return dateB - dateA;
+  })
+  .slice(0, 2);
 
-const allPostUrls = otherPosts.map(post => `/p/${post.id.toLowerCase()}`);
+const allPostUrls = otherPosts.map((post) => `/p/${post.id.toLowerCase()}`);
 import Icon from './Icon.astro';
 ---
 
@@ -32,7 +34,7 @@ import Icon from './Icon.astro';
         <Icon name="bookmark" class="w-4 h-4" />
         <span class="text-base font-bold text-text-light dark:text-text-dark opacity-80">最近文章推荐</span>
       </div>
-      <button 
+      <button
         id="random-walk-btn"
         class="mr-2 flex items-center gap-1 px-2 py-1 text-xs text-gray-400 dark:text-gray-500 bg-gray-100/80 dark:bg-white/10 rounded-full cursor-pointer hover:bg-gray-200/80 dark:hover:bg-white/20 transition-colors"
         data-urls={JSON.stringify(allPostUrls)}
@@ -43,55 +45,57 @@ import Icon from './Icon.astro';
     </div>
   </div>
 
-  {recentPosts.map((post) => {
-    const { title, pubDate, heroImage, category } = post.data;
-    const originalFileName = post.id.toLowerCase();
-    const displayImage = heroImage || defaultCover;
-    const readingTime = calculateReadingTime(post.body || '');
+  {
+    recentPosts.map((post) => {
+      const { title, pubDate, heroImage, category } = post.data;
+      const originalFileName = post.id.toLowerCase();
+      const displayImage = heroImage || defaultCover;
+      const readingTime = calculateReadingTime(post.body || '');
 
-    return (
-      <a 
-        href={`/p/${originalFileName}`}
-        class="group flex flex-col sm:flex-row items-center sm:items-center gap-4 p-6 bg-gray-50/50 dark:bg-black/50 border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-sm fluid-card"
-      >
-        <div class="flex-1 min-w-0 flex flex-col justify-between w-full order-2 sm:order-1">
-          <h3 class="text-xl sm:text-2xl font-bold line-clamp-2 text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">
-            {title}
-          </h3>
+      return (
+        <a
+          href={`/p/${originalFileName}`}
+          class="group flex flex-col sm:flex-row items-center sm:items-center gap-4 p-6 bg-gray-50/50 dark:bg-black/50 border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-sm fluid-card"
+        >
+          <div class="flex-1 min-w-0 flex flex-col justify-between w-full order-2 sm:order-1">
+            <h3 class="text-xl sm:text-2xl font-bold line-clamp-2 text-text-light dark:text-text-dark group-hover:text-primary-light dark:group-hover:text-primary-dark transition-colors">
+              {title}
+            </h3>
 
-          <div class="flex items-center gap-3 mt-3">
-            <span class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-60">
-              <Icon name="calendar-sm" class="w-[13px] h-[13px]" />
-              <FormattedDate date={pubDate} />
-            </span>
-            {category && (
+            <div class="flex items-center gap-3 mt-3">
               <span class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-60">
-                <Icon name="folder" class="w-[13px] h-[13px]" />
-                {category}
+                <Icon name="calendar-sm" class="w-[13px] h-[13px]" />
+                <FormattedDate date={pubDate} />
               </span>
-            )}
-            <span class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-60">
-              <Icon name="clock-sm" class="w-[13px] h-[13px]" />
-              {readingTime} 分钟
-            </span>
+              {category && (
+                <span class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-60">
+                  <Icon name="folder" class="w-[13px] h-[13px]" />
+                  {category}
+                </span>
+              )}
+              <span class="flex items-center gap-1.5 text-xs text-text-light dark:text-text-dark opacity-60">
+                <Icon name="clock-sm" class="w-[13px] h-[13px]" />
+                {readingTime} 分钟
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div class="relative w-full sm:w-36 h-48 sm:h-28 shrink-0 overflow-hidden rounded-xl order-1 sm:order-2">
-          <div
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-            style={`background-image: url('${displayImage}');`}
-            aria-label={title}
-          ></div>
-        </div>
-      </a>
-    );
-  })}
+          <div class="relative w-full sm:w-36 h-48 sm:h-28 shrink-0 overflow-hidden rounded-xl order-1 sm:order-2">
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+              style={`background-image: url('${displayImage}');`}
+              aria-label={title}
+            />
+          </div>
+        </a>
+      );
+    })
+  }
 </div>
 
 <script>
   import { navigate } from 'astro:transitions/client';
-  
+
   document.addEventListener('astro:page-load', () => {
     const btn = document.getElementById('random-walk-btn');
     if (btn) {

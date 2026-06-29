@@ -11,58 +11,65 @@ import { getSiteConfig, isArticlePost } from '../../utils/config';
 const siteConfig = await getSiteConfig();
 
 const allPosts = (await getCollection('post', isArticlePost)).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
 const postsPerPage = siteConfig.site.archivesPerPage;
 const totalPages = Math.ceil(allPosts.length / postsPerPage);
 const posts = allPosts.slice(0, postsPerPage);
 
-const postsByYear = posts.reduce((acc, post) => {
-	const year = post.data.pubDate.getFullYear();
-	if (!acc[year]) {
-		acc[year] = [];
-	}
-	acc[year].push(post);
-	return acc;
-}, {} as Record<number, typeof posts>);
+const postsByYear = posts.reduce(
+  (acc, post) => {
+    const year = post.data.pubDate.getFullYear();
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    acc[year].push(post);
+    return acc;
+  },
+  {} as Record<number, typeof posts>
+);
 
-const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
+const sortedYears = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
 ---
 
-<MainLayout title=文稿 description={siteConfig.site.description}>
-	<section class="section-container py-16">
-			<div transition:persist="moments-ticker" class="mb-6">
-				<MomentsTicker />
-			</div>
-			<!-- 响应式布局：小屏幕单列，中等及大屏幕双栏 -->
-			<div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
-				<!-- 左侧边栏：中等及大屏幕显示 -->
-				<div class="hidden md:block">
-					<div class="space-y-6">
-						<LeftSidebar />
-						<!-- 中等及大屏幕：右侧边栏显示在左侧边栏下方 -->
-						<div class="md:block">
-							<RightSidebar />
-						</div>
-					</div>
-				</div>
+<MainLayout title="文稿" description={siteConfig.site.description}>
+  <section class="section-container py-16">
+    <div transition:persist="moments-ticker" class="mb-6">
+      <MomentsTicker />
+    </div>
+    <!-- 响应式布局：小屏幕单列，中等及大屏幕双栏 -->
+    <div class="grid grid-cols-1 md:grid-cols-[272px_1fr] gap-6">
+      <!-- 左侧边栏：中等及大屏幕显示 -->
+      <div class="hidden md:block">
+        <div class="space-y-6">
+          <LeftSidebar />
+          <!-- 中等及大屏幕：右侧边栏显示在左侧边栏下方 -->
+          <div class="md:block">
+            <RightSidebar />
+          </div>
+        </div>
+      </div>
 
-				<!-- 中间内容区：所有屏幕显示 -->
-				<div>
-					<div class="space-y-6">
-						{sortedYears.map((year) => (
-							<div class="p-6 glass-card glass-card-dark">
-								<h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{year}</h2>
-								{postsByYear[year].map((post) => (
-									<ArchiveItem key={post.id} post={post} />
-								))}
-							</div>
-						))}
-					</div>
+      <!-- 中间内容区：所有屏幕显示 -->
+      <div>
+        <div class="space-y-6">
+          {
+            sortedYears.map((year) => (
+              <div class="p-6 glass-card glass-card-dark">
+                <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{year}</h2>
+                {postsByYear[year].map((post) => (
+                  <ArchiveItem key={post.id} post={post} />
+                ))}
+              </div>
+            ))
+          }
+        </div>
 
-					<Pagination currentPage={1} totalPages={totalPages} basePath="/archives" />
-				</div>
-			</div>
-	</section>
+        <Pagination currentPage={1} totalPages={totalPages} basePath="/archives" />
+      </div>
+    </div>
+  </section>
 </MainLayout>

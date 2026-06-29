@@ -4,7 +4,7 @@
 
 **一款基于 Astro 7 和 Tailwind CSS v4 构建的个人博客**
 
-*支持动态说说 · 观影记录 · 赛博塔罗等功能*
+_支持动态说说 · 观影记录 · 赛博塔罗等功能_
 
 ![Astro](https://img.shields.io/badge/Astro-7.0.0+-BC52EE?logo=astro&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwind-css&logoColor=white)
@@ -64,30 +64,30 @@ npm run preview    # 本地预览构建结果
 
 ### 文件优先级
 
-| 文件 | 用途 | 版本控制 |
-|------|------|----------|
-| `config.example.yaml` | 仓库默认配置，带注释说明 | 已提交 |
-| `config.multivac.yaml` | 个人配置，优先级最高 | gitignore |
+| 文件                   | 用途                     | 版本控制  |
+| ---------------------- | ------------------------ | --------- |
+| `config.example.yaml`  | 仓库默认配置，带注释说明 | 已提交    |
+| `config.multivac.yaml` | 个人配置，优先级最高     | gitignore |
 
 使用方式：复制 `config.example.yaml` → 重命名为 `config.multivac.yaml` → 填入实际值。
 
 ### 配置项一览
 
-| 分组 | 说明 |
-|------|------|
-| `site` | 站点域名、标题、描述、Logo、语言、建站年份、分页数 |
-| `author` | 昵称、副昵称、头像、标语、矩阵动画文字、简介 |
-| `nav` | 顶部导航栏 + 汉堡菜单链接 |
-| `social` | 侧栏社交图标 |
-| `music` | 歌单链接、Meting API 端点 |
-| `comment` | Twikoo 云函数地址与版本 |
-| `assets` | 默认封面/关于图、赞赏码、Emoji、十年之约 Logo |
-| `footer` | 主页链接、许可证、ICP 备案 |
-| `greetings` | 时段问候语 |
-| `preconnect` | 预连接域名 |
-| `tenYearPledge` | 十年之约链接 |
-| `passwordHint` | 加密文章默认提示语 |
-| `backup` | 自动化备份配置 |
+| 分组            | 说明                                               |
+| --------------- | -------------------------------------------------- |
+| `site`          | 站点域名、标题、描述、Logo、语言、建站年份、分页数 |
+| `author`        | 昵称、副昵称、头像、标语、矩阵动画文字、简介       |
+| `nav`           | 顶部导航栏 + 汉堡菜单链接                          |
+| `social`        | 侧栏社交图标                                       |
+| `music`         | 歌单链接、Meting API 端点                          |
+| `comment`       | Twikoo 云函数地址与版本                            |
+| `assets`        | 默认封面/关于图、赞赏码、Emoji、十年之约 Logo      |
+| `footer`        | 主页链接、许可证、ICP 备案                         |
+| `greetings`     | 时段问候语                                         |
+| `preconnect`    | 预连接域名                                         |
+| `tenYearPledge` | 十年之约链接                                       |
+| `passwordHint`  | 加密文章默认提示语                                 |
+| `backup`        | 自动化备份配置                                     |
 
 完整字段与注释见 `config.example.yaml`。
 
@@ -176,7 +176,7 @@ title: 关于我
 pubDate: 2026-01-01
 description: Hello,world.
 heroImage: /img/avatar.webp
-heroImageWidth: "160"
+heroImageWidth: '160'
 showDate: false
 ---
 
@@ -185,10 +185,10 @@ Hello,world.👋
 
 ## 隐私与内容过滤
 
-| 环境 | `post/example/` | `post/` 其他文章 |
-|------|-----------------|-----------------|
-| `npm run dev` | 可见 | 本地可见（被 .gitignore 忽略，不进入版本控制） |
-| `npm run build` | 自动剔除 | 本地可见（被 .gitignore 忽略，不进入版本控制） |
+| 环境            | `post/example/` | `post/` 其他文章                               |
+| --------------- | --------------- | ---------------------------------------------- |
+| `npm run dev`   | 可见            | 本地可见（被 .gitignore 忽略，不进入版本控制） |
+| `npm run build` | 自动剔除        | 本地可见（被 .gitignore 忽略，不进入版本控制） |
 
 - 生产构建自动排除 `example/**/*`
 - `.gitignore` 忽略 `post/*`（仅保留 `!post/example/`），私有内容不进入版本控制
@@ -202,11 +202,11 @@ Hello,world.👋
 
 ```yaml
 backup:
-  enabled: false                  # 自动化备份总开关 (true/false)
-  repo_url: "git@github.com:your_username/your_private_repo.git" # 私有备份仓 Git 地址 (推荐 SSH)
-  sync_config: false              # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
-  sync_post: false                # 是否同步 post/ 文件夹 (可选，默认 false)
-  sync_twikoo: false              # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)
+  enabled: false # 自动化备份总开关 (true/false)
+  repo_url: 'git@github.com:your_username/your_private_repo.git' # 私有备份仓 Git 地址 (推荐 SSH)
+  sync_config: false # 是否同步 config.multivac.yaml 配置文件 (可选，默认 false)
+  sync_post: false # 是否同步 post/ 文件夹 (可选，默认 false)
+  sync_twikoo: false # 是否同步 twikoo_template/ 文件夹 (可选，默认 false)
 ```
 
 2. 一键运行备份脚本

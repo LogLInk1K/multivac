@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   const siteConfig = await getSiteConfig();
 
   const posts = (await getCollection('post', isArticlePost)).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
   const postsPerPage = siteConfig.site.archivesPerPage;
@@ -36,16 +36,21 @@ const postsPerPage = siteConfig.site.archivesPerPage;
 const startIndex = (currentPage - 1) * postsPerPage;
 const pagePosts = posts.slice(startIndex, startIndex + postsPerPage);
 
-const postsByYear = pagePosts.reduce((acc, post) => {
-  const year = post.data.pubDate.getFullYear();
-  if (!acc[year]) {
-    acc[year] = [];
-  }
-  acc[year].push(post);
-  return acc;
-}, {} as Record<number, typeof pagePosts>);
+const postsByYear = pagePosts.reduce(
+  (acc, post) => {
+    const year = post.data.pubDate.getFullYear();
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    acc[year].push(post);
+    return acc;
+  },
+  {} as Record<number, typeof pagePosts>
+);
 
-const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
+const sortedYears = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
 ---
 
 <MainLayout title={`文稿 - 第 ${currentPage} 页`} description={siteConfig.site.description}>
@@ -65,14 +70,16 @@ const sortedYears = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 
       <div>
         <div class="space-y-6">
-          {sortedYears.map((year) => (
-            <div class="p-6 glass-card glass-card-dark">
-              <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{year}</h2>
-              {postsByYear[year].map((post) => (
-                <ArchiveItem key={post.id} post={post} />
-              ))}
-            </div>
-          ))}
+          {
+            sortedYears.map((year) => (
+              <div class="p-6 glass-card glass-card-dark">
+                <h2 class="text-xl font-bold text-text-light dark:text-text-dark mb-4">{year}</h2>
+                {postsByYear[year].map((post) => (
+                  <ArchiveItem key={post.id} post={post} />
+                ))}
+              </div>
+            ))
+          }
         </div>
 
         <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/archives" />

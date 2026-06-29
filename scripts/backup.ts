@@ -12,8 +12,21 @@ const PATHS = {
   posts: path.resolve(__dirname, '../post'),
   twikoo: path.resolve(__dirname, '../twikoo_template'),
   configYaml: path.resolve(__dirname, '../config.multivac.yaml'),
-  tempVault: path.join(os.tmpdir(), 'multivac_temp_vault')
+  tempVault: path.join(os.tmpdir(), 'multivac_temp_vault'),
 };
+
+interface BackupConfig {
+  enabled?: boolean;
+  repo_url?: string;
+  sync_post?: boolean;
+  sync_twikoo?: boolean;
+  sync_config?: boolean;
+}
+
+interface MultivacConfig {
+  backup?: BackupConfig;
+  [key: string]: unknown;
+}
 
 async function main() {
   console.log('[Backup] 启动自动化备份任务...\n');
@@ -24,10 +37,10 @@ async function main() {
     process.exit(1);
   }
 
-  let config: any = {};
+  let config: MultivacConfig = {};
   try {
     const fileContent = fs.readFileSync(PATHS.configYaml, 'utf-8');
-    config = YAML.parse(fileContent) || {};
+    config = (YAML.parse(fileContent) as MultivacConfig | null) ?? {};
   } catch (err) {
     console.error('\x1b[31m%s\x1b[0m', '[Error] 解析 config.multivac.yaml 失败，请检查格式。', err);
     process.exit(1);
@@ -54,7 +67,10 @@ async function main() {
 
   // 如果所有项都没开启，则无需继续后面的 Git 流程
   if (!hasPost && !hasTwikoo && !hasConfig) {
-    console.log('\x1b[33m%s\x1b[0m', '[Info] 未开启任何子模块的同步开关（sync_post/sync_twikoo/sync_config 均不为 true），流程终止。');
+    console.log(
+      '\x1b[33m%s\x1b[0m',
+      '[Info] 未开启任何子模块的同步开关（sync_post/sync_twikoo/sync_config 均不为 true），流程终止。'
+    );
     return;
   }
 
@@ -113,8 +129,12 @@ async function main() {
     console.log('🎉 自动化同步流程快报');
     console.log('========================================');
     console.log(`${hasPost ? ' \x1b[32m[✓]\x1b[0m post/' : ' \x1b[33m[-]已关闭或未就绪(跳过)\x1b[0m post/'}`);
-    console.log(`${hasTwikoo ? ' \x1b[32m[✓]\x1b[0m twikoo_template/' : ' \x1b[33m[-]已关闭或未就绪(跳过)\x1b[0m twikoo_template/'}`);
-    console.log(`${hasConfig ? ' \x1b[32m[✓]\x1b[0m config.multivac.yaml' : ' \x1b[33m[-]已关闭(跳过)\x1b[0m config.multivac.yaml'}`);
+    console.log(
+      `${hasTwikoo ? ' \x1b[32m[✓]\x1b[0m twikoo_template/' : ' \x1b[33m[-]已关闭或未就绪(跳过)\x1b[0m twikoo_template/'}`
+    );
+    console.log(
+      `${hasConfig ? ' \x1b[32m[✓]\x1b[0m config.multivac.yaml' : ' \x1b[33m[-]已关闭(跳过)\x1b[0m config.multivac.yaml'}`
+    );
     console.log('----------------------------------------');
     if (pushSuccess) {
       console.log(`\x1b[32m[Result] 远程 main 分支数据更新成功！\x1b[0m`);
@@ -122,7 +142,6 @@ async function main() {
       console.log(`\x1b[34m[Result] 远端数据已是最新，无变动。\x1b[0m`);
     }
     console.log('========================================\n');
-
   } catch (error) {
     console.error('\x1b[31m%s\x1b[0m', '[Fatal] 脚本异常中断:', error);
   } finally {
@@ -135,7 +154,7 @@ async function main() {
 function copyFolderSync(from: string, to: string) {
   if (!fs.existsSync(from)) return;
   fs.mkdirSync(to, { recursive: true });
-  fs.readdirSync(from).forEach(element => {
+  fs.readdirSync(from).forEach((element) => {
     if (element === '.git') return;
     const stat = fs.lstatSync(path.join(from, element));
     if (stat.isDirectory()) {

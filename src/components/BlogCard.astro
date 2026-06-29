@@ -17,13 +17,15 @@ const { title, description, pubDate, heroImage, category, tags } = post.data;
 const originalFileName = post.id.toLowerCase();
 const displayImage = heroImage || defaultCover;
 const readingTime = calculateReadingTime(post.body || '');
-
 ---
+
 <article class="group relative glass-card glass-card-dark hover:-translate-y-2 hover:shadow-2xl overflow-hidden">
   <div class="relative flex flex-col justify-between">
-    
-
-    <a href={`/p/${originalFileName}`} class="relative overflow-hidden bg-hero-light dark:bg-hero-dark block h-52 w-full" aria-label={title}>
+    <a
+      href={`/p/${originalFileName}`}
+      class="relative overflow-hidden bg-hero-light dark:bg-hero-dark block h-52 w-full"
+      aria-label={title}
+    >
       <img
         src={displayImage}
         fetchpriority="high"
@@ -33,9 +35,10 @@ const readingTime = calculateReadingTime(post.body || '');
     </a>
 
     <div class="relative p-6 flex flex-col items-start">
-      
       {/* 2.1 元信息行（两端对撞） */}
-      <div class="flex flex-row items-center justify-between w-full text-[11px] font-medium tracking-wide text-dim mb-2.5 select-none">
+      <div
+        class="flex flex-row items-center justify-between w-full text-[11px] font-medium tracking-wide text-dim mb-2.5 select-none"
+      >
         {/* 左侧技术轴 */}
         <div class="flex items-center gap-2">
           {/* 分类 */}
@@ -45,20 +48,22 @@ const readingTime = calculateReadingTime(post.body || '');
           </div>
 
           {/* 标签群 */}
-          {tags && tags.length > 0 && (
-            <div class="hidden md:flex items-center gap-2">
-              <span class="text-[9px] opacity-30 font-light">/</span>
-              <div class="flex items-center gap-1.5 opacity-85">
-                {tags.slice(0, 3).map((tag: string, index: number) => (
-                  <div class="flex items-center gap-1.5 whitespace-nowrap">
-                    {index > 0 && <span class="text-[9px] opacity-30 font-light">/</span>}
-                    <span>{tag}</span>
-                  </div>
-                ))}
+          {
+            tags && tags.length > 0 && (
+              <div class="hidden md:flex items-center gap-2">
+                <span class="text-[9px] opacity-30 font-light">/</span>
+                <div class="flex items-center gap-1.5 opacity-85">
+                  {tags.slice(0, 3).map((tag: string, index: number) => (
+                    <div class="flex items-center gap-1.5 whitespace-nowrap">
+                      {index > 0 && <span class="text-[9px] opacity-30 font-light">/</span>}
+                      <span>{tag}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-          
+            )
+          }
+
           {/* 阅读时长 */}
           <span class="text-[9px] opacity-30 font-light">/</span>
           <span class="tracking-wide">{readingTime} 分钟</span>
@@ -70,21 +75,15 @@ const readingTime = calculateReadingTime(post.body || '');
         </div>
       </div>
 
-
       <h3 class="text-2xl font-bold mb-2.5 line-clamp-1">
-        <a
-          href={`/p/${originalFileName}`}
-          class="text-text-light dark:text-text-dark accent-hover fluid-link"
-        >
+        <a href={`/p/${originalFileName}`} class="text-text-light dark:text-text-dark accent-hover fluid-link">
           {title}
         </a>
       </h3>
 
-
       <p class="text-sm text-text-light/60 dark:text-text-dark/55 line-clamp-1">
         {description}
       </p>
-
     </div>
   </div>
 </article>

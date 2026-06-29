@@ -1,173 +1,199 @@
 ---
 interface Props {
-    currentPage: number;
-    totalPages: number;
-    basePath?: string;
-    mode?: 'moments' | 'watching' | 'blog';
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+  mode?: 'moments' | 'watching' | 'blog';
 }
 
 const { currentPage, totalPages, basePath = '', mode = 'blog' } = Astro.props;
 
 const getPageLink = (pageNum: number) => {
-    const normalizedPath = basePath.replace(/\/$/, '');
-    if (pageNum === 1) return normalizedPath || '/';
-    return `${normalizedPath}/page/${pageNum}`.replace(/\/+/g, '/');
+  const normalizedPath = basePath.replace(/\/$/, '');
+  if (pageNum === 1) return normalizedPath || '/';
+  return `${normalizedPath}/page/${pageNum}`.replace(/\/+/g, '/');
 };
 
 const ELLIPSIS = '···';
 
 const getVisiblePages = () => {
-    const total = totalPages;
-    const current = currentPage;
+  const total = totalPages;
+  const current = currentPage;
 
-    if (total <= 4) {
-        return Array.from({ length: total }, (_, i) => i + 1);
-    }
+  if (total <= 4) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
 
-    let pages: (number | string)[] = [];
+  let pages: (number | string)[];
 
-    if (current <= 3) {
-        pages = [1, 2, 3, 4];
-    } else if (current >= total - 2) {
-        return [1, ELLIPSIS, total - 3, total - 2, total - 1, total];
-    } else {
-        const start = current - 1;
-        pages = [start, start + 1, start + 2, start + 3];
-    }
+  if (current <= 3) {
+    pages = [1, 2, 3, 4];
+  } else if (current >= total - 2) {
+    return [1, ELLIPSIS, total - 3, total - 2, total - 1, total];
+  } else {
+    const start = current - 1;
+    pages = [start, start + 1, start + 2, start + 3];
+  }
 
-    let finalPages: (number | string)[] = [];
-    
-    if (pages[0] !== 1) {
-        finalPages.push(1);
-        if ((pages[0] as number) > 2) finalPages.push(ELLIPSIS);
-    }
-    
-    finalPages.push(...pages);
+  let finalPages: (number | string)[] = [];
 
-    const lastPageInSequence = pages[pages.length - 1] as number;
-    if (lastPageInSequence < total - 1) {
-        finalPages.push(ELLIPSIS);
-        finalPages.push(total);
-    } else if (lastPageInSequence === total - 1) {
-        finalPages.push(total);
-    }
+  if (pages[0] !== 1) {
+    finalPages.push(1);
+    if ((pages[0] as number) > 2) finalPages.push(ELLIPSIS);
+  }
 
-    return finalPages;
+  finalPages.push(...pages);
+
+  const lastPageInSequence = pages[pages.length - 1] as number;
+  if (lastPageInSequence < total - 1) {
+    finalPages.push(ELLIPSIS);
+    finalPages.push(total);
+  } else if (lastPageInSequence === total - 1) {
+    finalPages.push(total);
+  }
+
+  return finalPages;
 };
 
 const visiblePages = getVisiblePages();
 import Icon from './Icon.astro';
 ---
 
-{totalPages > 1 && (
-<div class="flex justify-center items-center mt-12 mb-8 px-4">
-    <nav class="flex items-center gap-1 md:gap-2" aria-label="分页导航">
+{
+  totalPages > 1 && (
+    <div class="flex justify-center items-center mt-12 mb-8 px-4">
+      <nav class="flex items-center gap-1 md:gap-2" aria-label="分页导航">
         {currentPage > 1 && (
-            <a
-                href={getPageLink(currentPage - 1)}
-                class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-white/70 dark:hover:bg-hover-dark transition-all duration-300"
-                title="上一页"
-            >
-                <Icon name="chevron-left-arrow" class="w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-ml-1 md:mr-1 group-hover:-translate-x-0.5 transition-transform" />
-                <span class="hidden md:inline font-medium text-sm">上一页</span>
-            </a>
+          <a
+            href={getPageLink(currentPage - 1)}
+            class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-white/70 dark:hover:bg-hover-dark transition-all duration-300"
+            title="上一页"
+          >
+            <Icon
+              name="chevron-left-arrow"
+              class="w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-ml-1 md:mr-1 group-hover:-translate-x-0.5 transition-transform"
+            />
+            <span class="hidden md:inline font-medium text-sm">上一页</span>
+          </a>
         )}
 
         <div class="flex items-center gap-1 md:gap-2">
-            {visiblePages.map((page) => {
-                if (page === ELLIPSIS) {
-                    return (
+          {visiblePages.map((page) => {
+            if (page === ELLIPSIS) {
+              return (
+                <div
+                  class="page-ellipsis-jump"
+                  data-total={totalPages}
+                  data-mode={mode}
+                  data-base={basePath.replace(/\/$/, '') || ''}
+                >
+                  <span class="page-ellipsis-jump__dot">···</span>
+                  <form class="page-ellipsis-jump__form">
+                    <input type="number" min="1" max={totalPages} placeholder="#" />
+                    <button type="submit" class="page-ellipsis-jump__arrow">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              );
+            }
 
-                        <div class="page-ellipsis-jump" data-total={totalPages} data-mode={mode} data-base={basePath.replace(/\/$/, '') || ''}>
-                            <span class="page-ellipsis-jump__dot">···</span>
-                            <form class="page-ellipsis-jump__form">
-                                <input type="number" min="1" max={totalPages} placeholder="#" />
-                                <button type="submit" class="page-ellipsis-jump__arrow">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                                </button>
-                            </form>
-                        </div>
-                    );
-                }
+            const pageNum = page as number;
+            const isActive = currentPage === pageNum;
 
-                const pageNum = page as number;
-                const isActive = currentPage === pageNum;
-
-                return (
-                    <a
-                        href={getPageLink(pageNum)}
-                        class={`
+            return (
+              <a
+                href={getPageLink(pageNum)}
+                class={`
                             relative flex items-center justify-center min-w-10 h-10 px-2 rounded-full text-sm font-medium transition-all duration-300
-                            ${isActive
+                            ${
+                              isActive
                                 ? 'bg-primary-light dark:bg-primary-dark text-white shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/20 scale-105 z-10'
                                 : 'text-text-light/70 dark:text-text-dark/70 border border-transparent hover:border-border-light dark:hover:border-border-dark hover:bg-white/70 dark:hover:bg-hover-dark hover:text-text-light dark:hover:text-text-dark'
                             }
                             ${!(pageNum === 1 || pageNum === totalPages || Math.abs(pageNum - currentPage) <= 1) ? 'hidden sm:flex' : 'flex'}
                         `}
-                    >
-                        {pageNum}
-                    </a>
-                );
-            })}
+              >
+                {pageNum}
+              </a>
+            );
+          })}
         </div>
 
         {currentPage < totalPages && (
-            <a
-                href={getPageLink(currentPage + 1)}
-                class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-white/70 dark:hover:bg-hover-dark transition-all duration-300"
-                title="下一页"
-            >
-                <span class="hidden md:inline font-medium text-sm">下一页</span>
-                <Icon name="chevron-right" class="w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-mr-1 md:ml-1 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+          <a
+            href={getPageLink(currentPage + 1)}
+            class="group flex items-center justify-center w-10 h-10 md:w-auto md:px-4 rounded-full border border-border-light dark:border-border-dark text-text-light dark:text-text-dark hover:bg-white/70 dark:hover:bg-hover-dark transition-all duration-300"
+            title="下一页"
+          >
+            <span class="hidden md:inline font-medium text-sm">下一页</span>
+            <Icon
+              name="chevron-right"
+              class="w-4 h-4 text-text-light/50 dark:text-text-dark/50 md:-mr-1 md:ml-1 group-hover:translate-x-0.5 transition-transform"
+            />
+          </a>
         )}
-    </nav>
-</div>
-)}
+      </nav>
+    </div>
+  )
+}
 
 <script>
   import { navigate } from 'astro:transitions/client';
 
   function setupPaginationListeners() {
     document.addEventListener('submit', (e) => {
-        const form = e.target as HTMLFormElement;
-        if (!form.classList.contains('page-ellipsis-jump__form')) return;
-        e.preventDefault();
-        
-        const container = form.parentElement!;
-        const total = parseInt(container.dataset.total || '1');
-        const mode = container.dataset.mode || '';
-        const input = form.querySelector('input') as HTMLInputElement;
-        let val = input.value.replace(/[^0-9]/g, '');
-        if (!val) return;
-        let p = parseInt(val);
-        if (p > total) p = total;
-        if (p < 1) return;
+      const form = e.target as HTMLFormElement;
+      if (!form.classList.contains('page-ellipsis-jump__form')) return;
+      e.preventDefault();
 
-        if (mode === 'moments' && typeof window.momentsGoToPage === 'function') {
-            window.momentsGoToPage(p);
-        } else if (mode === 'watching' && typeof window.goToPage === 'function') {
-            window.goToPage(p);
-        } else {
+      const container = form.parentElement!;
+      const total = parseInt(container.dataset.total || '1');
+      const mode = container.dataset.mode || '';
+      const input = form.querySelector('input') as HTMLInputElement;
+      const val = input.value.replace(/[^0-9]/g, '');
+      if (!val) return;
+      let p = parseInt(val);
+      if (p > total) p = total;
+      if (p < 1) return;
 
-            const base = container.dataset.base || '/';
-            const path = p === 1 ? (base || '/') : `${base}/page/${p}`.replace(/\/+/g, '/');
-            navigate(path);
-        }
+      if (mode === 'moments' && typeof window.momentsGoToPage === 'function') {
+        window.momentsGoToPage(p);
+      } else if (mode === 'watching' && typeof window.goToPage === 'function') {
+        window.goToPage(p);
+      } else {
+        const base = container.dataset.base || '/';
+        const path = p === 1 ? base || '/' : `${base}/page/${p}`.replace(/\/+/g, '/');
+        navigate(path);
+      }
     });
 
     document.addEventListener('input', (e) => {
-        const input = e.target as HTMLInputElement;
-        if (!input.closest('.page-ellipsis-jump__form')) return;
-        const container = input.closest('.page-ellipsis-jump')!;
-        const total = parseInt((container as HTMLElement).dataset.total || '1');
-        let v = input.value.replace(/[^0-9]/g, '');
-        if (v) {
-            let n = parseInt(v);
-            if (n > total) { n = total; v = String(n); }
-            if (n < 1) v = '';
+      const input = e.target as HTMLInputElement;
+      if (!input.closest('.page-ellipsis-jump__form')) return;
+      const container = input.closest('.page-ellipsis-jump')!;
+      const total = parseInt((container as HTMLElement).dataset.total || '1');
+      let v = input.value.replace(/[^0-9]/g, '');
+      if (v) {
+        let n = parseInt(v);
+        if (n > total) {
+          n = total;
+          v = String(n);
         }
-        input.value = v;
+        if (n < 1) v = '';
+      }
+      input.value = v;
     });
   }
 

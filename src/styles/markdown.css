@@ -54,7 +54,7 @@ html.dark {
 }
 
 .prose h2::before {
-  content: "";
+  content: '';
   @apply mr-3 w-1.5 h-6 rounded-full inline-block;
   background-color: var(--prose-accent);
 }
@@ -65,7 +65,7 @@ html.dark {
 }
 
 .prose h3::before {
-  content: "";
+  content: '';
   @apply mr-3 w-1.5 h-4 rounded-full inline-block;
   background-color: var(--prose-accent-muted);
 }
@@ -119,7 +119,10 @@ html.dark {
   color: var(--prose-code-text);
 }
 
-.prose code::before, .prose code::after { content: "" !important; }
+.prose code::before,
+.prose code::after {
+  content: '' !important;
+}
 
 .prose pre code {
   counter-reset: line;
@@ -133,12 +136,13 @@ html.dark {
 
 .prose pre,
 .prose pre code {
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-family:
+    'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 .prose pre {
   @apply relative mb-8 overflow-x-auto selection:bg-blue-500/30;
-  background-color: #18181B !important;
+  background-color: #18181b !important;
   border: 1px solid #30363d !important;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
   border-radius: 12px !important;
@@ -196,7 +200,8 @@ html.dark {
 }
 
 /* --- 媒体 --- */
-.prose img, .prose video {
+.prose img,
+.prose video {
   @apply rounded-2xl shadow-xl my-10 mx-auto transform transition-transform hover:scale-[1.01];
   border: 1px solid var(--prose-media-border);
 }
@@ -209,5 +214,5 @@ html.dark {
 /* 移除 Tailwind Prose 插件为 blockquote 自动添加的引号 */
 .prose blockquote p::before,
 .prose blockquote p::after {
-  content: "" !important;
+  content: '' !important;
 }

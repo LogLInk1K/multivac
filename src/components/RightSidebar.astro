@@ -9,13 +9,16 @@ const defaultCover = siteConfig.assets.defaultCover;
 const posts = await getCollection('post', isArticlePost);
 
 // 1. 标签逻辑处理
-const allTags = posts.reduce((acc, post) => {
-  const tags = post.data.tags || [];
-  tags.forEach(tag => {
-    acc[tag] = (acc[tag] || 0) + 1;
-  });
-  return acc;
-}, {} as Record<string, number>);
+const allTags = posts.reduce(
+  (acc, post) => {
+    const tags = post.data.tags || [];
+    tags.forEach((tag) => {
+      acc[tag] = (acc[tag] || 0) + 1;
+    });
+    return acc;
+  },
+  {} as Record<string, number>
+);
 
 const sortedTags = Object.entries(allTags).sort((a, b) => b[1] - a[1]);
 const allTagsJson = JSON.stringify(sortedTags);
@@ -30,7 +33,7 @@ const totalWords = posts.reduce((acc, post) => {
 }, 0);
 
 // 计算总分类数
-const allCategories = new Set(posts.map(post => post.data.category).filter(Boolean));
+const allCategories = new Set(posts.map((post) => post.data.category).filter(Boolean));
 const totalCategories = allCategories.size;
 
 // 3. 准备所有文章的精简数据供前端随机抽取
@@ -43,7 +46,7 @@ interface PostSummary {
   category?: string;
 }
 
-const postSummaries: PostSummary[] = posts.map(post => ({
+const postSummaries: PostSummary[] = posts.map((post) => ({
   id: post.id,
   originalFileName: post.id.toLowerCase(),
   title: post.data.title,
@@ -57,24 +60,28 @@ import Icon from './Icon.astro';
 ---
 
 <aside transition:persist="right-sidebar" class="hidden md:block w-[272px] space-y-6">
-  
   <!-- 公告卡片 -->
-  <div class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none">
-    <div class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative">
+  <div
+    class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none"
+  >
+    <div
+      class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative"
+    >
       <div class="flex items-center gap-2">
         <span class="w-1.5 h-1.5 rounded-full bg-primary-light dark:bg-primary-dark"></span>
-        <h3 class="text-base font-bold tracking-wider text-text-light dark:text-text-dark">
-          公告
-        </h3>
+        <h3 class="text-base font-bold tracking-wider text-text-light dark:text-text-dark">公告</h3>
       </div>
-      <span class="text-[10px] tracking-widest text-dim uppercase font-medium">
-        十年之约
-      </span>
+      <span class="text-[10px] tracking-widest text-dim uppercase font-medium"> 十年之约 </span>
     </div>
 
     <div class="space-y-4">
       <div class="inline-block">
-        <a href={siteConfig.tenYearPledge.url} target="_blank" rel="noopener noreferrer" class="block opacity-80 hover:opacity-100 transition-all transform hover:scale-[1.02] duration-500 ease-out origin-left">
+        <a
+          href={siteConfig.tenYearPledge.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block opacity-80 hover:opacity-100 transition-all transform hover:scale-[1.02] duration-500 ease-out origin-left"
+        >
           <img
             src={siteConfig.assets.tenYearPledgeLogo}
             alt="十年之约"
@@ -89,18 +96,25 @@ import Icon from './Icon.astro';
 
       <a
         href={siteConfig.tenYearPledge.wormholeUrl}
-        target="_blank" 
-        rel="noopener noreferrer" 
+        target="_blank"
+        rel="noopener noreferrer"
         class="group/btn flex items-center justify-between py-1 relative"
       >
         <div class="flex items-center gap-1">
-          <span class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-colors duration-300">
+          <span
+            class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-colors duration-300"
+          >
             穿梭虫洞！
           </span>
-          <span class="text-xs text-dim group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5">&rarr;</span>
+          <span
+            class="text-xs text-dim group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5"
+            >&rarr;</span
+          >
         </div>
 
-        <div class="shrink-0 flex items-center transform group-hover/btn:scale-105 transition-transform duration-500 ease-out">
+        <div
+          class="shrink-0 flex items-center transform group-hover/btn:scale-105 transition-transform duration-500 ease-out"
+        >
           <img
             src="/img/wormhole_4_tp.gif"
             alt="虫洞"
@@ -120,29 +134,42 @@ import Icon from './Icon.astro';
     </div>
   </div>
   <!-- 随机推荐卡片 -->
-  <div class="pt-5 px-5 pb-2 glass-card glass-card-dark relative overflow-hidden group/container" data-default-cover={defaultCover} data-site-lang={siteConfig.site.lang}>
-    <div class="absolute -right-16 -top-16 w-40 h-40 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover/container:scale-150"></div>
+  <div
+    class="pt-5 px-5 pb-2 glass-card glass-card-dark relative overflow-hidden group/container"
+    data-default-cover={defaultCover}
+    data-site-lang={siteConfig.site.lang}
+  >
+    <div
+      class="absolute -right-16 -top-16 w-40 h-40 bg-primary-light/10 dark:bg-primary-dark/10 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover/container:scale-150"
+    >
+    </div>
 
     <div class="flex items-center justify-between mb-2 relative select-none">
       <div class="flex items-center gap-2 relative z-10 pl-0.5">
-        <span class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"></span>
-        <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">
-          随机推荐
-        </h3>
+        <span
+          class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"
+        ></span>
+        <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">随机推荐</h3>
       </div>
-    
+
       <button
         type="button"
-        style="outline: none;" class="js-refresh-trigger group p-1.5 rounded-lg text-dim hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/4 dark:hover:bg-white/4 fluid-btn focus:outline-none select-none"
+        style="outline: none;"
+        class="js-refresh-trigger group p-1.5 rounded-lg text-dim hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-black/4 dark:hover:bg-white/4 fluid-btn focus:outline-none select-none"
         data-posts={JSON.stringify(postSummaries)}
         aria-label="刷新推荐"
       >
-        <Icon name="reroll" class="js-refresh-icon w-4 h-4 transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:rotate-0 group-active:duration-0 group-active:transition-none" />
+        <Icon
+          name="reroll"
+          class="js-refresh-icon w-4 h-4 transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-180 group-active:rotate-0 group-active:duration-0 group-active:transition-none"
+        />
       </button>
     </div>
 
     <ul class="js-posts-list-container">
-      <li class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse">
+      <li
+        class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse"
+      >
         <div class="h-6 w-5 bg-neutral-200/40 dark:bg-neutral-700/40 rounded mt-0.5 shrink-0"></div>
         <div class="flex-1 min-w-0 w-full">
           <div class="flex items-center gap-2 mb-2">
@@ -153,7 +180,9 @@ import Icon from './Icon.astro';
         </div>
       </li>
 
-      <li class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse">
+      <li
+        class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse"
+      >
         <div class="h-6 w-5 bg-neutral-200/40 dark:bg-neutral-700/40 rounded mt-0.5 shrink-0"></div>
         <div class="flex-1 min-w-0 w-full">
           <div class="flex items-center gap-2 mb-2">
@@ -164,7 +193,9 @@ import Icon from './Icon.astro';
         </div>
       </li>
 
-      <li class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse">
+      <li
+        class="py-5 flex items-start gap-4 border-b border-neutral-100/5 dark:border-white/5 last:border-0 animate-pulse"
+      >
         <div class="h-6 w-5 bg-neutral-200/40 dark:bg-neutral-700/40 rounded mt-0.5 shrink-0"></div>
         <div class="flex-1 min-w-0 w-full">
           <div class="flex items-center gap-2 mb-2">
@@ -180,12 +211,17 @@ import Icon from './Icon.astro';
   <!-- 标签卡片 -->
   <div class="p-6 glass-card glass-card-dark">
     <div class="relative mb-5">
-      <h3 class="inline-block text-lg font-black italic tracking-tight text-neutral-800 dark:text-neutral-100 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-2 after:w-full after:bg-yellow-400/30 dark:after:bg-indigo-500/40 after:-z-10">
+      <h3
+        class="inline-block text-lg font-black italic tracking-tight text-neutral-800 dark:text-neutral-100 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-2 after:w-full after:bg-yellow-400/30 dark:after:bg-indigo-500/40 after:-z-10"
+      >
         TAGS
       </h3>
     </div>
 
-    <div class="js-tags-container line-clamp-5 [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden" data-tags={allTagsJson}>
+    <div
+      class="js-tags-container line-clamp-5 [display:-webkit-box] [-webkit-box-orient:vertical] overflow-hidden"
+      data-tags={allTagsJson}
+    >
       <div class="js-tags-skeleton flex flex-wrap gap-2 animate-pulse">
         <div class="h-7 w-16 bg-neutral-200/50 dark:bg-neutral-700/50 rounded-lg"></div>
         <div class="h-7 w-24 bg-neutral-200/50 dark:bg-neutral-700/50 rounded-lg"></div>
@@ -202,17 +238,19 @@ import Icon from './Icon.astro';
   </div>
 
   <!-- RSS订阅卡片 -->
-  <div class="relative overflow-hidden p-6 glass-card glass-card-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]">
+  <div
+    class="relative overflow-hidden p-6 glass-card glass-card-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]"
+  >
     <div class="relative">
-      <div class="absolute -right-2 -top-6 text-7xl font-black italic tracking-tighter text-text-light/3 dark:text-text-dark/5 select-none pointer-events-none font-sans">
+      <div
+        class="absolute -right-2 -top-6 text-7xl font-black italic tracking-tighter text-text-light/3 dark:text-text-dark/5 select-none pointer-events-none font-sans"
+      >
         订阅
       </div>
       <h2 class="text-xl font-extrabold tracking-tight text-neutral-800 dark:text-neutral-100 leading-tight">
-        利用 RSS 订阅<br/>获取最直接的文章推送
+        利用 RSS 订阅<br />获取最直接的文章推送
       </h2>
-      <p class="mt-4 text-xs text-text-light/50 dark:text-text-dark/40 font-normal">
-        点击滑块，即可复制 RSS 链接。
-      </p>
+      <p class="mt-4 text-xs text-text-light/50 dark:text-text-dark/40 font-normal">点击滑块，即可复制 RSS 链接。</p>
     </div>
 
     <div class="mt-5">
@@ -233,7 +271,9 @@ import Icon from './Icon.astro';
         class="group/btn w-full h-11 relative rounded-2xl bg-neutral-100 dark:bg-neutral-950/80 border border-neutral-200/50 dark:border-neutral-800/80 p-1 cursor-pointer overflow-hidden select-none active:scale-[0.98] fluid-btn"
       >
         <div class="absolute inset-y-1 inset-x-2 flex items-center justify-between pointer-events-none select-none z-0">
-          <div class="flex gap-1.5 pl-4 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 group-[.is-success]/btn:opacity-0">
+          <div
+            class="flex gap-1.5 pl-4 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 group-[.is-success]/btn:opacity-0"
+          >
             <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
             <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
             <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
@@ -245,68 +285,114 @@ import Icon from './Icon.astro';
           </div>
         </div>
 
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-[.is-success]/btn:opacity-30 transition-opacity duration-300 pointer-events-none text-neutral-400 dark:text-neutral-600 text-xs z-0">
+        <div
+          class="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-[.is-success]/btn:opacity-30 transition-opacity duration-300 pointer-events-none text-neutral-400 dark:text-neutral-600 text-xs z-0"
+        >
           <span>RSS.xml</span>
         </div>
-        <div class="h-full w-2/3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800/80 shadow-sm flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform group-hover/btn:translate-x-[50%] group-hover/btn:bg-[#f26522] group-hover/btn:border-transparent group-[.is-success]/btn:translate-x-[223%] group-[.is-success]/btn:w-[30%] group-[.is-success]/btn:bg-neutral-200 dark:group-[.is-success]/btn:bg-neutral-800 group-[.is-success]/btn:border-transparent group-[.is-success]/btn:shadow-none z-10">
+        <div
+          class="h-full w-2/3 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800/80 shadow-sm flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform group-hover/btn:translate-x-[50%] group-hover/btn:bg-[#f26522] group-hover/btn:border-transparent group-[.is-success]/btn:translate-x-[223%] group-[.is-success]/btn:w-[30%] group-[.is-success]/btn:bg-neutral-200 dark:group-[.is-success]/btn:bg-neutral-800 group-[.is-success]/btn:border-transparent group-[.is-success]/btn:shadow-none z-10"
+        >
           <div class="relative w-full h-full flex items-center justify-center">
-            <span class="absolute text-xs font-bold text-neutral-600 dark:text-neutral-400 group-hover/btn:text-white tracking-tight transition-all duration-200 group-[.is-success]/btn:opacity-0 group-[.is-success]/btn:scale-75">
+            <span
+              class="absolute text-xs font-bold text-neutral-600 dark:text-neutral-400 group-hover/btn:text-white tracking-tight transition-all duration-200 group-[.is-success]/btn:opacity-0 group-[.is-success]/btn:scale-75"
+            >
               {new URL('/rss.xml', Astro.site).hostname}/rss.xml
             </span>
-            <div class="absolute opacity-0 scale-75 transition-all duration-300 group-[.is-success]/btn:opacity-100 group-[.is-success]/btn:scale-100 flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+            <div
+              class="absolute opacity-0 scale-75 transition-all duration-300 group-[.is-success]/btn:opacity-100 group-[.is-success]/btn:scale-100 flex items-center justify-center text-neutral-500 dark:text-neutral-400"
+            >
               <Icon name="check" class="w-4 h-4" />
             </div>
           </div>
         </div>
       </button>
-      <div class="mt-3 text-[10px] text-dim font-normal text-center">
-        支持 Feedly、Inoreader、Reeder 等
-      </div>
+      <div class="mt-3 text-[10px] text-dim font-normal text-center">支持 Feedly、Inoreader、Reeder 等</div>
     </div>
   </div>
 
   <!-- 博客统计卡片 -->
-  <div class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard">
-    <div class="absolute -right-6 -bottom-10 text-[140px] font-black italic tracking-tighter text-neutral-800/3 dark:text-neutral-100/2 select-none pointer-events-none transform origin-bottom-right transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/statcard:scale-110 group-hover/statcard:translate-x-2 group-hover/statcard:text-primary-light/4 dark:group-hover/statcard:text-primary-dark/3">
+  <div
+    class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard"
+  >
+    <div
+      class="absolute -right-6 -bottom-10 text-[140px] font-black italic tracking-tighter text-neutral-800/3 dark:text-neutral-100/2 select-none pointer-events-none transform origin-bottom-right transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/statcard:scale-110 group-hover/statcard:translate-x-2 group-hover/statcard:text-primary-light/4 dark:group-hover/statcard:text-primary-dark/3"
+    >
       字
     </div>
     <div class="relative z-10">
       <div class="flex items-baseline gap-1">
-        <span class="text-5xl font-black font-mono tracking-tighter text-neutral-800 dark:text-neutral-100 js-count-up" data-target={(totalWords / 10000).toFixed(1)}>0</span>
-        <span class="text-sm font-black text-text-light/50 dark:text-text-dark/40 ml-1 tracking-widest">万字全站文本</span>
+        <span
+          class="text-5xl font-black font-mono tracking-tighter text-neutral-800 dark:text-neutral-100 js-count-up"
+          data-target={(totalWords / 10000).toFixed(1)}>0</span
+        >
+        <span class="text-sm font-black text-text-light/50 dark:text-text-dark/40 ml-1 tracking-widest"
+          >万字全站文本</span
+        >
       </div>
-      <div class="h-[2px] w-12 bg-primary-light/60 dark:bg-primary-dark/50 mt-3 rounded-full transition-all duration-500 group-hover/statcard:w-20"></div>
+      <div
+        class="h-[2px] w-12 bg-primary-light/60 dark:bg-primary-dark/50 mt-3 rounded-full transition-all duration-500 group-hover/statcard:w-20"
+      >
+      </div>
     </div>
 
     <div class="grid grid-cols-5 gap-2 items-end pt-6 pb-2 relative z-10">
       <a href="/archives" class="col-span-3 group/item cursor-pointer block">
         <span class="text-[10px] font-normal tracking-widest text-dim block mb-1">已发表文章</span>
         <div class="flex items-baseline gap-1">
-          <div class="text-2xl font-black font-mono tracking-tight text-neutral-700 dark:text-neutral-300 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform js-count-up" data-target={posts.length}>0</div>
+          <div
+            class="text-2xl font-black font-mono tracking-tight text-neutral-700 dark:text-neutral-300 group-hover/item:text-primary-light dark:group-hover/item:text-primary-dark transition-transform js-count-up"
+            data-target={posts.length}
+          >
+            0
+          </div>
           <span class="text-[10px] font-bold text-text-light/30 dark:text-text-dark/30">篇</span>
         </div>
-        <div class="h-[2px] w-4 bg-neutral-200 dark:bg-neutral-800 mt-2 group-hover/item:w-8 group-hover/item:bg-primary-light dark:group-hover/item:bg-primary-dark transition-all duration-300"></div>
+        <div
+          class="h-[2px] w-4 bg-neutral-200 dark:bg-neutral-800 mt-2 group-hover/item:w-8 group-hover/item:bg-primary-light dark:group-hover/item:bg-primary-dark transition-all duration-300"
+        >
+        </div>
       </a>
 
-      <div class="col-span-2 flex flex-col gap-2.5 items-end justify-end border-l border-neutral-200/40 dark:border-neutral-800/40 pr-1">
+      <div
+        class="col-span-2 flex flex-col gap-2.5 items-end justify-end border-l border-neutral-200/40 dark:border-neutral-800/40 pr-1"
+      >
         <a href="/categories" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
-          <span class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">分类</span>
-          <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={totalCategories}>0</span>
+          <span
+            class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform"
+            >分类</span
+          >
+          <span
+            class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up"
+            data-target={totalCategories}>0</span
+          >
         </a>
         <a href="/tags" class="group/sub cursor-pointer flex items-baseline gap-2 text-right">
-          <span class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform">标签</span>
-          <span class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up" data-target={Object.keys(allTags).length}>0</span>
+          <span
+            class="text-[10px] font-normal tracking-wider text-dim group-hover/sub:text-text-light dark:group-hover/sub:text-text-dark transition-transform"
+            >标签</span
+          >
+          <span
+            class="text-base font-black font-mono text-neutral-600 dark:text-neutral-400 group-hover/sub:text-primary-light dark:group-hover/sub:text-primary-dark transition-transform js-count-up"
+            data-target={Object.keys(allTags).length}>0</span
+          >
         </a>
       </div>
     </div>
 
-    <div class="mt-4 pt-3.5 border-t border-neutral-200/40 dark:border-neutral-800/40 flex items-center justify-between text-xs relative z-10">
+    <div
+      class="mt-4 pt-3.5 border-t border-neutral-200/40 dark:border-neutral-800/40 flex items-center justify-between text-xs relative z-10"
+    >
       <div class="flex items-center gap-2 text-dim tracking-widest text-[11px]">
         <span class="w-1.5 h-1.5 bg-neutral-300 dark:bg-neutral-700 rounded-none"></span>
         持续运行
       </div>
       <div class="font-mono text-xs text-text-light/60 dark:text-text-dark/50">
-        <span class="text-sm text-neutral-800 dark:text-neutral-100 font-black js-count-up" data-target="0" data-start={siteStartDate}>0</span> 天
+        <span
+          class="text-sm text-neutral-800 dark:text-neutral-100 font-black js-count-up"
+          data-target="0"
+          data-start={siteStartDate}>0</span
+        > 天
       </div>
     </div>
   </div>
@@ -341,18 +427,25 @@ import Icon from './Icon.astro';
       }
       const selected = shuffled.slice(0, 3);
 
-      listContainer.innerHTML = selected.map((post, index) => {
-        const date = new Date(post.pubDate).toLocaleDateString(document.querySelector('[data-site-lang]')?.getAttribute('data-site-lang') || 'zh-CN', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
+      listContainer.innerHTML = selected
+        .map((post, index) => {
+          const date = new Date(post.pubDate).toLocaleDateString(
+            document.querySelector('[data-site-lang]')?.getAttribute('data-site-lang') || 'zh-CN',
+            {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }
+          );
 
-        const serialNumber = String(index + 1).padStart(2, '0');
-        const displayImage = post.heroImage || document.querySelector('[data-default-cover]')?.getAttribute('data-default-cover') || '';
-        const categoryHtml = post.category ? `<span class="text-text-light/35 dark:text-text-dark/25"># ${post.category}</span>` : '';
+          const serialNumber = String(index + 1).padStart(2, '0');
+          const displayImage =
+            post.heroImage || document.querySelector('[data-default-cover]')?.getAttribute('data-default-cover') || '';
+          const categoryHtml = post.category
+            ? `<span class="text-text-light/35 dark:text-text-dark/25"># ${post.category}</span>`
+            : '';
 
-        return `
+          return `
           <li class="group/item">
             <a href="/p/${post.originalFileName}" class="block relative py-5 transition-all duration-300">
               <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-16 rounded-xl overflow-hidden pointer-events-none opacity-[0.04] dark:opacity-[0.08] scale-100 group-hover/item:opacity-[0.22] dark:group-hover/item:opacity-[0.25] group-hover/item:scale-105 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] z-0">
@@ -376,7 +469,8 @@ import Icon from './Icon.astro';
             </a>
           </li>
         `;
-      }).join('');
+        })
+        .join('');
 
       listContainer.style.opacity = '1';
     } catch (e) {
@@ -387,10 +481,9 @@ import Icon from './Icon.astro';
 
   // 页面加载时客户端随机渲染
   function initRandomPosts() {
-    document.querySelectorAll('.js-posts-list-container').forEach(listContainer => {
-
+    document.querySelectorAll('.js-posts-list-container').forEach((listContainer) => {
       if (listContainer.querySelector('.group\\/item')) return;
-      
+
       const card = listContainer.closest('div')?.parentElement;
       const btn = card?.querySelector('.js-refresh-trigger') as HTMLElement | null;
       if (!btn) return;
@@ -454,28 +547,31 @@ import Icon from './Icon.astro';
     requestAnimationFrame(update);
   }
 
-  const countUpObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const element = entry.target as HTMLElement;
-        let target = element.getAttribute('data-target');
+  const countUpObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target as HTMLElement;
+          let target = element.getAttribute('data-target');
 
-        const startDateStr = element.getAttribute('data-start');
-        if (startDateStr) {
-          const startDate = new Date(startDateStr);
-          const today = new Date();
-          const realDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-          const realDaysStr = realDays.toString();
-          target = realDaysStr;
-        }
+          const startDateStr = element.getAttribute('data-start');
+          if (startDateStr) {
+            const startDate = new Date(startDateStr);
+            const today = new Date();
+            const realDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+            const realDaysStr = realDays.toString();
+            target = realDaysStr;
+          }
 
-        if (target && target !== '0') {
-          animateNumber(element, target);
-          countUpObserver.unobserve(element);
+          if (target && target !== '0') {
+            animateNumber(element, target);
+            countUpObserver.unobserve(element);
+          }
         }
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+  );
 
   function initCountUpElements() {
     const countElements = document.querySelectorAll('.js-count-up');
@@ -489,10 +585,9 @@ import Icon from './Icon.astro';
 
   function renderRandomTags() {
     const containers = document.querySelectorAll('.js-tags-container');
-    containers.forEach(container => {
-
+    containers.forEach((container) => {
       if (container.querySelector('a')) return;
-      
+
       const rawData = container.getAttribute('data-tags');
       if (!rawData) return;
 
@@ -505,9 +600,10 @@ import Icon from './Icon.astro';
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
 
-        container.innerHTML = shuffled.map(([tag, count], index) => {
-          const isLast = index === shuffled.length - 1;
-          return `
+        container.innerHTML = shuffled
+          .map(([tag, count], index) => {
+            const isLast = index === shuffled.length - 1;
+            return `
             <span class="inline-block white-space-nowrap mr-2 mb-2">
               <a href="/tags/${tag}" class="group inline-flex items-baseline text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-transform duration-200">
                 <span class="group-hover:underline decoration-1 underline-offset-4">${tag}</span>
@@ -516,8 +612,11 @@ import Icon from './Icon.astro';
               ${!isLast ? `<span class="text-neutral-300 dark:text-neutral-700 font-light select-none ml-2">/</span>` : ''}
             </span>
           `;
-        }).join('');
-      } catch (e) {}
+          })
+          .join('');
+      } catch (e) {
+        console.error('RightSidebar 标签渲染异常:', e);
+      }
     });
   }
 
@@ -526,8 +625,12 @@ import Icon from './Icon.astro';
 
 <style>
   @keyframes refresh-spin-once {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .js-refresh-icon.is-spinning {
     animation: refresh-spin-once 600ms cubic-bezier(0.2, 0.9, 0.2, 1);

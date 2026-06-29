@@ -9,20 +9,16 @@
 // ---- 共用 ----
 
 async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(password),
-    'PBKDF2',
-    false,
-    ['deriveKey'],
-  );
+  const keyMaterial = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, [
+    'deriveKey',
+  ]);
 
   return crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt, iterations: 600000, hash: 'SHA-256' },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt', 'decrypt'],
+    ['encrypt', 'decrypt']
   );
 }
 
@@ -51,11 +47,7 @@ export async function encryptContent(plaintext: string, password: string): Promi
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await deriveKey(password, salt.buffer);
 
-  const ciphertext = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    new TextEncoder().encode(plaintext),
-  );
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plaintext));
 
   const combined = new Uint8Array(16 + 12 + ciphertext.byteLength);
   combined.set(salt, 0);
@@ -75,11 +67,7 @@ export async function decryptContent(encrypted: string, password: string): Promi
   const ciphertext = new Uint8Array(combined.slice(28));
 
   const key = await deriveKey(password, salt.buffer);
-  const plaintext = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    ciphertext,
-  );
+  const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
 
   return new TextDecoder().decode(plaintext);
 }

@@ -1,35 +1,43 @@
 ---
 import Icon from './Icon.astro';
 ---
+
 <div id="search-modal" class="fixed inset-0 z-100 hidden">
-  <div 
+  <div
     id="search-backdrop"
     class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0"
-  ></div>
-  
-  <div 
+  >
+  </div>
+
+  <div
     id="search-content"
     class="absolute top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 transition-all duration-300 scale-95 opacity-0"
   >
-    <div class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-border-light dark:border-border-dark">
+    <div
+      class="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-border-light dark:border-border-dark"
+    >
       <div class="p-4 border-b border-border-light dark:border-border-dark">
         <div class="relative">
-          <Icon name="search-lg" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-light dark:text-text-dark opacity-60" />
-          <input 
-            type="text" 
+          <Icon
+            name="search-lg"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-light dark:text-text-dark opacity-60"
+          />
+          <input
+            type="text"
             id="search-input"
-            placeholder="搜索文章..." 
+            placeholder="搜索文章..."
             class="w-full pl-12 pr-4 py-3 bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark transition-all"
             autocomplete="off"
           />
-          <kbd class="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 text-xs bg-hover-light dark:bg-hover-dark text-text-light dark:text-text-dark rounded opacity-60">ESC</kbd>
+          <kbd
+            class="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 text-xs bg-hover-light dark:bg-hover-dark text-text-light dark:text-text-dark rounded opacity-60"
+            >ESC</kbd
+          >
         </div>
       </div>
-      
+
       <div id="search-results" class="max-h-[60vh] overflow-y-auto p-2">
-        <div class="text-center py-8 text-text-light dark:text-text-dark opacity-60">
-          输入关键词搜索文章😋
-        </div>
+        <div class="text-center py-8 text-text-light dark:text-text-dark opacity-60">输入关键词搜索文章😋</div>
       </div>
     </div>
   </div>
@@ -132,49 +140,56 @@ import Icon from './Icon.astro';
     if (!lowerQuery) return null;
     if (!allPosts || allPosts.length === 0) return [];
 
-    return allPosts.filter((post) => {
-      const title = post.title.toLowerCase();
-      const description = post.description.toLowerCase();
-      const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
-      const category = post.category?.toLowerCase() || '';
-      const bodyText = post.body ? cleanBodyText(post.body) : '';
+    return allPosts
+      .filter((post) => {
+        const title = post.title.toLowerCase();
+        const description = post.description.toLowerCase();
+        const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
+        const category = post.category?.toLowerCase() || '';
+        const bodyText = post.body ? cleanBodyText(post.body) : '';
 
-      return (
-        title.includes(lowerQuery) ||
-        description.includes(lowerQuery) ||
-        tags.some((tag) => tag.includes(lowerQuery)) ||
-        category.includes(lowerQuery) ||
-        bodyText.includes(lowerQuery)
-      );
-    }).map((post) => {
-      const title = post.title.toLowerCase();
-      const description = post.description.toLowerCase();
-      const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
-      const category = post.category?.toLowerCase() || '';
-      const bodyText = post.body ? cleanBodyText(post.body) : '';
+        return (
+          title.includes(lowerQuery) ||
+          description.includes(lowerQuery) ||
+          tags.some((tag) => tag.includes(lowerQuery)) ||
+          category.includes(lowerQuery) ||
+          bodyText.includes(lowerQuery)
+        );
+      })
+      .map((post) => {
+        const title = post.title.toLowerCase();
+        const description = post.description.toLowerCase();
+        const tags = post.tags?.map((tag) => tag.toLowerCase()) || [];
+        const category = post.category?.toLowerCase() || '';
+        const bodyText = post.body ? cleanBodyText(post.body) : '';
 
-      const titleMatch = title.includes(lowerQuery);
-      const descriptionMatch = description.includes(lowerQuery);
-      const tagsMatch = tags.some((tag) => tag.includes(lowerQuery));
-      const categoryMatch = category.includes(lowerQuery);
-      const bodyMatch = bodyText.includes(lowerQuery);
+        const titleMatch = title.includes(lowerQuery);
+        const descriptionMatch = description.includes(lowerQuery);
+        const tagsMatch = tags.some((tag) => tag.includes(lowerQuery));
+        const categoryMatch = category.includes(lowerQuery);
+        const bodyMatch = bodyText.includes(lowerQuery);
 
-      let matchText = '';
-      if (bodyMatch && !titleMatch && !descriptionMatch && !tagsMatch && !categoryMatch) {
-        const index = bodyText.indexOf(lowerQuery);
-        const start = Math.max(0, index - 50);
-        const end = Math.min(bodyText.length, index + lowerQuery.length + 50);
-        const beforeText = bodyText.substring(start, index);
-        const afterText = bodyText.substring(index + lowerQuery.length, end);
-        const keywordText = bodyText.substring(index, index + lowerQuery.length);
-        matchText = '...' + beforeText + `<span class="text-primary-light dark:text-primary-dark font-bold">${keywordText}</span>` + afterText + '...';
-      }
+        let matchText = '';
+        if (bodyMatch && !titleMatch && !descriptionMatch && !tagsMatch && !categoryMatch) {
+          const index = bodyText.indexOf(lowerQuery);
+          const start = Math.max(0, index - 50);
+          const end = Math.min(bodyText.length, index + lowerQuery.length + 50);
+          const beforeText = bodyText.substring(start, index);
+          const afterText = bodyText.substring(index + lowerQuery.length, end);
+          const keywordText = bodyText.substring(index, index + lowerQuery.length);
+          matchText =
+            '...' +
+            beforeText +
+            `<span class="text-primary-light dark:text-primary-dark font-bold">${keywordText}</span>` +
+            afterText +
+            '...';
+        }
 
-      return {
-        ...post,
-        matchText: matchText || post.description || '暂无描述'
-      };
-    });
+        return {
+          ...post,
+          matchText: matchText || post.description || '暂无描述',
+        };
+      });
   }
 
   function resetResults() {
@@ -200,11 +215,12 @@ import Icon from './Icon.astro';
       return;
     }
 
-    resultsContainer.innerHTML = results.map((post) => {
-      const titleHtml = post.title;
-      const matchHtml = post.matchText;
+    resultsContainer.innerHTML = results
+      .map((post) => {
+        const titleHtml = post.title;
+        const matchHtml = post.matchText;
 
-      return `
+        return `
       <a
         href="/p/${post.originalFileName}"
         class="block p-4 rounded-2xl hover:bg-hover-light dark:hover:bg-hover-dark transition-colors group"
@@ -217,7 +233,8 @@ import Icon from './Icon.astro';
         </p>
       </a>
       `;
-    }).join('');
+      })
+      .join('');
   }
 
   let searchTimeout: ReturnType<typeof setTimeout>;
@@ -256,7 +273,7 @@ import Icon from './Icon.astro';
             </div>
           `;
         }
-        await new Promise<void>(resolve => {
+        await new Promise<void>((resolve) => {
           const checkData = setInterval(() => {
             if (!isLoadingData) {
               clearInterval(checkData);

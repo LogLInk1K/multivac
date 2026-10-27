@@ -101,7 +101,7 @@ html.dark {
 
 .prose blockquote::after {
   content: close-quote;
-  @apply absolute bottom-[-25px] right-4 text-6xl font-serif italic leading-none select-none;
+  @apply absolute -bottom-6.25 right-4 text-6xl font-serif italic leading-none select-none;
   color: var(--prose-accent);
 }
 

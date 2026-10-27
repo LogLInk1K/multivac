@@ -166,7 +166,8 @@ const config = defineCollection({
       wechatQr: z.string(),
       alipayQr: z.string(),
       emojiFiles: z.array(z.string()),
-      tenYearPledgeLogo: z.string(),
+      tenYearPledgeLogoLight: z.string(),
+      tenYearPledgeLogoDark: z.string(),
     }),
     footer: z.object({
       homeUrl: z.url(),

@@ -96,7 +96,8 @@ assets:
     - 'cry'
     - 'nerd'
     - 'laugh'
-  tenYearPledgeLogo: '/img/logo_en_default.png' # 十年之约 Logo
+  tenYearPledgeLogoLight: "/img/wormhole_v2_dark.webp" # 十年之约 Logo
+  tenYearPledgeLogoDark: "/img/wormhole_v2_light.webp"
 
 # ── 页脚信息 ──────────────────────────────────────────────────
 footer:

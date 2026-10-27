@@ -59,77 +59,84 @@ const postSummaries: PostSummary[] = posts.map((post) => ({
 import Icon from './Icon.astro';
 ---
 
-<aside transition:persist="right-sidebar" class="hidden md:block w-[272px] space-y-6">
+<aside transition:persist="right-sidebar" class="hidden md:block w-68 space-y-6">
   <!-- 公告卡片 -->
   <div
-    class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none"
-  >
-    <div
-      class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative"
+      class="relative overflow-hidden pt-5 px-6 pb-2 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark group/container select-none"
     >
-      <div class="flex items-center gap-2">
-        <span class="w-1.5 h-1.5 rounded-full bg-primary-light dark:bg-primary-dark"></span>
-        <h3 class="text-base font-bold tracking-wider text-text-light dark:text-text-dark">公告</h3>
+      <div
+        class="flex items-center justify-between mb-4 border-b border-border-light dark:border-border-dark pb-3 relative"
+      >
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-light dark:bg-primary-dark"></span>
+          <h3 class="text-base font-bold tracking-wider text-text-light dark:text-text-dark">公告</h3>
+        </div>
+        <span class="text-[10px] tracking-widest text-dim uppercase font-medium"> 十年之约 </span>
       </div>
-      <span class="text-[10px] tracking-widest text-dim uppercase font-medium"> 十年之约 </span>
-    </div>
 
-    <div class="space-y-4">
-      <div class="inline-block">
+      <div class="space-y-4">
+        <div class="inline-block">
+          <a
+            href={siteConfig.tenYearPledge.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block opacity-80 hover:opacity-100 transition-all transform hover:scale-[1.02] duration-500 ease-out origin-left"
+          >
+
+            <img
+              src={siteConfig.assets.tenYearPledgeLogoLight}
+              alt="十年之约"
+              class="h-10 w-auto dark:hidden object-contain"
+            />
+
+            <img
+              src={siteConfig.assets.tenYearPledgeLogoDark}
+              alt="十年之约"
+              class="h-10 w-auto hidden dark:block object-contain"
+            />
+          </a>
+        </div>
+
+        <p class="text-xs font-normal leading-relaxed text-text-light/50 dark:text-text-dark/50">
+          本博客已加入十年之约活动。点击下方的虫洞按钮，即可随机跃迁到其他成员的独立博客。
+        </p>
+
         <a
-          href={siteConfig.tenYearPledge.url}
+          href={siteConfig.tenYearPledge.wormholeUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="block opacity-80 hover:opacity-100 transition-all transform hover:scale-[1.02] duration-500 ease-out origin-left"
+          class="group/btn flex items-center justify-between py-1 relative"
         >
-          <img
-            src={siteConfig.assets.tenYearPledgeLogo}
-            alt="十年之约"
-            class="h-6 w-auto object-contain brightness-95 dark:brightness-110"
-          />
-        </a>
-      </div>
+          <div class="flex items-center gap-1">
+            <span
+              class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-colors duration-300"
+            >
+              穿梭虫洞！
+            </span>
+            <span
+              class="text-xs text-dim group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5"
+              >&rarr;</span
+            >
+          </div>
 
-      <p class="text-xs font-normal leading-relaxed text-text-light/50 dark:text-text-dark/50">
-        本博客已加入十年之约活动。点击下方的虫洞按钮，即可随机跃迁到其他成员的独立博客。
-      </p>
-
-      <a
-        href={siteConfig.tenYearPledge.wormholeUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="group/btn flex items-center justify-between py-1 relative"
-      >
-        <div class="flex items-center gap-1">
-          <span
-            class="text-xs font-semibold text-text-light/80 dark:text-text-dark/80 group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transition-colors duration-300"
+          <div
+            class="shrink-0 flex items-center transform group-hover/btn:scale-105 transition-transform duration-500 ease-out"
           >
-            穿梭虫洞！
-          </span>
-          <span
-            class="text-xs text-dim group-hover/btn:text-primary-light dark:group-hover/btn:text-primary-dark transform group-hover/btn:translate-x-1 transition-all duration-300 pl-0.5"
-            >&rarr;</span
-          >
-        </div>
-
-        <div
-          class="shrink-0 flex items-center transform group-hover/btn:scale-105 transition-transform duration-500 ease-out"
-        >
-          <img
-            src="/img/wormhole_4_tp.gif"
-            alt="虫洞"
-            width="129"
-            height="36"
-            class="w-[95px] h-auto dark:hidden object-contain opacity-75 group-hover/btn:opacity-100 transition-opacity duration-300"
-          />
-          <img
-            src="/img/wormhole_2_tp.gif"
-            alt="虫洞"
-            width="129"
-            height="36"
-            class="w-[95px] h-auto hidden dark:block object-contain opacity-65 group-hover/btn:opacity-100 transition-opacity duration-300"
-          />
-        </div>
+            <img
+              src="/img/wormhole_v2_dark.webp"
+              alt="虫洞"
+              width="129"
+              height="36"
+              class="w-23.75 h-auto dark:hidden object-contain opacity-75 group-hover/btn:opacity-100 transition-opacity duration-300"
+            />
+            <img
+              src="/img/wormhole_v2_light.webp"
+              alt="虫洞"
+              width="129"
+              height="36"
+              class="w-23.75 h-auto hidden dark:block object-contain opacity-65 group-hover/btn:opacity-100 transition-opacity duration-300"
+            />
+          </div>
       </a>
     </div>
   </div>
@@ -147,7 +154,7 @@ import Icon from './Icon.astro';
     <div class="flex items-center justify-between mb-2 relative select-none">
       <div class="flex items-center gap-2 relative z-10 pl-0.5">
         <span
-          class="w-[3px] h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"
+          class="w-0.75 h-3.5 bg-primary-light/40 dark:bg-primary-dark/30 rounded-full transition-all duration-500 group-hover/container:h-4 group-hover/container:bg-primary-light dark:group-hover/container:bg-primary-dark"
         ></span>
         <h3 class="text-base font-bold tracking-normal text-text-light dark:text-text-dark">随机推荐</h3>
       </div>
@@ -239,7 +246,7 @@ import Icon from './Icon.astro';
 
   <!-- RSS订阅卡片 -->
   <div
-    class="relative overflow-hidden p-6 glass-card glass-card-dark group/rsscard select-none flex flex-col justify-between min-h-[180px]"
+    class="relative overflow-hidden p-6 glass-card glass-card-dark group/rsscard select-none flex flex-col justify-between min-h-45"
   >
     <div class="relative">
       <div
@@ -274,14 +281,14 @@ import Icon from './Icon.astro';
           <div
             class="flex gap-1.5 pl-4 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 group-[.is-success]/btn:opacity-0"
           >
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
           </div>
           <div class="flex gap-1.5 pr-4 transition-all duration-300 group-[.is-success]/btn:opacity-0">
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
-            <span class="w-[2px] h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
+            <span class="w-0.5 h-2 bg-neutral-300 dark:bg-neutral-800 rounded-full"></span>
           </div>
         </div>
 
@@ -313,7 +320,7 @@ import Icon from './Icon.astro';
 
   <!-- 博客统计卡片 -->
   <div
-    class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-[230px] flex flex-col justify-between group/statcard"
+    class="relative overflow-hidden p-6 bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark rounded-3xl shadow-sm fluid-card border border-transparent hover:border-border-light dark:hover:border-border-dark select-none min-h-57.5 flex flex-col justify-between group/statcard"
   >
     <div
       class="absolute -right-6 -bottom-10 text-[140px] font-black italic tracking-tighter text-neutral-800/3 dark:text-neutral-100/2 select-none pointer-events-none transform origin-bottom-right transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/statcard:scale-110 group-hover/statcard:translate-x-2 group-hover/statcard:text-primary-light/4 dark:group-hover/statcard:text-primary-dark/3"
@@ -331,7 +338,7 @@ import Icon from './Icon.astro';
         >
       </div>
       <div
-        class="h-[2px] w-12 bg-primary-light/60 dark:bg-primary-dark/50 mt-3 rounded-full transition-all duration-500 group-hover/statcard:w-20"
+        class="h-0.5 w-12 bg-primary-light/60 dark:bg-primary-dark/50 mt-3 rounded-full transition-all duration-500 group-hover/statcard:w-20"
       >
       </div>
     </div>
@@ -349,7 +356,7 @@ import Icon from './Icon.astro';
           <span class="text-[10px] font-bold text-text-light/30 dark:text-text-dark/30">篇</span>
         </div>
         <div
-          class="h-[2px] w-4 bg-neutral-200 dark:bg-neutral-800 mt-2 group-hover/item:w-8 group-hover/item:bg-primary-light dark:group-hover/item:bg-primary-dark transition-all duration-300"
+          class="h-0.5 w-4 bg-neutral-200 dark:bg-neutral-800 mt-2 group-hover/item:w-8 group-hover/item:bg-primary-light dark:group-hover/item:bg-primary-dark transition-all duration-300"
         >
         </div>
       </a>

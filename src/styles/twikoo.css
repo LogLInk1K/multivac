@@ -60,7 +60,10 @@ html.dark {
   z-index: 1;
 }
 
-
+.tk-admin {
+  @apply rounded-xl;
+  z-index: 10 !important;
+}
 
 .twikoo .tk-row .tk-col {
   @apply flex-col-reverse;

@@ -42,22 +42,37 @@ html.dark {
 }
 
 /* --- 核心输入区域布局 --- */
-.tk-submit .tk-avatar {
-  @apply hidden;
+.twikoo .tk-meta-input__item > .tk-avatar {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  min-width: 30px !important;
+  min-height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  flex: 0 0 30px !important;
+  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
 }
 
-.tk-row .tk-col {
+
+
+.twikoo .tk-row .tk-col {
   @apply flex-col-reverse;
 }
 
-.tk-row .tk-col .tk-input textarea {
+.twikoo .tk-row .tk-col .tk-input textarea {
   @apply rounded-xl py-4 px-6;
   min-height: 150px !important;
-  height: auto !important;
   transition: border-color 0.2s ease;
 }
 
-.tk-row .tk-col .tk-input textarea:focus {
+.twikoo .tk-row .tk-col .tk-input textarea:focus {
   border-color: var(--tk-ring) !important;
 }
 
@@ -70,19 +85,27 @@ html.dark {
   @apply min-h-10;
 }
 
-.tk-meta-input div .el-input-group__prepend {
+.twikoo .tk-meta-input .tk-input-group__prepend {
   @apply rounded-l-xl;
   background: inherit !important;
   min-height: inherit;
 }
 
-.tk-meta-input div input {
-  @apply px-4 rounded-r-xl;
+.twikoo .tk-input--group .tk-input__inner {
+  @apply px-4! rounded-r-xl!;
   min-height: inherit;
   transition: border-color 0.2s ease;
 }
 
-.tk-meta-input div input:focus {
+.twikoo .tk-meta-input .tk-input-group__prepend {
+  @apply rounded-l-xl;
+  background: inherit !important;
+  min-height: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.twikoo .tk-meta-input .tk-input--group:focus-within .tk-input-group__prepend,
+.twikoo .tk-meta-input .tk-input--group:focus-within .tk-input__inner {
   border-color: var(--tk-ring) !important;
 }
 
@@ -90,7 +113,7 @@ html.dark {
 .tk-row.actions {
   @apply w-full;
   margin-left: 0 !important;
-  margin-top: 0 !important;
+  margin-top: 0.2rem !important;
 }
 
 .tk-row.actions .__markdown {
@@ -264,7 +287,8 @@ html.dark .tk-row.actions .tk-preview:hover {
 .tk-icon.__comments svg {
   width: 14px !important;
   height: 14px !important;
-  color: var(--tk-accent) !important;
+  color: var(--tk-text) !important;
+  opacity: 0.5;
 }
 
 .tk-icon.__comments:hover {
@@ -291,34 +315,21 @@ html.dark .tk-row.actions .tk-preview:hover {
 }
 
 .tk-action-icon svg {
-  color: var(--tk-accent);
+  color: var(--tk-text);
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.tk-action-icon:hover svg,
+.tk-action-icon.tk-liked svg {
+  opacity: 1;
 }
 
 .tk-action .tk-action-count {
   color: var(--tk-text);
 }
 
-.tk-meta .tk-tag {
-  @apply border-none rounded-lg;
-  color: var(--tk-tag-text);
-}
 
-.tk-meta .tk-tag-green {
-  background-color: var(--tk-accent);
-  color: var(--tk-tag-text);
-}
-
-.tk-avatar {
-  border-radius: 50% !important;
-  overflow: hidden !important;
-  border: 2px solid #8686864a !important;
-  transition: border-color 0.3s ease !important;
-}
-
-.tk-avatar-img {
-  object-fit: cover !important;
-  border-radius: 50% !important;
-}
 
 /* 文本超链接 */
 .tk-content a,
@@ -416,37 +427,14 @@ html.dark .OwO-body span {
   background-clip: padding-box;
 }
 
-/* --- 展开/收起按钮及动画 --- */
+/* --- 评论区子评论展开/收起 --- */
 .tk-expand-wrap .tk-expand,
 .tk-collapse-wrap .tk-expand {
-  @apply rounded-xl transition-all;
+  @apply rounded-xl;
 }
 
-.tk-expand-wrap .tk-expand {
-  margin-top: 1rem !important;
-}
-
-.tk-expand-wrap .tk-expand:hover,
-.tk-collapse-wrap .tk-expand:hover {
-  background-color: var(--tk-bg-hover);
-}
-
-.twikoo > .tk-comments > .tk-comments-container > .tk-expand-wrap > .tk-expand {
-  width: 100% !important;
-  max-width: 100%;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  margin: 10px auto !important;
-  overflow: hidden !important;
-  white-space: nowrap !important;
-}
-
-/* 展开按钮趣味收缩 */
-.twikoo > .tk-comments > .tk-comments-container > .tk-expand-wrap > .tk-expand:hover {
-  width: 25% !important;
-  letter-spacing: 1px;
+.tk-collapse-wrap{
+    margin-top: 12px; 
 }
 
 /* 隐藏无关按钮节点 */
@@ -462,4 +450,101 @@ html.dark .OwO-body span {
 /* --- 用户名链接悬停颜色 --- */
 .tk-nick-link:hover {
   color: var(--tk-accent) !important;
+}
+
+/* --- 博主、用户标识 --- */
+.twikoo .tk-tag-green,
+.twikoo .tk-tag-yellow {
+    transform: translateY(-1px) !important;
+}
+
+.twikoo .tk-tag-green {
+    color: #505050 !important;
+    background-color: #71717a1a !important;
+    border: 1px solid #71717a40 !important;
+    border-radius: 10px !important;
+}
+
+html.dark .twikoo .tk-tag-green,
+[data-theme="dark"] .twikoo .tk-tag-green {
+    color: #c1c1c1 !important;
+    background-color: #a1a1aa1f !important;
+    border: 1px solid #a1a1aa4d !important;
+}
+
+.twikoo .tk-tag-yellow {
+    border-radius: 10px !important;
+}
+
+/* --- 头像 --- */
+.tk-avatar {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 2px solid #8686864a !important;
+  line-height: 0 !important; /* 彻底消除行内基线导致的下沉 */
+  transition: border-color 0.3s ease !important;
+}
+
+.tk-avatar-img,
+.tk-avatar svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  vertical-align: middle !important;
+}
+
+/* --- 前缀标签（昵称 / 邮箱 / 网址）激活态 --- */
+.twikoo .tk-meta-input .tk-input-group__prepend {
+  color: #71717a !important;
+  transition: border-color 0.2s ease, color 0.2s ease !important;
+}
+
+.twikoo .tk-meta-input .tk-input--group:focus-within .tk-input-group__prepend {
+  color: #18181b !important;
+}
+
+html.dark .twikoo .tk-meta-input .tk-input--group:focus-within .tk-input-group__prepend,
+[data-theme="dark"] .twikoo .tk-meta-input .tk-input--group:focus-within .tk-input-group__prepend {
+  color: #e4e4e7 !important;
+}
+
+/* 发送主按钮（禁用态与可用态交互） */
+.twikoo .tk-button--primary.is-disabled {
+  background-color: #bbbbbb38 !important;
+  color: #000000c7 !important;
+}
+
+html.dark .twikoo .tk-button--primary.is-disabled,
+[data-theme="dark"] .twikoo .tk-button--primary.is-disabled {
+  background-color: #86868638 !important;
+  color: #ffffffa1 !important;
+}
+
+.twikoo .tk-button--primary:not(.is-disabled),
+.twikoo .tk-button--primary:not(.is-disabled):focus {
+  color: var(--tk-accent-text) !important;
+  background-color: var(--tk-accent) !important;
+  border-color: var(--tk-accent) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
+}
+
+.twikoo .tk-button--primary:not(.is-disabled):hover {
+  color: var(--tk-accent-text) !important;
+  background-color: color-mix(in srgb, var(--tk-accent) 88%, var(--tk-accent-text)) !important;
+  border-color: color-mix(in srgb, var(--tk-accent) 88%, var(--tk-accent-text)) !important;
+}
+
+.twikoo .tk-button--primary:not(.is-disabled):active {
+  color: var(--tk-accent-text) !important;
+  background-color: color-mix(in srgb, var(--tk-accent) 88%, black) !important;
+  border-color: color-mix(in srgb, var(--tk-accent) 88%, black) !important;
+  transform: scale(0.98);
 }

@@ -172,4 +172,24 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
     document.addEventListener('astro:page-load', boot);
     document.addEventListener('astro:after-swap', boot);
   }
+
+  function placeAvatarInNickField(): void {
+    document.querySelectorAll<HTMLElement>('.twikoo[data-twikoo-env-id]').forEach((mount) => {
+      const avatar = mount.querySelector<HTMLElement>('.tk-row > .tk-avatar');
+      if (!avatar) return;
+
+      const nickItem = Array.from(mount.querySelectorAll<HTMLElement>('.tk-meta-input__item')).find((el) =>
+        el.querySelector('input[name="nick"]')
+      );
+      if (!nickItem || avatar.parentElement === nickItem) return;
+
+      nickItem.appendChild(avatar);
+    });
+  }
+
+  new MutationObserver(placeAvatarInNickField).observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
 </script>

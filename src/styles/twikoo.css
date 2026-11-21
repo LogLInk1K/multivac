@@ -560,3 +560,23 @@ html.dark .twikoo .tk-button--primary.is-disabled,
   border-color: color-mix(in srgb, var(--tk-accent) 88%, black) !important;
   transform: scale(0.98);
 }
+
+/* 预览框提示文字 */
+.twikoo:has(.tk-input textarea:placeholder-shown) .tk-preview-container::before {
+  content: "输入内容以实时预览...";
+  color: color-mix(in srgb, var(--tk-text) 35%, transparent);
+  font-size: 0.875rem;
+}
+
+/* --- 搜索按钮、搜索区域输入框与按钮样式 --- */
+.twikoo .tk-icon.__comments.__active {
+  box-shadow: none !important;
+}
+
+.twikoo .tk-input--small .tk-input__inner, .twikoo .tk-comments-search .tk-button--primary {
+  @apply rounded-xl;
+}
+
+.twikoo .tk-input--small .tk-input__inner:focus {
+  border-color: var(--tk-accent) !important;
+}

@@ -328,11 +328,10 @@ html.dark .tk-row.actions .tk-preview:hover {
   opacity: 1;
 }
 
+/* 点赞/回复计数 */
 .tk-action .tk-action-count {
-  color: var(--tk-text);
+  color: color-mix(in srgb, var(--tk-text) 55%, transparent);
 }
-
-
 
 /* 文本超链接 */
 .tk-content a,
@@ -430,14 +429,24 @@ html.dark .OwO-body span {
   background-clip: padding-box;
 }
 
-/* --- 评论区子评论展开/收起 --- */
-.tk-expand-wrap .tk-expand,
-.tk-collapse-wrap .tk-expand {
+/* --- 评论区子评论展开/收起、查看更多按钮 --- */
+.tk-expand {
   @apply rounded-xl;
+  margin-top: 12px;
+  color: color-mix(in srgb, var(--tk-text) 65%, transparent) !important;
+  width: 30% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.tk-collapse-wrap{
-    margin-top: 12px; 
+.twikoo .tk-expand:hover {
+  background-color: #00000014 !important;
+  color: var(--tk-text) !important;
+}
+
+html.dark .twikoo .tk-expand:hover,
+[data-theme="dark"] .twikoo .tk-expand:hover {
+  background-color: var(--tk-bg-hover) !important;
 }
 
 /* 隐藏无关按钮节点 */

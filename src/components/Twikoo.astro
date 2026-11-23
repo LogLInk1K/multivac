@@ -167,29 +167,39 @@ const elId = customElId ?? `tcomment-${pageKey.replace(/[^a-zA-Z0-9]+/g, '-').re
     }
   }
 
-  if (!window.__twikooAstro) {
-    window.__twikooAstro = { listeners: true };
-    document.addEventListener('astro:page-load', boot);
-    document.addEventListener('astro:after-swap', boot);
-  }
+  function placeAvatarInNickField(root: ParentNode = document): void {
+    root.querySelectorAll<HTMLElement>('.tk-submit').forEach((submitBox) => {
+      if (!submitBox.closest('.twikoo[data-twikoo-env-id]')) return;
 
-  function placeAvatarInNickField(): void {
-    document.querySelectorAll<HTMLElement>('.twikoo[data-twikoo-env-id]').forEach((mount) => {
-      const avatar = mount.querySelector<HTMLElement>('.tk-row > .tk-avatar');
-      if (!avatar) return;
+      const avatar = submitBox.querySelector<HTMLElement>('.tk-row > .tk-avatar');
+      const nickItem = submitBox.querySelector<HTMLElement>('.tk-meta-input__item:has(input[name="nick"])');
 
-      const nickItem = Array.from(mount.querySelectorAll<HTMLElement>('.tk-meta-input__item')).find((el) =>
-        el.querySelector('input[name="nick"]')
-      );
-      if (!nickItem || avatar.parentElement === nickItem) return;
-
-      nickItem.appendChild(avatar);
+      if (avatar && nickItem && avatar.parentElement !== nickItem) {
+        nickItem.appendChild(avatar);
+      }
     });
   }
 
-  new MutationObserver(placeAvatarInNickField).observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+  function initTwikoo() {
+    boot();
 
+    document.querySelectorAll<HTMLElement>('.twikoo[data-twikoo-env-id]').forEach((mount) => {
+
+      if (mount.dataset.avatarObserved) return;
+      mount.dataset.avatarObserved = 'true';
+
+      placeAvatarInNickField(mount);
+
+      new MutationObserver(() => placeAvatarInNickField(mount)).observe(mount, {
+        childList: true,
+        subtree: true,
+      });
+    });
+  }
+
+  if (!window.__twikooAstro) {
+    window.__twikooAstro = { listeners: true };
+    document.addEventListener('astro:page-load', initTwikoo);
+  }
+  
 </script>

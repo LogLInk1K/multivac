@@ -528,39 +528,6 @@ html.dark .twikoo .tk-meta-input .tk-input--group:focus-within .tk-input-group__
   color: #e4e4e7 !important;
 }
 
-/* 发送主按钮（禁用态与可用态交互） */
-.twikoo .tk-button--primary.is-disabled {
-  background-color: #bbbbbb38 !important;
-  color: #000000c7 !important;
-}
-
-html.dark .twikoo .tk-button--primary.is-disabled,
-[data-theme="dark"] .twikoo .tk-button--primary.is-disabled {
-  background-color: #86868638 !important;
-  color: #ffffffa1 !important;
-}
-
-.twikoo .tk-button--primary:not(.is-disabled),
-.twikoo .tk-button--primary:not(.is-disabled):focus {
-  color: var(--tk-accent-text) !important;
-  background-color: var(--tk-accent) !important;
-  border-color: var(--tk-accent) !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
-}
-
-.twikoo .tk-button--primary:not(.is-disabled):hover {
-  color: var(--tk-accent-text) !important;
-  background-color: color-mix(in srgb, var(--tk-accent) 88%, var(--tk-accent-text)) !important;
-  border-color: color-mix(in srgb, var(--tk-accent) 88%, var(--tk-accent-text)) !important;
-}
-
-.twikoo .tk-button--primary:not(.is-disabled):active {
-  color: var(--tk-accent-text) !important;
-  background-color: color-mix(in srgb, var(--tk-accent) 88%, black) !important;
-  border-color: color-mix(in srgb, var(--tk-accent) 88%, black) !important;
-  transform: scale(0.98);
-}
-
 /* 预览框提示文字 */
 .twikoo:has(.tk-input textarea:placeholder-shown) .tk-preview-container::before {
   content: "输入内容以实时预览...";
@@ -579,4 +546,47 @@ html.dark .twikoo .tk-button--primary.is-disabled,
 
 .twikoo .tk-input--small .tk-input__inner:focus {
   border-color: var(--tk-accent) !important;
+}
+
+/* 发送按钮 */
+.twikoo .tk-button--primary.is-disabled {
+  background-color: color-mix(in srgb, currentColor 12%, transparent) !important;
+  color: color-mix(in srgb, currentColor 65%, transparent) !important;
+  border-color: transparent !important;
+}
+
+.twikoo .tk-button--primary:not(.is-disabled) {
+  --_bg: var(--tk-accent);
+  color: var(--tk-accent-text) !important;
+  background-color: var(--_bg) !important;
+  border-color: var(--_bg) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease !important;
+}
+
+.twikoo .tk-button--primary:not(.is-disabled):hover {
+  --_bg: color-mix(in srgb, var(--tk-accent) 88%, var(--tk-accent-text));
+}
+
+.twikoo .tk-button--primary:not(.is-disabled):active {
+  --_bg: color-mix(in srgb, var(--tk-accent) 88%, black);
+  transform: scale(0.98);
+}
+
+/* 取消按钮 */
+.twikoo .tk-cancel {
+  color: var(--tk-accent) !important;
+  background-color: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--tk-accent) 45%, transparent) !important;
+  opacity: 0.85 !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+.twikoo .tk-cancel:hover {
+  background-color: color-mix(in srgb, var(--tk-accent) 12%, transparent) !important;
+  border-color: var(--tk-accent) !important;
+  opacity: 1 !important;
+}
+
+.twikoo .tk-cancel:active {
+  transform: scale(0.98);
 }
